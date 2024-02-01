@@ -3,7 +3,7 @@
         <slot/>
         <Toast id="GlobalToast"></Toast>
         <template #toolbar-title>
-            Parisa CRM
+            ElHolding
         </template>
     </TairoCollapseLayout>
 </template>
