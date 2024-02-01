@@ -1,0 +1,53 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "PORT=4100 nuxt dev",
+    "dev:ws": "SET PORT=4100 && nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "start:prod": "PORT=80 node .output/server/index.mjs",
+    "lint": "eslint --ext \".ts,.js,.vue\" --ignore-path .eslintignore --quiet .",
+    "lint:fix": "eslint --fix --ext \".ts,.js,.vue\" --ignore-path .eslintignore --quiet ."
+  },
+  "devDependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^36.0.1",
+    "@ckeditor/ckeditor5-vue": "^4.0.1",
+    "@diyor28/treeselect": "^0.1.7",
+    "@headlessui-float/vue": "^0.13.0",
+    "@headlessui/vue": "^1.7.17",
+    "@nuxtjs/color-mode": "^3.3.2",
+    "@nuxtjs/tailwindcss": "^6.8.0",
+    "@phosphor-icons/vue": "^2.1.6",
+    "@pinia/nuxt": "0.4.11",
+    "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/typography": "^0.5.10",
+    "@types/node": "16.10",
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "@typescript-eslint/parser": "^6.7.2",
+    "@vue/runtime-core": "3.3.4",
+    "@vue/server-renderer": "3.3.4",
+    "@vueuse/nuxt": "^10.7.1",
+    "apexcharts": "^3.41.0",
+    "click-outside-vue3": "^4.0.1",
+    "eslint": "^8.23.1",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "eslint-plugin-vue": "^9.17.0",
+    "maska": "^2.1.10",
+    "moment": "^2.29.4",
+    "nuxt": "3.7.4",
+    "nuxt-icon": "^0.6.8",
+    "sass": "1.53.0",
+    "text-mask-core": "^5.1.2",
+    "typescript": "^5.2.2",
+    "vue": "3.4.15",
+    "vue-router": "^4.2.0",
+    "vue-tsc": "^1.8.16",
+    "vue3-apexcharts": "^1.4.1",
+    "webpack": ">=5.0.0 <6.0.0"
+  },
+  "dependencies": {
+    "eslint-plugin-unused-imports": "^3.0.0"
+  }
+}
