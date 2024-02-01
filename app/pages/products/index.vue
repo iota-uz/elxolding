@@ -13,11 +13,31 @@
                 />
                 <PerPageSelect v-model="perPage" />
             </div>
-            <NuxtLink :to="{name: 'users-id', params: {id: 'new'}}">
-                <BaseButton color="primary">
-                    Новый продукция
-                </BaseButton>
-            </NuxtLink>
+
+            <div class="flex gap-3">
+                <div class="flex">
+                    <BaseButton class="flex items-center !px-3 !rounded-r-none !border-e-0">
+                        {{ statusFilter.status }}
+                    </BaseButton>
+                    <BaseDropdown
+                        class="status-filter"
+                        flavor="button"
+                        label="Статус"
+                        orientation="start"
+                    >
+                        <BaseDropdownItem v-for="option in options"
+                                          @click="statusFilter.status = option.value"
+                                          :key="option.label"
+                                          :title="option.label"
+                        />
+                    </BaseDropdown>
+                </div>
+                <NuxtLink :to="{name: 'users-id', params: {id: 'new'}}">
+                    <BaseButton color="primary">
+                        Новый продукция
+                    </BaseButton>
+                </NuxtLink>
+            </div>
         </div>
         <div>
             <Search
@@ -90,37 +110,32 @@ const users = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip: 0
 const perPage = ref(app.pagination.defaultPageSize);
 const currentPage = ref(route.query.page ? parseInt(route.query.page as string) : 1);
 const dateFilter = reactive({start: '', end: ''});
+const statusFilter = reactive({status: 'Все'});
+const selected = ref('');
 const sortBy = ref<Record<string, any>>({createdAt: -1});
+
+const options = [
+    {label: 'Все', value: ''},
+    {label: 'На складе', value: 'На складе'},
+    {label: 'В разработке', value: 'В разработке'},
+    {label: 'Одобрено', value: 'Одобрено'},
+];
 
 const columns = ref<Column[]>([
     {
-        label: 'Имя',
-        name: 'firstName',
+        label: 'Название',
+        name: 'name',
         sortable: true
     },
     {
-        label: 'Фамилия',
-        name: 'lastName',
+        label: 'Артикул',
+        name: 'article',
         sortable: true
     },
     {
-        label: 'Email',
-        name: 'email',
+        label: 'Статус',
+        name: 'status',
         sortable: true
-    },
-    {
-        label: 'Роль',
-        name: 'role',
-        enums: {
-            admin: 'Администратор',
-            editor: 'Редактор',
-            manager: 'Менеджер',
-            user: 'Пользователь'
-        }
-    },
-    {
-        label: 'Пароль',
-        name: 'password'
     },
     {
         label: 'Дата создания',
@@ -136,18 +151,18 @@ const columns = ref<Column[]>([
 
 const fields = ref([
     {
-        label: 'Имя',
-        key: 'firstName'
+        label: 'Название',
+        key: 'name'
     },{
-        label: 'Фамилия',
-        key: 'lastName'
+        label: 'Артикул',
+        key: 'article'
     },{
-        label: 'Email',
-        key: 'email'
+        label: 'Статус',
+        key: 'status'
     },
 ]);
 
-watch([currentPage, sortBy, perPage, searchQ, dateFilter], fetch);
+watch([currentPage, sortBy, perPage, searchQ, dateFilter, statusFilter], fetch);
 
 async function fetch() {
     isFetchPending.value = true;
@@ -162,6 +177,9 @@ async function fetch() {
             $lt: dateFilter.end,
             $gt: dateFilter.start
         };
+    }
+    if (statusFilter.status) {
+        query.status = dateFilter.status;
     }
     try {
         users.value = await usersService.find<PaginatedResponse<any>>(query).exec();
@@ -178,4 +196,10 @@ onMounted(async () => {
 </script>
 
 <style>
+.status-filter {
+    button {
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
+    }
+}
 </style>
