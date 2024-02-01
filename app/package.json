@@ -2,8 +2,8 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "PORT=4100 nuxt dev",
-    "dev:ws": "SET PORT=4100 && nuxt dev",
+    "dev": "PORT=4200 nuxt dev",
+    "dev:ws": "SET PORT=4200 && nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
