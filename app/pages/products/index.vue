@@ -32,7 +32,7 @@
                         />
                     </BaseDropdown>
                 </div>
-                <NuxtLink :to="{name: 'users-id', params: {id: 'new'}}">
+                <NuxtLink :to="{name: 'products-id', params: {id: 'new'}}">
                     <BaseButton color="primary">
                         Новый продукция
                     </BaseButton>
@@ -57,7 +57,7 @@
                 <template #buttons="{item}">
                     <TairoTableCell class="px-6 py-4 flex justify-end">
                         <NuxtLink
-                            :to="{name: 'users-id', params: {id: item.id}}"
+                            :to="{name: 'products-id', params: {id: item.id}}"
                             class="border border-gray-300 dark:border-muted-600 rounded-md p-2"
                         >
                             <Icon
