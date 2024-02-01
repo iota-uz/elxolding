@@ -1,11 +1,7 @@
 <template>
     <div class="container flex justify-center items-center h-screen px-5 md:px-0">
         <div class="flex flex-col justify-center md:flex-row-reverse items-center gap-4 md:gap-24 w-full">
-            <div class="w-full hidden md:block md:w-2/3 max-w-lg md:max-w-3xl">
-                <LoginIllustration class="w-full" />
-            </div>
             <div class="flex flex-col items-center w-full md:w-1/2 max-w-sm">
-                <ParisaLogo />
                 <div class="text-center w-full">
                     <h1 class="text-3xl">
                         Вход
@@ -17,15 +13,16 @@
                         class="flex flex-col text-left gap-3"
                         @submit.prevent="submit"
                     >
-                        <BaseInput
+                        <BaseSelect
                             v-model.trim="loginData.email"
-                            :error="errors.email"
-
-                            label="Email"
-                            placeholder="example@gmail.com"
-                            type="email"
-                            icon="ph:envelope-simple"
-                        />
+                            label="Сотрудник"
+                            placeholder="Иван Васильевич"
+                            icon="ph:user"
+                        >
+                            <option value="some">
+                                Меняет профессию
+                            </option>
+                        </BaseSelect>
                         <PasswordInput
                             v-model="loginData.password"
                             :error="errors.password"
