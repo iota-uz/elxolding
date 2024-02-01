@@ -18,54 +18,44 @@ export default defineAppConfig({
                 enabled: true,
                 items: [
                     {
-                        name: 'Панель управления',
+                        name: 'Заявки',
                         icon: {
-                            name: 'ph:app-window',
+                            name: 'ph:archive-tray-fill',
                             class: 'w-5 h-5'
                         },
-                        to: '/',
-                        children: [
-                            {
-                                name: 'Метрики',
-                                icon: {
-                                    name: 'ph:gauge',
-                                    class: 'w-5 h-5'
-                                },
-                                to: '/'
-                            },
-                            {
-                                name: 'Пользователи',
-                                icon: {
-                                    name: 'ph:users',
-                                    class: 'w-5 h-5'
-                                },
-                                to: '/users'
-                            },
-                            {
-                                name: 'Настройки',
-                                icon: {
-                                    name: 'ph:gear',
-                                    class: 'w-5 h-5'
-                                },
-                                to: '/settings'
-                            },
-                            {
-                                name: 'Лог действий',
-                                icon: {
-                                    name: 'ph:arrows-down-up',
-                                    class: 'w-5 h-5'
-                                },
-                                to: '/requests'
-                            },
-                        ]
+                        to: '/applications',
                     },
                     {
-                        name: 'Роли',
+                        name: 'Продукция',
                         icon: {
-                            name: 'ph:user-gear',
+                            name: 'ph:package-fill',
                             class: 'w-5 h-5'
                         },
-                        to: '/roles'
+                        to: '/products'
+                    },
+                    {
+                        name: 'Наименования',
+                        icon: {
+                            name: 'ph:notepad-fill',
+                            class: 'w-5 h-5'
+                        },
+                        to: '/names'
+                    },
+                    {
+                        name: 'Сотрудники',
+                        icon: {
+                            name: 'ph:users',
+                            class: 'w-5 h-5'
+                        },
+                        to: '/employees'
+                    },
+                    {
+                        name: 'Инвентаризация',
+                        icon: {
+                            name: 'ph:list-checks-fill',
+                            class: 'w-5 h-5'
+                        },
+                        to: '/inventory'
                     },
                     {
                         name: 'Divider',
