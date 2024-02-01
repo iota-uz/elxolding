@@ -1,8 +1,7 @@
 <template>
     <div class="flex flex-col gap-8">
         <div>
-            <h1 class="text-xl">Инструменты</h1>
-            <h2 class="text-sm text-gray-500">Справочник инструментов</h2>
+            <h1 class="text-xl">Отгрузки/Приход для продукции</h1>
         </div>
         <div class="flex flex-wrap gap-5 justify-between">
             <div class="flex items-center gap-4">
@@ -13,11 +12,7 @@
                 />
                 <PerPageSelect v-model="perPage" />
             </div>
-            <NuxtLink :to="{name: 'tools-id', params: {id: 'new'}}">
-                <BaseButton color="primary">
-                    Новый инструмент
-                </BaseButton>
-            </NuxtLink>
+
         </div>
         <div>
             <Search
@@ -30,14 +25,14 @@
             <BaseTable
                 v-model:sortBy="sortBy"
                 :columns="columns"
-                :data="tools.data"
+                :data="users.data"
                 :loading="isFetchPending"
                 class="flex-auto"
             >
                 <template #buttons="{item}">
                     <TairoTableCell class="px-6 py-4 flex justify-end">
                         <NuxtLink
-                            :to="{name: 'tools-id', params: {id: item.id}}"
+                            :to="{name: 'products-id', params: {id: item.id}}"
                             class="border border-gray-300 dark:border-muted-600 rounded-md p-2"
                         >
                             <Icon
@@ -49,11 +44,11 @@
                 </template>
             </BaseTable>
             <BasePagination
-                v-if="tools.total / perPage > 1"
+                v-if="users.total / perPage > 1"
                 v-model:current-page="currentPage"
                 class="my-2"
                 :item-per-page="perPage"
-                :total-items="tools.total"
+                :total-items="users.total"
                 :max-links-displayed="10"
                 shape="rounded"
             />
@@ -71,27 +66,35 @@ import TairoTableCell from '~/components/tairo/TairoTableCell.vue';
 import {type PaginatedResponse} from '~/types/generics';
 
 definePageMeta({
-    authRoute: true,
     layout: 'account',
-    verbose: 'Инструменты'
+    verbose: 'Отгрузки / Приход'
 });
 
 useHead({
-    title: 'Инструменты'
+    title: 'Отгрузки / Приход'
 });
 
 const toast = useToast('GlobalToast');
 const route = useRoute();
 const app = useAppConfig();
-const toolsService = useService('tools', {auth: true});
+const usersService = useService('users');
 
 const searchQ = ref({});
 const isFetchPending = ref(false);
-const tools = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip: 0});
+const users = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip: 0});
 const perPage = ref(app.pagination.defaultPageSize);
 const currentPage = ref(route.query.page ? parseInt(route.query.page as string) : 1);
 const dateFilter = reactive({start: '', end: ''});
+const statusFilter = reactive({status: 'Все'});
+const selected = ref('');
 const sortBy = ref<Record<string, any>>({createdAt: -1});
+
+const options = [
+    {label: 'Все', value: ''},
+    {label: 'На складе', value: 'На складе'},
+    {label: 'В разработке', value: 'В разработке'},
+    {label: 'Одобрено', value: 'Одобрено'},
+];
 
 const columns = ref<Column[]>([
     {
@@ -100,36 +103,18 @@ const columns = ref<Column[]>([
         sortable: true
     },
     {
-        label: 'Артикул',
-        name: 'barcode',
+        label: 'Артикул RFID',
+        name: 'article',
         sortable: true
     },
     {
-        label: 'Базовая стойкость (м)',
-        name: 'baseLife',
+        label: 'Ед. измерения',
+        name: 'measure',
         sortable: true
     },
     {
-        label: 'Тип',
-        name: 'type',
-        enums: {
-            body: 'Корпус',
-            drill: 'Сверло',
-            measuring: 'Измерительный инструмент',
-            mill: 'Фреза',
-            other: 'Прочее',
-            plate: 'Пластина',
-            welding: 'Сварочный инструмент'
-        }
-    },
-    {
-        label: 'Дата создания',
-        name: 'createdAt',
-        sortable: true
-    },
-    {
-        label: 'Дата обновления',
-        name: 'updatedAt',
+        label: 'Факт. кол-во/кол-вл в 1С',
+        name: 'count',
         sortable: true
     }
 ]);
@@ -140,11 +125,14 @@ const fields = ref([
         key: 'name'
     },{
         label: 'Артикул',
-        key: 'barcode'
+        key: 'article'
+    },{
+        label: 'Ед. измерения',
+        key: 'measure'
     },
 ]);
 
-watch([currentPage, sortBy, perPage, searchQ, dateFilter], fetch);
+watch([currentPage, sortBy, perPage, searchQ, dateFilter, statusFilter], fetch);
 
 async function fetch() {
     isFetchPending.value = true;
@@ -160,8 +148,11 @@ async function fetch() {
             $gt: dateFilter.start
         };
     }
+    if (statusFilter.status) {
+        query.status = dateFilter.status;
+    }
     try {
-        tools.value = await toolsService.find<PaginatedResponse<any>>(query).exec();
+        users.value = await usersService.find<PaginatedResponse<any>>(query).exec();
     } catch(e: any) {
         toast.show({type: 'error', message: e.message, timeout: 3000});
     } finally {

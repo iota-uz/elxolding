@@ -1,8 +1,8 @@
 <template>
     <div class="flex flex-col gap-8">
         <div>
-            <h1 class="text-xl">Тех. процессы</h1>
-            <h2 class="text-sm text-gray-500">Электронные карты технологических процессов</h2>
+            <h1 class="text-xl">Завки</h1>
+            <h2 class="text-sm text-gray-500">Список заявок</h2>
         </div>
         <div class="flex flex-wrap gap-5 justify-between">
             <div class="flex items-center gap-4">
@@ -13,9 +13,9 @@
                 />
                 <PerPageSelect v-model="perPage" />
             </div>
-            <NuxtLink :to="{name: 'technologies-id', params: {id: 'new'}}">
+            <NuxtLink :to="{name: 'applications-id', params: {id: 'new'}}">
                 <BaseButton color="primary">
-                    Новый процесс
+                    Новая заявка
                 </BaseButton>
             </NuxtLink>
         </div>
@@ -30,14 +30,14 @@
             <BaseTable
                 v-model:sortBy="sortBy"
                 :columns="columns"
-                :data="technologies.data"
+                :data="applications.data"
                 :loading="isFetchPending"
                 class="flex-auto"
             >
                 <template #buttons="{item}">
                     <TairoTableCell class="px-6 py-4 flex justify-end">
                         <NuxtLink
-                            :to="{name: 'technologies-id', params: {id: item.id}}"
+                            :to="{name: 'applications-id', params: {id: item.id}}"
                             class="border border-gray-300 dark:border-muted-600 rounded-md p-2"
                         >
                             <Icon
@@ -49,11 +49,11 @@
                 </template>
             </BaseTable>
             <BasePagination
-                v-if="technologies.total / perPage > 1"
+                v-if="applications.total / perPage > 1"
                 v-model:current-page="currentPage"
                 class="my-2"
                 :item-per-page="perPage"
-                :total-items="technologies.total"
+                :total-items="applications.total"
                 :max-links-displayed="10"
                 shape="rounded"
             />
@@ -71,23 +71,22 @@ import TairoTableCell from '~/components/tairo/TairoTableCell.vue';
 import {type PaginatedResponse} from '~/types/generics';
 
 definePageMeta({
-    authRoute: true,
     layout: 'account',
-    verbose: 'Тех. процессы'
+    verbose: 'Заявки'
 });
 
 useHead({
-    title: 'Тех. процессы'
+    title: 'Заявки'
 });
 
 const toast = useToast('GlobalToast');
 const route = useRoute();
 const app = useAppConfig();
-const technologiesService = useService('technologies', {auth: true});
+const applicationsService = useService('applications');
 
 const searchQ = ref({});
 const isFetchPending = ref(false);
-const technologies = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip: 0});
+const applications = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip: 0});
 const perPage = ref(app.pagination.defaultPageSize);
 const currentPage = ref(route.query.page ? parseInt(route.query.page as string) : 1);
 const dateFilter = reactive({start: '', end: ''});
@@ -95,16 +94,33 @@ const sortBy = ref<Record<string, any>>({createdAt: -1});
 
 const columns = ref<Column[]>([
     {
-        label: 'Статус',
-        name: 'status',
+        label: 'Имя',
+        name: 'firstName',
+        sortable: true
+    },
+    {
+        label: 'Фамилия',
+        name: 'lastName',
+        sortable: true
+    },
+    {
+        label: 'Email',
+        name: 'email',
+        sortable: true
+    },
+    {
+        label: 'Роль',
+        name: 'role',
         enums: {
-            completed: 'Завершен',
-            inProgress: 'В разработке'
+            admin: 'Администратор',
+            editor: 'Редактор',
+            manager: 'Менеджер',
+            application: 'Пользователь'
         }
     },
     {
-        label: 'Ширина пила',
-        name: 'sawWidth'
+        label: 'Пароль',
+        name: 'password'
     },
     {
         label: 'Дата создания',
@@ -119,7 +135,16 @@ const columns = ref<Column[]>([
 ]);
 
 const fields = ref([
-    
+    {
+        label: 'Имя',
+        key: 'firstName'
+    },{
+        label: 'Фамилия',
+        key: 'lastName'
+    },{
+        label: 'Email',
+        key: 'email'
+    },
 ]);
 
 watch([currentPage, sortBy, perPage, searchQ, dateFilter], fetch);
@@ -139,7 +164,7 @@ async function fetch() {
         };
     }
     try {
-        technologies.value = await technologiesService.find<PaginatedResponse<any>>(query).exec();
+        applications.value = await applicationsService.find<PaginatedResponse<any>>(query).exec();
     } catch(e: any) {
         toast.show({type: 'error', message: e.message, timeout: 3000});
     } finally {

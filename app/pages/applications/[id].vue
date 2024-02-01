@@ -1,31 +1,24 @@
 <template>
     <div class="mt-4 px-10">
         <div class="flex flex-col gap-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6 items-end">
-                <BaseInput v-model="tool.name" label="Название*" name="name" placeholder="пр.: Сверло Ф10" :error="errors.name" type="text"/>
-                <BaseInput name="barcode" placeholder="пр.: 123456" :error="errors.barcode" type="text" v-model="tool.barcode" label="Артикул*"/>
-                <BaseInput name="baseLife" placeholder="пр.: 24 000" :error="errors.baseLife" type="number" v-model="tool.baseLife" label="Базовая стойкость (м)*"/>
-                <BaseSelect label="Тип*" name="type" :error="errors.type" v-model="tool.type">
-                    <option value="drill">
-                        Сверло
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 items-end">
+                <BaseInput :error="errors.firstName" type="text" v-model="user.firstName" label="Имя*" name="firstName" placeholder="пр.: Иван"/>
+                <BaseInput v-model="user.lastName" label="Фамилия*" name="lastName" placeholder="пр.: Иванов" :error="errors.lastName" type="text"/>
+                <BaseInput v-model="user.patronymic" label="Отчество*" name="patronymic" placeholder="пр.: Иваныч" :error="errors.patronymic" type="text"/>
+                <BaseInput label="Номер телефона*" name="phone" placeholder="пр.: ivanov@yandex.ru" :error="errors.phone" type="phone" v-model="user.phone"/>
+                <BaseInput placeholder="Введите пароль" :error="errors.password" type="password" v-model="user.password" label="Пароль*" name="password"/>
+                <BaseSelect :error="errors.role" v-model="user.role" label="Роль*" name="role">
+                    <option value="admin">
+                        Администратор
                     </option>
-                    <option value="mill">
-                        Фреза
+                    <option value="manager">
+                        Менеджер
                     </option>
-                    <option value="body">
-                        Корпус
+                    <option value="editor">
+                        Редактор
                     </option>
-                    <option value="plate">
-                        Пластина
-                    </option>
-                    <option value="welding">
-                        Сварочный инструмент
-                    </option>
-                    <option value="measuring">
-                        Измерительный инструмент
-                    </option>
-                    <option value="other">
-                        Прочее
+                    <option value="user">
+                        Пользователь
                     </option>
                 </BaseSelect>
             </div>
@@ -33,7 +26,7 @@
         <div class="flex justify-end mt-6">
             <div>
                 <BaseButton
-                    v-if="tool.id"
+                    v-if="user.id"
                     color="danger"
                     :loading="isDeletePending"
                     @click="remove"
@@ -57,20 +50,19 @@
 
 
 definePageMeta({
-    authRoute: true,
     layout: 'account',
-    verbose: 'Инструмент'
+    verbose: 'Новый сотрудник'
 });
 
 useHead({
-    title: 'Инструмент'
+    title: 'Новый сотрудник'
 });
 
 const route = useRoute();
 const toast = useToast('GlobalToast');
-const toolsService = useService('tools', {auth: true});
+const usersService = useService('users');
 
-const tool = ref<any>({});
+const user = ref<any>({});
 
 const errors = ref<Record<string, string>>({});
 const isDeletePending = ref(false);
@@ -78,20 +70,20 @@ const isSavePending = ref(false);
 
 onMounted(async () => {
     if (route.params.id === 'new') {
-        tool.value = {};
+        user.value = {};
     } else {
-        tool.value = await toolsService.get(route.params.id as string).exec();
+        user.value = await usersService.get(route.params.id as string).exec();
     }
-    
+
 });
 
 
 async function remove() {
     isDeletePending.value = true;
     try {
-        await toolsService.remove(tool.value.id);
+        await usersService.remove(user.value.id);
         toast.show({message: 'Успешно удалено', timeout: 3000, type: 'success'});
-        navigateTo('/tool');
+        navigateTo('/user');
     } catch (e: any) {
         toast.show({message: e.message, timeout: 3000, type: 'error'});
     } finally {
@@ -100,16 +92,16 @@ async function remove() {
 }
 
 async function submit() {
-    const {id, ...data} = tool.value;
+    const {id, ...data} = user.value;
     errors.value = {};
     isSavePending.value = true;
     try {
         if (id) {
-            await toolsService.patch(id, data).exec();
+            await usersService.patch(id, data).exec();
         } else {
-            await toolsService.create(data).exec();
+            await usersService.create(data).exec();
         }
-        navigateTo('/tools');
+        navigateTo('/users');
     } catch (e: any) {
         if (e.code === 400 || e.code === 422) {
             for (const err of e.errors) {
