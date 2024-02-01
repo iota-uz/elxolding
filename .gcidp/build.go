@@ -8,7 +8,7 @@ import (
 
 var BuildServerVersion = "0.4.0"
 
-const projectName = "el-holding"
+const projectName = "elxolding"
 
 func Cleanup(runner *pipeline.Runner) {
 	branch := runner.Branch

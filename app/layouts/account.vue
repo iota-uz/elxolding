@@ -3,7 +3,7 @@
         <slot/>
         <Toast id="GlobalToast"></Toast>
         <template #toolbar-title>
-            ElHolding
+            Elxolding
         </template>
     </TairoCollapseLayout>
 </template>

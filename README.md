@@ -1,4 +1,4 @@
-# ElHolding
+# Elxolding
 
 ## Starter pack
 Recommended editor: WebStorm | Intellij Idea
