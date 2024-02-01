@@ -13,11 +13,19 @@
                 />
                 <PerPageSelect v-model="perPage" />
             </div>
-            <NuxtLink :to="{name: 'users-id', params: {id: 'new'}}">
-                <BaseButton color="primary">
-                    Новый пользователь
-                </BaseButton>
-            </NuxtLink>
+            <div class="flex gap-3">
+                <NuxtLink :to="{name: 'names-id', params: {id: 'new'}}">
+                    <BaseButton color="primary">
+                        Загрузить .xlsx
+                    </BaseButton>
+                </NuxtLink>
+
+                <NuxtLink :to="{name: 'names-id', params: {id: 'new'}}">
+                    <BaseButton color="primary">
+                        Новое наименование
+                    </BaseButton>
+                </NuxtLink>
+            </div>
         </div>
         <div>
             <Search
@@ -37,7 +45,7 @@
                 <template #buttons="{item}">
                     <TairoTableCell class="px-6 py-4 flex justify-end">
                         <NuxtLink
-                            :to="{name: 'users-id', params: {id: item.id}}"
+                            :to="{name: 'names-id', params: {id: item.id}}"
                             class="border border-gray-300 dark:border-muted-600 rounded-md p-2"
                         >
                             <Icon
@@ -94,33 +102,19 @@ const sortBy = ref<Record<string, any>>({createdAt: -1});
 
 const columns = ref<Column[]>([
     {
-        label: 'Имя',
-        name: 'firstName',
+        label: 'Название',
+        name: 'name',
         sortable: true
     },
     {
-        label: 'Фамилия',
-        name: 'lastName',
+        label: 'Артикул',
+        name: 'article',
         sortable: true
     },
     {
-        label: 'Email',
-        name: 'email',
+        label: 'Ед. измерения',
+        name: 'measure',
         sortable: true
-    },
-    {
-        label: 'Роль',
-        name: 'role',
-        enums: {
-            admin: 'Администратор',
-            editor: 'Редактор',
-            manager: 'Менеджер',
-            user: 'Пользователь'
-        }
-    },
-    {
-        label: 'Пароль',
-        name: 'password'
     },
     {
         label: 'Дата создания',

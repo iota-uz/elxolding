@@ -104,8 +104,13 @@ const columns = ref<Column[]>([
         sortable: true
     },
     {
-        label: 'Email',
-        name: 'email',
+        label: 'Отчество',
+        name: 'patronymic',
+        sortable: true
+    },
+    {
+        label: 'Номер телефона',
+        name: 'phone',
         sortable: true
     },
     {
@@ -117,10 +122,6 @@ const columns = ref<Column[]>([
             manager: 'Менеджер',
             user: 'Пользователь'
         }
-    },
-    {
-        label: 'Пароль',
-        name: 'password'
     },
     {
         label: 'Дата создания',
