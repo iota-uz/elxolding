@@ -119,7 +119,6 @@ async function uploadExcel(fileId: number) {
 async function fetchImports() {
     loading.value = true;
     xlsImports.value = await importsService.find().list().exec();
-    console.log(xlsImports.value)
     loading.value = false;
 }
 

@@ -83,15 +83,7 @@ const perPage = ref(app.pagination.defaultPageSize);
 const currentPage = ref(route.query.page ? parseInt(route.query.page as string) : 1);
 const dateFilter = reactive({start: '', end: ''});
 const statusFilter = reactive({status: 'Все'});
-const selected = ref('');
 const sortBy = ref<Record<string, any>>({createdAt: -1});
-
-const options = [
-    {label: 'Все', value: ''},
-    {label: 'На складе', value: 'На складе'},
-    {label: 'В разработке', value: 'В разработке'},
-    {label: 'Одобрено', value: 'Одобрено'},
-];
 
 const columns = ref<Column[]>([
     {

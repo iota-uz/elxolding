@@ -46,8 +46,6 @@
 
 <script lang="ts" setup>
 import PasswordInput from '~/components/common/PasswordInput.vue';
-import LoginIllustration from '~/components/illustrations/LoginIllustration.vue';
-import ParisaLogo from '~/components/illustrations/ParisaLogo.vue';
 import {login} from '~/utils/login';
 
 useHead({
