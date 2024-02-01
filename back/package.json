@@ -1,0 +1,111 @@
+{
+  "name": "back",
+  "version": "0.0.0",
+  "private": true,
+  "main": "src",
+  "keywords": [
+    "feathers"
+  ],
+  "author": {
+    "name": "Diyor Khaydarov",
+    "email": "diyor28july@gmail.com"
+  },
+  "directories": {
+    "config": "config/",
+    "lib": "src",
+    "test": "test/"
+  },
+  "engines": {
+    "node": "^16.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "scripts": {
+    "compile": "rm -rf lib/ && tsc",
+    "compile:ws": "rm -fo lib/ && tsc",
+    "createsu": "ts-node src/scripts/createsu.ts",
+    "createsu:ws": "ts-node src/scripts/createsu.ts",
+    "createmigration": "sequelize migration:create --name",
+    "deploy": "node lib/sendDeployMsg.js",
+    "dev": "nodemon",
+    "lint": "npx eslint src/** --quiet",
+    "lint:fix": "npx eslint src/** --fix",
+    "migrate": "pnpm compile && sequelize db:migrate",
+    "migrate:ws": "pnpm compile:ws && sequelize db:migrate",
+    "mocha": "NODE_ENV=test ts-mocha \"test/**/*.ts\" --require test/global.hooks.ts --recursive --exit",
+    "mocha:ci": "NODE_ENV=ci_test ts-mocha \"test/**/*.ts\" --require test/global.hooks.ts --recursive --exit",
+    "mocha:ws": "SET NODE_ENV=test&&ts-mocha \"test/**/*.ts\" --require test/global.hooks.ts --recursive --exit",
+    "populate": "ts-node src/scripts/populate.ts",
+    "populate:ws": "ts-node src/scripts/populate.ts",
+    "start": "node lib/",
+    "test": "pnpm lint && pnpm compile && pnpm mocha",
+    "test:ci": "pnpm lint && pnpm compile && pnpm mocha:ci",
+    "test:ws": "pnpm lint && pnpm compile && pnpm mocha:ws"
+  },
+  "standard": {
+    "env": [
+      "mocha"
+    ]
+  },
+  "types": "lib/",
+  "dependencies": {
+    "@faker-js/faker": "^8.1.0",
+    "@feathers-plus/batch-loader": "^0.3.6",
+    "@feathersjs/authentication": "^4.5.15",
+    "@feathersjs/authentication-local": "^4.3.2",
+    "@feathersjs/authentication-oauth": "^4.5.15",
+    "@feathersjs/cli": "^4.8.0",
+    "@feathersjs/configuration": "^4.5.15",
+    "@feathersjs/errors": "^5.0.6",
+    "@feathersjs/socketio": "^4.5.15",
+    "@types/jsdom": "^21.1.6",
+    "abstract-blob-store": "^3.3.5",
+    "axios": "^1.2.2",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dauria": "^2.0.0",
+    "feathers-blob": "^2.6.0",
+    "feathers-hooks-common": "^6.1.5",
+    "feathers-mailer": "^3.1.0",
+    "feathers-sequelize": "^6.4.0",
+    "feathers-swagger": "^3.0.0",
+    "fs-blob-store": "^6.0.0",
+    "helmet": "^6.0.0",
+    "inquirer": "^8.2.2",
+    "jsdom": "^23.0.1",
+    "lodash": "^4.17.21",
+    "luxon": "^3.0.4",
+    "multer": "^1.4.5-lts.1",
+    "nodemon": "^1.14.9",
+    "openai": "^4.24.1",
+    "otplib": "^12.0.1",
+    "pg": "^8.11.3",
+    "pgvector": "^0.1.7",
+    "sequelize": "^6.32.0",
+    "serve-favicon": "^2.5.0",
+    "sharp": "^0.31.1",
+    "swagger-ui-dist": "^5.10.3",
+    "telegraf": "^4.11.2",
+    "typescript": "^4.8.4",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.7.2",
+    "@types/cors": "^2.8.12",
+    "@types/inquirer": "^8.2.2",
+    "@types/jsonwebtoken": "^8.5.9",
+    "@types/lodash": "^4.14.186",
+    "@types/luxon": "^3.0.1",
+    "@types/mocha": "^10.0.6",
+    "@types/multer": "^1.4.7",
+    "@types/node": "^18.11.17",
+    "@types/serve-favicon": "^2.5.3",
+    "@types/sharp": "^0.31.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "@typescript-eslint/parser": "^6.7.2",
+    "eslint": "^8.49.0",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "mocha": "^10.2.0",
+    "ts-mocha": "^10.0.0",
+    "ts-node": "^10.9.1"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "host": "main-helios.apollos.studio",
+  "port": 3030,
+  "images_url": "https://main-helios.apollos.studio/uploads/media/",
+  "embeddings": {
+    "url": "http://embeddings:8000"
+  },
+  "postgres": "postgres://postgres:postgres@helios_db/helios"
+}
