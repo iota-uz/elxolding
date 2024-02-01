@@ -14,7 +14,7 @@
                 <PerPageSelect v-model="perPage" />
             </div>
             <div class="flex gap-3">
-                <NuxtLink :to="{name: 'names-id', params: {id: 'new'}}">
+                <NuxtLink :to="{name: 'names-import'}">
                     <BaseButton color="primary">
                         Загрузить .xlsx
                     </BaseButton>
