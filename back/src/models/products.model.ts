@@ -21,7 +21,7 @@ export default function (app: Application): typeof Model {
             type: DataTypes.ENUM('in stock', 'in development', 'approved'),
             allowNull: false,
         },
-        RFID: {
+        rfid: {
             type: DataTypes.STRING,
             allowNull: false
         }

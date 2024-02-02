@@ -9,15 +9,15 @@ module.exports = {
                 autoIncrement: true,
                 primaryKey: true
             },
-            firstName: {
+            first_name: {
                 type: DataTypes.STRING,
                 allowNull: false
             },
-            lastName: {
+            last_name: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            middleName: {
+            middle_name: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
@@ -122,7 +122,7 @@ module.exports = {
                 type: DataTypes.ENUM('in stock', 'in development', 'approved'),
                 allowNull: false,
             },
-            RFID: {
+            rfid: {
                 type: DataTypes.STRING,
                 allowNull: false
             },
@@ -155,6 +155,28 @@ module.exports = {
             },
             unit: {
                 type: DataTypes.ENUM('cm', 'dm', 'l', 'm3'),
+                allowNull: false
+            },
+            created_at: {
+                type: DataTypes.DATE,
+                allowNull: false,
+                defaultValue: Sequelize.fn('now')
+            },
+            updated_at: {
+                type: DataTypes.DATE,
+                allowNull: false,
+                defaultValue: Sequelize.fn('now')
+            }
+        });
+        await queryInterface.createTable('inventory', {
+            id: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true
+            },
+            text: {
+                type: DataTypes.STRING,
                 allowNull: false
             },
             created_at: {

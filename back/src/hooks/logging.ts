@@ -1,5 +1,4 @@
 import {HookContext} from '@feathersjs/feathers';
-import {omit} from 'lodash';
 import {DateTime} from 'luxon';
 
 import logger from '../logger';
@@ -26,24 +25,15 @@ export function logRequests() {
         params.before = await service.get(id, params);
     };
 }
-
+// removed code for request service
 export function logRequestsDb() {
     return async (context: HookContext) => {
-        const {path, method, params, app, data, result} = context;
+        const {path, params} = context;
         if (!params.provider)
             return;
 
         if (!path || ['requests', 'authentication'].includes(path))
             return;
 
-        await app.service('requests').create({
-            path,
-            method,
-            ip: params.ip,
-            userAgent: params.userAgent,
-            userId: params.user ? params.user.id : undefined,
-            before: context.params.before || data,
-            after: ['create', 'patch', 'update', 'remove'].includes(method) ? result : null
-        }, omit(params, 'provider', 'sequelize'));
     };
 }
