@@ -198,6 +198,7 @@ module.exports = {
         await queryInterface.dropTable('requests');
         await queryInterface.dropTable('products');
         await queryInterface.dropTable('positions');
+        await queryInterface.dropTable('inventory');
 
     }
 };
