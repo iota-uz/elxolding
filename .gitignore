@@ -15,6 +15,7 @@ dist
 back/uploads
 backups/uploads
 backups/dump
+back/lib
 backups/backup.zip
 postgres-data/
 
