@@ -52,7 +52,7 @@ export default defineNuxtConfig({
     ],
     runtimeConfig: {
         public: {
-            apiUrl: 'https://crm.parisahome.com'
+            apiUrl: 'http://localhost:3030'
         }
     },
     modules: [

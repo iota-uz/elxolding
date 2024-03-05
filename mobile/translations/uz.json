@@ -1,0 +1,24 @@
+{
+  "nav": {
+    "home": "Glavnaya",
+    "search":  "Poisk",
+    "profile": "Profil",
+    "cart": "Korzina"
+  },
+  "profile": {
+    "profile": "Profil",
+    "addresses": "Adreslar",
+    "language": "Til",
+    "logout": "Chiqish"
+  },
+  "product": {
+    "addToCart": "Korizanaga qushish"
+  },
+  "order": {
+    "your_order": "Ваш заказ"
+  },
+  "login": {
+    "password": "Parol",
+    "button": "Kirish"
+  }
+}

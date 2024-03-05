@@ -1,8 +1,12 @@
 <template>
     <div class="flex flex-col gap-8">
         <div>
-            <h1 class="text-xl">Продукция</h1>
-            <h2 class="text-sm text-gray-500">Список продуктов</h2>
+            <h1 class="text-xl">
+                Продукция
+            </h1>
+            <h2 class="text-sm text-gray-500">
+                Список продуктов
+            </h2>
         </div>
         <div class="flex flex-wrap gap-5 justify-between">
             <div class="flex items-center gap-4">
@@ -25,10 +29,11 @@
                         label="Статус"
                         orientation="start"
                     >
-                        <BaseDropdownItem v-for="option in options"
-                                          @click="statusFilter.status = option.value"
-                                          :key="option.label"
-                                          :title="option.label"
+                        <BaseDropdownItem
+                            v-for="option in options"
+                            :key="option.label"
+                            :title="option.label"
+                            @click="statusFilter.status = option.value"
                         />
                     </BaseDropdown>
                 </div>
@@ -50,7 +55,7 @@
             <BaseTable
                 v-model:sortBy="sortBy"
                 :columns="columns"
-                :data="users.data"
+                :data="products.data"
                 :loading="isFetchPending"
                 class="flex-auto"
             >
@@ -69,11 +74,11 @@
                 </template>
             </BaseTable>
             <BasePagination
-                v-if="users.total / perPage > 1"
+                v-if="products.total / perPage > 1"
                 v-model:current-page="currentPage"
                 class="my-2"
                 :item-per-page="perPage"
-                :total-items="users.total"
+                :total-items="products.total"
                 :max-links-displayed="10"
                 shape="rounded"
             />
@@ -102,11 +107,11 @@ useHead({
 const toast = useToast('GlobalToast');
 const route = useRoute();
 const app = useAppConfig();
-const usersService = useService('users');
+const productsService = useService('products');
 
 const searchQ = ref({});
 const isFetchPending = ref(false);
-const users = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip: 0});
+const products = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip: 0});
 const perPage = ref(app.pagination.defaultPageSize);
 const currentPage = ref(route.query.page ? parseInt(route.query.page as string) : 1);
 const dateFilter = reactive({start: '', end: ''});
@@ -178,10 +183,10 @@ async function fetch() {
         };
     }
     if (statusFilter.status) {
-        query.status = dateFilter.status;
+        query.status = statusFilter.status;
     }
     try {
-        users.value = await usersService.find<PaginatedResponse<any>>(query).exec();
+        products.value = await productsService.find<PaginatedResponse<any>>(query).exec();
     } catch(e: any) {
         toast.show({type: 'error', message: e.message, timeout: 3000});
     } finally {

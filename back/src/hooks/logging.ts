@@ -6,34 +6,12 @@ import logger from '../logger';
 
 export function logRequests() {
     return async (context: HookContext) => {
-        const {params, service, id, method} = context;
+        const {params} = context;
         if (context.error && !context.result && process.env.NODE_ENV !== 'test') {
             logger.error(`Service: ${context.path}\n` + context.error.stack);
         }
         if (params.provider && context.type === 'before') {
             logger.info(`${DateTime.local().toFormat('yyyy/mm/dd HH:MM:ss')} ${context.method}:${context.path} | Provider: ${context.params.provider}`);
         }
-        if (context.error) {
-            return;
-        }
-        if (['create', 'find', 'get', 'remove'].includes(method)) {
-            return;
-        }
-        if (!id || !params.provider) {
-            return;
-        }
-        params.before = await service.get(id, params);
-    };
-}
-// removed code for request service
-export function logRequestsDb() {
-    return async (context: HookContext) => {
-        const {path, params} = context;
-        if (!params.provider)
-            return;
-
-        if (!path || ['requests', 'authentication'].includes(path))
-            return;
-
     };
 }

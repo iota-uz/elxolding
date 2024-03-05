@@ -1,0 +1,35 @@
+{
+  "login": {
+    "title": "Вход",
+    "subtitle": "Доступ в систему управления",
+    "username": "Имя пользователя",
+    "password": "Пароль",
+    "button": "Войти"
+  },
+  "nav": {
+    "home": "Заявки",
+    "inventory": "Инвентаризация",
+    "rfid": "RFID",
+    "settings": "Настройки"
+  },
+  "home": {
+    "order": "Заявка",
+    "productsCount-0": "{productsCount} наименований",
+    "productsCount-1": "{productsCount} наименование",
+    "productsCount-2": "{productsCount} наименования",
+    "productsCount-5": "{productsCount} наименований",
+    "orderType": {
+      "delivery": "Приход",
+      "pickup": "Расход"
+    }
+  },
+  "inventory": {
+    "title": "Инвентаризация",
+    "new": "Провести инвентаризацию"
+  },
+  "languageSelect": {
+    "title": "Язык интерфейса",
+    "ru": "Русский язык",
+    "uz": "O'zbek tili"
+  }
+}
