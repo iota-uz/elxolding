@@ -1,12 +1,11 @@
-import {ServiceResponse} from '~/composables/useService';
-import {User} from '~/types/user';
+import type {User} from '~/types/user';
 import {parseJwt} from '~/utils/login';
 
-export function useUser(id?: string): ServiceResponse<User> {
+export function useUser(id?: string): Promise<User> {
     if (!id) {
         const token = useToken();
         const payload = parseJwt(token);
-        return useService<User>('users', {auth: true}).get(payload.sub);
+        return useService('users', {auth: true}).get<User>(payload.sub).exec();
     }
-    return useService<User>('users').get(id);
+    return useService('users').get<User>(id).exec();
 }

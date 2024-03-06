@@ -107,7 +107,7 @@ useHead({
 const toast = useToast('GlobalToast');
 const route = useRoute();
 const app = useAppConfig();
-const productsService = useService('products');
+const productsService = useService('products', {auth: true});
 
 const searchQ = ref({});
 const isFetchPending = ref(false);
@@ -120,9 +120,9 @@ const sortBy = ref<Record<string, any>>({createdAt: -1});
 
 const options = [
     {label: 'Все', value: ''},
-    {label: 'На складе', value: 'На складе'},
-    {label: 'В разработке', value: 'В разработке'},
-    {label: 'Одобрено', value: 'Одобрено'},
+    {label: 'На складе', value: 'in_stock'},
+    {label: 'В разработке', value: 'in_development'},
+    {label: 'Одобрено', value: 'approved'},
 ];
 
 const columns = ref<Column[]>([
@@ -157,10 +157,12 @@ const fields = ref([
     {
         label: 'Название',
         key: 'name'
-    },{
+    },
+    {
         label: 'Артикул',
         key: 'article'
-    },{
+    },
+    {
         label: 'Статус',
         key: 'status'
     },

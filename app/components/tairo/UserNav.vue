@@ -13,7 +13,7 @@
                     <div
                         class="relative inline-flex h-9 w-9 items-center justify-center rounded-full"
                     >
-                        <UserCard
+                        <UserAvatar
                             :user="props.user"
                             avatar-class="w-9 text-lg"
                             avatar-only
@@ -37,7 +37,7 @@
                         <div
                             class="relative mx-auto flex h-20 w-20 items-center justify-center rounded-full"
                         >
-                            <UserCard
+                            <UserAvatar
                                 :user="props.user"
                                 avatar-class="w-20 text-3xl"
                                 avatar-only
@@ -80,12 +80,13 @@
 <script lang="ts" setup>
 import {Menu, MenuButton, MenuItems} from '@headlessui/vue';
 
-import UserCard from '~/components/common/UserCard.vue';
+import UserAvatar from '~/components/common/UserAvatar.vue';
 import {type User} from '~/types/user';
 
 const props = withDefaults(defineProps<{ user: User }>(), {
     user: {
-        username: '',
+        firstName: '',
+        lastName: '',
         email: '',
         avatar: '',
     },
