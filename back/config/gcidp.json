@@ -5,5 +5,5 @@
   "embeddings": {
     "url": "http://embeddings:8000"
   },
-  "postgres": "postgres://postgres:postgres@helios_db/helios"
+  "postgres": "postgres://postgres:postgres@elxolding_db/elxolding"
 }
