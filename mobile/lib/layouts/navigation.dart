@@ -2,7 +2,6 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile/constants.dart' as constants;
 
 class NavigationWidget extends StatefulWidget {
   const NavigationWidget({
@@ -45,7 +44,6 @@ class _NavigationState extends State<NavigationWidget> {
             icon: Icon(Symbols.folder_open, size: iconSize),
             label: FlutterI18n.translate(context, "nav.home"),
           ),
-          // TODO: more elegant solution
           BottomNavigationBarItem(
             icon: Icon(Symbols.checklist, size: iconSize),
             label: FlutterI18n.translate(context, "nav.inventory"),

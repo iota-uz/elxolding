@@ -1,4 +1,4 @@
-FROM node:16-alpine as build-stage
+FROM node:20-alpine as build-stage
 WORKDIR /app
 
 RUN npm add -g nodemon@3.0.2 ts-node@10.9.1 pnpm@8.15.2 sequelize-cli@6.6.2

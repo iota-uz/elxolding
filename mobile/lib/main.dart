@@ -6,6 +6,7 @@ import 'package:mobile/pages/language.dart';
 import 'package:mobile/pages/login.dart';
 import 'package:mobile/pages/orders/id.dart';
 import 'package:mobile/pages/rfid.dart';
+import 'package:mobile/pages/settings.dart';
 
 import 'layouts/navigation.dart';
 import 'pages/home.dart';
@@ -87,6 +88,18 @@ final _router = GoRouter(
               name: "rfid",
               pageBuilder: (context, state) => const NoTransitionPage(
                 child: RfidPage(),
+              ),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          navigatorKey: GlobalKey<NavigatorState>(debugLabel: "settings"),
+          routes: [
+            GoRoute(
+              path: "/settings",
+              name: "settings",
+              pageBuilder: (context, state) => const NoTransitionPage(
+                child: SettingsPage(),
               ),
             ),
           ],

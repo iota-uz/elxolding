@@ -1,4 +1,4 @@
-FROM node:16-alpine as build-stage
+FROM node:20-alpine as build-stage
 
 WORKDIR /app
 RUN npm install -g pnpm@8.15.2
