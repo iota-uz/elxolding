@@ -24,12 +24,14 @@ func Build(runner *pipeline.Runner) {
 	if runner.Branch != "staging" {
 		return
 	}
-	var branch, containerName, imageName string
+	var branch, containerName, imageName, apiHost, dbName string
 	branch = runner.Branch
 
 	containerName = fmt.Sprintf("%s-back-%s", projectName, branch)
 	imageName = fmt.Sprintf("%s-back:%s", projectName, branch)
-	dbName := fmt.Sprintf("%s-postgres-%s", projectName, branch)
+	apiHost = fmt.Sprintf("api-%s-%s.apollos.studio", branch, projectName)
+	dbName = fmt.Sprintf("%s-postgres-%s", projectName, branch)
+
 	runner.Pipeline(
 		docker.RmContainer(dbName, true),
 		docker.Run(dbName, "postgres:15.1").Config(
@@ -51,6 +53,8 @@ func Build(runner *pipeline.Runner) {
 		docker.RmContainer(containerName, true),
 		docker.Run(containerName, imageName).Config(
 			docker.Expose(fmt.Sprintf("%s-%s.apollos.studio", branch, projectName), "80"),
+			docker.Env("NUXT_PUBLIC_API_URL", fmt.Sprintf("https://%s", apiHost)),
+			docker.Env("NUXT_PUBLIC_SSR_API_URL", ssrUrl),
 		),
 	)
 
