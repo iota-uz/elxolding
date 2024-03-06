@@ -24,13 +24,14 @@ func Build(runner *pipeline.Runner) {
 	if runner.Branch != "staging" {
 		return
 	}
-	var branch, containerName, imageName, apiHost, dbName string
+	var branch, containerName, imageName, apiHost, dbName, ssrUrl string
 	branch = runner.Branch
 
 	containerName = fmt.Sprintf("%s-back-%s", projectName, branch)
 	imageName = fmt.Sprintf("%s-back:%s", projectName, branch)
 	apiHost = fmt.Sprintf("api-%s-%s.apollos.studio", branch, projectName)
 	dbName = fmt.Sprintf("%s-postgres-%s", projectName, branch)
+	ssrUrl = fmt.Sprintf("http://%s:3030", containerName)
 
 	runner.Pipeline(
 		docker.RmContainer(dbName, true),
