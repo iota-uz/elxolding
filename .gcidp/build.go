@@ -43,7 +43,9 @@ func Build(runner *pipeline.Runner) {
         docker.Build(imageName, "./back").Target("prod"),
         docker.RmContainer(containerName, true),
         docker.Run(containerName, imageName).Config(
-            docker.Expose(fmt.Sprintf("api-%s-%s.apollos.studio", branch, projectName), "80"),
+			docker.Expose(apiHost, "3030"),
+			docker.Volume(fmt.Sprintf("%s-%s-uploads-data", branch, projectName), "/app/uploads"),
+			docker.Env("NODE_ENV", "gcidp"),
         ),
 	)
 	containerName = fmt.Sprintf("%s-app-%s", projectName, branch)
