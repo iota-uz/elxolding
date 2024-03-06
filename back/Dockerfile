@@ -1,7 +1,7 @@
 FROM node:16-alpine as build-stage
 WORKDIR /app
 
-RUN npm add -g nodemon@3.0.2 ts-node@10.9.1 pnpm@7.22.0 sequelize-cli@6.6.2
+RUN npm add -g nodemon@3.0.2 ts-node@10.9.1 pnpm@8.15.2 sequelize-cli@6.6.2
 COPY package.json pnpm-lock.yaml .npmrc ./
 RUN pnpm i --frozen-lockfile
 COPY . .
