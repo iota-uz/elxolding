@@ -29,8 +29,9 @@ func Build(runner *pipeline.Runner) {
 
 	containerName = fmt.Sprintf("%s-back-%s", projectName, branch)
 	imageName = fmt.Sprintf("%s-back:%s", projectName, branch)
+	dbName := fmt.Sprintf("%s-postgres-%s", projectName, branch)
 	runner.Pipeline(
-		docker.RmContainer(fmt.Sprintf("%s-postgres-%s", projectName, branch), true),
+		docker.RmContainer(dbName, true),
 		docker.Run(dbName, "postgres:15.1").Config(
 			docker.Volume(fmt.Sprintf("%s-%s-postgres-data", projectName, branch), "/var/lib/postgresql/data"),
 			docker.Env("POSTGRES_DB", "elxolding"),
