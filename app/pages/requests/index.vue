@@ -1,8 +1,12 @@
 <template>
     <div class="flex flex-col gap-8">
         <div>
-            <h1 class="text-xl">Сотрудники</h1>
-            <h2 class="text-sm text-gray-500">Список сотрудников</h2>
+            <h1 class="text-xl">
+                Завки
+            </h1>
+            <h2 class="text-sm text-gray-500">
+                Список заявок
+            </h2>
         </div>
         <div class="flex flex-wrap gap-5 justify-between">
             <div class="flex items-center gap-4">
@@ -13,9 +17,9 @@
                 />
                 <PerPageSelect v-model="perPage" />
             </div>
-            <NuxtLink :to="{name: 'employees-id', params: {id: 'new'}}">
+            <NuxtLink :to="{name: 'requests-id', params: {id: 'new'}}">
                 <BaseButton color="primary">
-                    Новый сотрудник
+                    Новая заявка
                 </BaseButton>
             </NuxtLink>
         </div>
@@ -30,14 +34,14 @@
             <BaseTable
                 v-model:sortBy="sortBy"
                 :columns="columns"
-                :data="users.data"
+                :data="requests.data"
                 :loading="isFetchPending"
                 class="flex-auto"
             >
                 <template #buttons="{item}">
                     <TairoTableCell class="px-6 py-4 flex justify-end">
                         <NuxtLink
-                            :to="{name: 'employees-id', params: {id: item.id}}"
+                            :to="{name: 'requests-id', params: {id: item.id}}"
                             class="border border-gray-300 dark:border-muted-600 rounded-md p-2"
                         >
                             <Icon
@@ -49,11 +53,11 @@
                 </template>
             </BaseTable>
             <BasePagination
-                v-if="users.total / perPage > 1"
+                v-if="requests.total / perPage > 1"
                 v-model:current-page="currentPage"
                 class="my-2"
                 :item-per-page="perPage"
-                :total-items="users.total"
+                :total-items="requests.total"
                 :max-links-displayed="10"
                 shape="rounded"
             />
@@ -72,21 +76,21 @@ import {type PaginatedResponse} from '~/types/generics';
 
 definePageMeta({
     layout: 'account',
-    verbose: 'Сотрудники'
+    verbose: 'Заявки'
 });
 
 useHead({
-    title: 'Сотрудники'
+    title: 'Заявки'
 });
 
 const toast = useToast('GlobalToast');
 const route = useRoute();
 const app = useAppConfig();
-const usersService = useService('users');
+const requestsService = useService('requests', {auth: true});
 
 const searchQ = ref({});
 const isFetchPending = ref(false);
-const users = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip: 0});
+const requests = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip: 0});
 const perPage = ref(app.pagination.defaultPageSize);
 const currentPage = ref(route.query.page ? parseInt(route.query.page as string) : 1);
 const dateFilter = reactive({start: '', end: ''});
@@ -94,45 +98,10 @@ const sortBy = ref<Record<string, any>>({createdAt: -1});
 
 const columns = ref<Column[]>([
     {
-        label: 'Имя',
-        name: 'firstName',
+        label: 'Тип заявки',
+        name: 'type',
         sortable: true
     },
-    {
-        label: 'Фамилия',
-        name: 'lastName',
-        sortable: true
-    },
-    {
-        label: 'Отчество',
-        name: 'patronymic',
-        sortable: true
-    },
-    {
-        label: 'Номер телефона',
-        name: 'phone',
-        sortable: true
-    },
-    {
-        label: 'Роль',
-        name: 'role',
-        enums: {
-            admin: 'Администратор',
-            editor: 'Редактор',
-            manager: 'Менеджер',
-            user: 'Пользователь'
-        }
-    },
-    {
-        label: 'Дата создания',
-        name: 'createdAt',
-        sortable: true
-    },
-    {
-        label: 'Дата обновления',
-        name: 'updatedAt',
-        sortable: true
-    }
 ]);
 
 const fields = ref([
@@ -165,7 +134,7 @@ async function fetch() {
         };
     }
     try {
-        users.value = await usersService.find<PaginatedResponse<any>>(query).exec();
+        requests.value = await requestsService.find<PaginatedResponse<any>>(query).exec();
     } catch(e: any) {
         toast.show({type: 'error', message: e.message, timeout: 3000});
     } finally {

@@ -1,8 +1,12 @@
 <template>
     <div class="flex flex-col gap-8">
         <div>
-            <h1 class="text-xl">Пользователи</h1>
-            <h2 class="text-sm text-gray-500">Список пользователей</h2>
+            <h1 class="text-xl">
+                Пользователи
+            </h1>
+            <h2 class="text-sm text-gray-500">
+                Список пользователей
+            </h2>
         </div>
         <div class="flex flex-wrap gap-5 justify-between">
             <div class="flex items-center gap-4">
@@ -105,8 +109,8 @@ const columns = ref<Column[]>([
         sortable: true
     },
     {
-        label: 'Email',
-        name: 'email',
+        label: 'Отчество',
+        name: 'middleName',
         sortable: true
     },
     {

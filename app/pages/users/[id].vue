@@ -2,10 +2,36 @@
     <div class="mt-4 px-10">
         <div class="flex flex-col gap-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6 items-end">
-                <BaseInput :error="errors.firstName" type="text" v-model="user.firstName" label="Имя*" name="firstName" placeholder="пр.: Иван"/>
-                <BaseInput v-model="user.lastName" label="Фамилия" name="lastName" placeholder="пр.: Иванов" :error="errors.lastName" type="text"/>
-                <BaseInput label="Email*" name="email" placeholder="пр.: ivanov@yandex.ru" :error="errors.email" type="email" v-model="user.email"/>
-                <BaseSelect :error="errors.role" v-model="user.role" label="Роль*" name="role">
+                <BaseInput
+                    v-model="user.firstName"
+                    :error="errors.firstName"
+                    type="text"
+                    label="Имя*"
+                    name="firstName"
+                    placeholder="пр.: Иван"
+                />
+                <BaseInput
+                    v-model="user.lastName"
+                    label="Фамилия"
+                    name="lastName"
+                    placeholder="пр.: Иванов"
+                    :error="errors.lastName"
+                    type="text"
+                />
+                <BaseInput
+                    v-model="user.middleName"
+                    label="Email*"
+                    name="email"
+                    placeholder="пр.: Иванович"
+                    :error="errors.email"
+                    type="email"
+                />
+                <BaseSelect
+                    v-model="user.role"
+                    :error="errors.role"
+                    label="Роль*"
+                    name="role"
+                >
                     <option value="admin">
                         Администратор
                     </option>
@@ -19,7 +45,14 @@
                         Пользователь
                     </option>
                 </BaseSelect>
-                <BaseInput placeholder="Введите пароль" :error="errors.password" type="password" v-model="user.password" label="Пароль*" name="password"/>
+                <BaseInput
+                    v-model="user.password"
+                    placeholder="Введите пароль"
+                    :error="errors.password"
+                    type="password"
+                    label="Пароль*"
+                    name="password"
+                />
             </div>
         </div>
         <div class="flex justify-end mt-6">
@@ -74,7 +107,7 @@ onMounted(async () => {
     } else {
         user.value = await usersService.get(route.params.id as string).exec();
     }
-    
+
 });
 
 

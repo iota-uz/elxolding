@@ -2,19 +2,38 @@
     <div class="mt-4 px-10">
         <div class="flex flex-col gap-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 items-end">
-                <BaseInput :error="errors.name" type="text" v-model="name.name" label="Наименование*" name="name" placeholder="пр.: Коробка"/>
-                <BaseInput v-model="name.article" label="Артикул*" name="article" placeholder="пр.: 6548231" :error="errors.article" type="text"/>
-                <BaseSelect :error="errors.measure" v-model="name.measure" label="Ед. измерения*" name="measure">
-                    <option value="admin">
+                <BaseInput
+                    v-model="position.title"
+                    :error="errors.title"
+                    type="text"
+                    label="Наименование*"
+                    name="title"
+                    placeholder="пр.: Коробка"
+                />
+                <BaseInput
+                    v-model="position.barcode"
+                    label="Артикул*"
+                    name="barcode"
+                    placeholder="пр.: 6548231"
+                    :error="errors.barcode"
+                    type="text"
+                />
+                <BaseSelect
+                    v-model="position.unit"
+                    :error="errors.unit"
+                    label="Ед. измерения*"
+                    name="unit"
+                >
+                    <option value="cm">
                         См
                     </option>
-                    <option value="manager">
+                    <option value="dm">
                         Дм
                     </option>
-                    <option value="editor">
+                    <option value="l">
                         Литр
                     </option>
-                    <option value="name">
+                    <option value="m3">
                         М3
                     </option>
                 </BaseSelect>
@@ -23,7 +42,7 @@
         <div class="flex justify-end mt-6">
             <div>
                 <BaseButton
-                    v-if="name.id"
+                    v-if="position.id"
                     color="danger"
                     :loading="isDeletePending"
                     @click="remove"
@@ -57,9 +76,9 @@ useHead({
 
 const route = useRoute();
 const toast = useToast('GlobalToast');
-const namesService = useService('names');
+const positionsService = useService('positions', {auth: true});
 
-const name = ref<any>({});
+const position = ref<any>({});
 
 const errors = ref<Record<string, string>>({});
 const isDeletePending = ref(false);
@@ -67,20 +86,19 @@ const isSavePending = ref(false);
 
 onMounted(async () => {
     if (route.params.id === 'new') {
-        name.value = {};
+        position.value = {};
     } else {
-        name.value = await namesService.get(route.params.id as string).exec();
+        position.value = await positionsService.get(route.params.id as string).exec();
     }
-
 });
 
 
 async function remove() {
     isDeletePending.value = true;
     try {
-        await namesService.remove(name.value.id);
+        await positionsService.remove(position.value.id);
         toast.show({message: 'Успешно удалено', timeout: 3000, type: 'success'});
-        navigateTo('/name');
+        navigateTo('/positions');
     } catch (e: any) {
         toast.show({message: e.message, timeout: 3000, type: 'error'});
     } finally {
@@ -89,16 +107,16 @@ async function remove() {
 }
 
 async function submit() {
-    const {id, ...data} = name.value;
+    const {id, ...data} = position.value;
     errors.value = {};
     isSavePending.value = true;
     try {
         if (id) {
-            await namesService.patch(id, data).exec();
+            await positionsService.patch(id, data).exec();
         } else {
-            await namesService.create(data).exec();
+            await positionsService.create(data).exec();
         }
-        navigateTo('/names');
+        navigateTo('/positions');
     } catch (e: any) {
         if (e.code === 400 || e.code === 422) {
             for (const err of e.errors) {

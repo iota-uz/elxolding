@@ -23,7 +23,7 @@ export default defineAppConfig({
                             name: 'ph:archive-tray-fill',
                             class: 'w-5 h-5'
                         },
-                        to: '/applications',
+                        to: '/requests',
                     },
                     {
                         name: 'Продукция',
@@ -39,7 +39,7 @@ export default defineAppConfig({
                             name: 'ph:notepad-fill',
                             class: 'w-5 h-5'
                         },
-                        to: '/names'
+                        to: '/positions'
                     },
                     {
                         name: 'Сотрудники',
@@ -47,7 +47,7 @@ export default defineAppConfig({
                             name: 'ph:users',
                             class: 'w-5 h-5'
                         },
-                        to: '/employees'
+                        to: '/users'
                     },
                     {
                         name: 'Инвентаризация',

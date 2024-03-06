@@ -115,7 +115,7 @@ const products = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip
 const perPage = ref(app.pagination.defaultPageSize);
 const currentPage = ref(route.query.page ? parseInt(route.query.page as string) : 1);
 const dateFilter = reactive({start: '', end: ''});
-const statusFilter = reactive({status: 'Все'});
+const statusFilter = reactive({status: ''});
 const sortBy = ref<Record<string, any>>({createdAt: -1});
 
 const options = [
@@ -127,13 +127,8 @@ const options = [
 
 const columns = ref<Column[]>([
     {
-        label: 'Название',
-        name: 'name',
-        sortable: true
-    },
-    {
-        label: 'Артикул',
-        name: 'article',
+        label: 'RFID',
+        name: 'rfid',
         sortable: true
     },
     {
@@ -144,11 +139,13 @@ const columns = ref<Column[]>([
     {
         label: 'Дата создания',
         name: 'createdAt',
+        dateFormat: 'calendar',
         sortable: true
     },
     {
         label: 'Дата обновления',
         name: 'updatedAt',
+        dateFormat: 'calendar',
         sortable: true
     }
 ]);

@@ -2,6 +2,7 @@ import {Application} from '../declarations';
 import inventory from './inventory/inventory.service';
 import positions from './positions/positions.service';
 import products from './products/products.service';
+import requests from './requests/requests.service';
 import rpc from './rpc/rpc.service';
 import uploads from './uploads/uploads.service';
 import users from './users/users.service';
@@ -12,6 +13,7 @@ export default function (app: Application): void {
     app.configure(users);
     app.configure(uploads);
     app.configure(products);
+    app.configure(requests);
     app.configure(inventory);
     app.configure(positions);
 }

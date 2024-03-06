@@ -2,55 +2,17 @@
     <div class="mt-4 px-10">
         <div class="flex flex-col gap-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 items-end">
-                <BaseInput
-                    v-model="user.firstName"
-                    :error="errors.firstName"
-                    type="text"
-                    label="Имя*"
-                    name="firstName"
-                    placeholder="пр.: Иван"
-                />
-                <BaseInput
-                    v-model="user.lastName"
-                    label="Фамилия*"
-                    name="lastName"
-                    placeholder="пр.: Иванов"
-                    :error="errors.lastName"
-                    type="text"
-                />
-                <BaseInput
-                    v-model="user.patronymic"
-                    label="Отчество*"
-                    name="patronymic"
-                    placeholder="пр.: Иваныч"
-                    :error="errors.patronymic"
-                    type="text"
-                />
-                <BaseInput
-                    v-model="user.password"
-                    placeholder="Введите пароль"
-                    :error="errors.password"
-                    type="password"
-                    label="Пароль*"
-                    name="password"
-                />
                 <BaseSelect
-                    v-model="user.role"
-                    :error="errors.role"
-                    label="Роль*"
-                    name="role"
+                    v-model="request.type"
+                    :error="errors.type"
+                    label="Тип заявки*"
+                    name="type"
                 >
-                    <option value="admin">
-                        Администратор
+                    <option value="incoming">
+                        Приход
                     </option>
-                    <option value="manager">
-                        Менеджер
-                    </option>
-                    <option value="editor">
-                        Редактор
-                    </option>
-                    <option value="user">
-                        Пользователь
+                    <option value="outgoing">
+                        Отгрузка
                     </option>
                 </BaseSelect>
             </div>
@@ -58,7 +20,7 @@
         <div class="flex justify-end mt-6">
             <div>
                 <BaseButton
-                    v-if="user.id"
+                    v-if="request.id"
                     color="danger"
                     :loading="isDeletePending"
                     @click="remove"
@@ -83,18 +45,18 @@
 
 definePageMeta({
     layout: 'account',
-    verbose: 'Новый сотрудник'
+    verbose: 'Новая накладная'
 });
 
 useHead({
-    title: 'Новый сотрудник'
+    title: 'Новая накладная'
 });
 
 const route = useRoute();
 const toast = useToast('GlobalToast');
 const usersService = useService('users');
 
-const user = ref<any>({});
+const request = ref<any>({});
 
 const errors = ref<Record<string, string>>({});
 const isDeletePending = ref(false);
@@ -102,9 +64,9 @@ const isSavePending = ref(false);
 
 onMounted(async () => {
     if (route.params.id === 'new') {
-        user.value = {};
+        request.value = {};
     } else {
-        user.value = await usersService.get(route.params.id as string).exec();
+        request.value = await usersService.get(route.params.id as string).exec();
     }
 
 });
@@ -113,7 +75,7 @@ onMounted(async () => {
 async function remove() {
     isDeletePending.value = true;
     try {
-        await usersService.remove(user.value.id);
+        await usersService.remove(request.value.id);
         toast.show({message: 'Успешно удалено', timeout: 3000, type: 'success'});
         navigateTo('/user');
     } catch (e: any) {
@@ -124,7 +86,7 @@ async function remove() {
 }
 
 async function submit() {
-    const {id, ...data} = user.value;
+    const {id, ...data} = request.value;
     errors.value = {};
     isSavePending.value = true;
     try {

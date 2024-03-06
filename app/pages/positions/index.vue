@@ -1,8 +1,12 @@
 <template>
     <div class="flex flex-col gap-8">
         <div>
-            <h1 class="text-xl">Завки</h1>
-            <h2 class="text-sm text-gray-500">Список заявок</h2>
+            <h1 class="text-xl">
+                Наименования
+            </h1>
+            <h2 class="text-sm text-gray-500">
+                Список наименований
+            </h2>
         </div>
         <div class="flex flex-wrap gap-5 justify-between">
             <div class="flex items-center gap-4">
@@ -13,11 +17,19 @@
                 />
                 <PerPageSelect v-model="perPage" />
             </div>
-            <NuxtLink :to="{name: 'applications-id', params: {id: 'new'}}">
-                <BaseButton color="primary">
-                    Новая заявка
-                </BaseButton>
-            </NuxtLink>
+            <div class="flex gap-3">
+                <NuxtLink :to="{name: 'positions-import'}">
+                    <BaseButton color="primary">
+                        Загрузить .xlsx
+                    </BaseButton>
+                </NuxtLink>
+
+                <NuxtLink :to="{name: 'positions-id', params: {id: 'new'}}">
+                    <BaseButton color="primary">
+                        Новое наименование
+                    </BaseButton>
+                </NuxtLink>
+            </div>
         </div>
         <div>
             <Search
@@ -30,14 +42,14 @@
             <BaseTable
                 v-model:sortBy="sortBy"
                 :columns="columns"
-                :data="applications.data"
+                :data="users.data"
                 :loading="isFetchPending"
                 class="flex-auto"
             >
                 <template #buttons="{item}">
                     <TairoTableCell class="px-6 py-4 flex justify-end">
                         <NuxtLink
-                            :to="{name: 'applications-id', params: {id: item.id}}"
+                            :to="{name: 'positions-id', params: {id: item.id}}"
                             class="border border-gray-300 dark:border-muted-600 rounded-md p-2"
                         >
                             <Icon
@@ -49,11 +61,11 @@
                 </template>
             </BaseTable>
             <BasePagination
-                v-if="applications.total / perPage > 1"
+                v-if="users.total / perPage > 1"
                 v-model:current-page="currentPage"
                 class="my-2"
                 :item-per-page="perPage"
-                :total-items="applications.total"
+                :total-items="users.total"
                 :max-links-displayed="10"
                 shape="rounded"
             />
@@ -72,21 +84,21 @@ import {type PaginatedResponse} from '~/types/generics';
 
 definePageMeta({
     layout: 'account',
-    verbose: 'Заявки'
+    verbose: 'Наименования'
 });
 
 useHead({
-    title: 'Заявки'
+    title: 'Наименования'
 });
 
 const toast = useToast('GlobalToast');
 const route = useRoute();
 const app = useAppConfig();
-const applicationsService = useService('applications');
+const usersService = useService('positions', {auth: true});
 
 const searchQ = ref({});
 const isFetchPending = ref(false);
-const applications = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip: 0});
+const users = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip: 0});
 const perPage = ref(app.pagination.defaultPageSize);
 const currentPage = ref(route.query.page ? parseInt(route.query.page as string) : 1);
 const dateFilter = reactive({start: '', end: ''});
@@ -94,42 +106,30 @@ const sortBy = ref<Record<string, any>>({createdAt: -1});
 
 const columns = ref<Column[]>([
     {
-        label: 'Имя',
-        name: 'firstName',
+        label: 'Название',
+        name: 'title',
         sortable: true
     },
     {
-        label: 'Фамилия',
-        name: 'lastName',
+        label: 'Артикул',
+        name: 'barcode',
         sortable: true
     },
     {
-        label: 'Email',
-        name: 'email',
+        label: 'Ед. измерения',
+        name: 'unit',
         sortable: true
-    },
-    {
-        label: 'Роль',
-        name: 'role',
-        enums: {
-            admin: 'Администратор',
-            editor: 'Редактор',
-            manager: 'Менеджер',
-            application: 'Пользователь'
-        }
-    },
-    {
-        label: 'Пароль',
-        name: 'password'
     },
     {
         label: 'Дата создания',
         name: 'createdAt',
+        dateFormat: 'calendar',
         sortable: true
     },
     {
         label: 'Дата обновления',
         name: 'updatedAt',
+        dateFormat: 'calendar',
         sortable: true
     }
 ]);
@@ -164,7 +164,7 @@ async function fetch() {
         };
     }
     try {
-        applications.value = await applicationsService.find<PaginatedResponse<any>>(query).exec();
+        users.value = await usersService.find<PaginatedResponse<any>>(query).exec();
     } catch(e: any) {
         toast.show({type: 'error', message: e.message, timeout: 3000});
     } finally {

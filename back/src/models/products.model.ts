@@ -8,17 +8,12 @@ import {Application} from '../declarations';
 export default function (app: Application): typeof Model {
     const sequelizeClient: Sequelize = app.get('sequelizeClient');
     const products = sequelizeClient.define('products', {
-        title: {
-            type: DataTypes.STRING,
+        positionId: {
+            type: DataTypes.INTEGER,
             allowNull: false
         },
-        barcode: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
-        },
         status: {
-            type: DataTypes.ENUM('in stock', 'in development', 'approved'),
+            type: DataTypes.ENUM('in_stock', 'in_development', 'approved'),
             allowNull: false,
         },
         rfid: {
