@@ -9,7 +9,7 @@
   "gcidp": {
     "database": "elxolding",
     "dialect": "postgres",
-    "host": "helios_db",
+    "host": "elxolding_db",
     "password": "postgres",
     "username": "postgres"
   },
