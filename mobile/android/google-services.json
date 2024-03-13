@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "70605162665",
+    "project_id": "elxolding-a3a18",
+    "storage_bucket": "elxolding-a3a18.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:70605162665:android:131519ce7f65b5067441b8",
+        "android_client_info": {
+          "package_name": "com.company.elxolding"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLVvF4JtHDJiHgoI45_dgeCvylIQOyP88"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:70605162665:android:11790e5f972c93977441b8",
+        "android_client_info": {
+          "package_name": "com.example.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLVvF4JtHDJiHgoI45_dgeCvylIQOyP88"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

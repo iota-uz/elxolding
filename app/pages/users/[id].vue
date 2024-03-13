@@ -20,8 +20,8 @@
                 />
                 <BaseInput
                     v-model="user.middleName"
-                    label="Email*"
-                    name="email"
+                    label="Отчество"
+                    name="middleName"
                     placeholder="пр.: Иванович"
                     :error="errors.email"
                     type="email"

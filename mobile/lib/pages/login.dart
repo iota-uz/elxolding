@@ -1,31 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/constants.dart' as constants;
 
-class LoginPage extends StatefulWidget {
+import 'package:mobile/models/user.dart';
+
+class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() {
-    return _LoginPageState();
-  }
-}
-
-class User {
-  final int id;
-  final String name;
-
-  User(this.id, this.name);
-}
-
-class _LoginPageState extends State<LoginPage> {
-  String userId = '1';
-  String password = '';
-  List<User> users = [
-    User(1, 'Диер Хайдаров'),
-    User(2, 'Иван Васильевич'),
-    User(3, 'Валентин Васильев')
-  ];
 
   Widget buildForm(BuildContext context) {
     return Column(
@@ -50,6 +31,62 @@ class _LoginPageState extends State<LoginPage> {
         const SizedBox(
           height: 40,
         ),
+        FutureBuilder(
+          future: constants.feathersApp.service("users").find({}),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            }
+            List<dynamic> data = snapshot.data?["data"];
+            List<User> users = data.map<User>((e) => User.fromJson(e)).toList();
+            return LoginForm(
+              users: users,
+            );
+          },
+        )
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Container(
+          padding: const EdgeInsets.only(left: 40, right: 30, top: 20),
+          child: buildForm(context),
+        ),
+      ),
+    );
+  }
+}
+
+class LoginForm extends StatefulWidget {
+  final List<User> users;
+
+  const LoginForm({Key? key, required this.users}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _LoginFormState();
+  }
+}
+
+class _LoginFormState extends State<LoginForm> {
+  late final List<User> users;
+  String userId = '1';
+  String password = '';
+
+  @override
+  void initState() {
+    super.initState();
+    users = widget.users;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
         DropdownButtonFormField<String>(
           isExpanded: true,
           decoration: InputDecoration(
@@ -59,7 +96,7 @@ class _LoginPageState extends State<LoginPage> {
           items: users.map((value) {
             return DropdownMenuItem<String>(
               value: value.id.toString(),
-              child: Text(value.name),
+              child: Text("${value.firstName} ${value.lastName}"),
             );
           }).toList(),
           onChanged: (v) {
@@ -91,7 +128,22 @@ class _LoginPageState extends State<LoginPage> {
         ),
         ElevatedButton(
           onPressed: () {
-            context.goNamed("home");
+            constants.feathersApp.authenticate({
+              "strategy": "local",
+              "id": userId,
+              "password": password,
+            }).then((res) {
+              constants.isLoggedIn = true;
+              GoRouter.of(context).goNamed("home");
+            }).catchError((e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    FlutterI18n.translate(context, "login.error"),
+                  ),
+                ),
+              );
+            });
           },
           style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 20),
@@ -109,18 +161,6 @@ class _LoginPageState extends State<LoginPage> {
           ),
         )
       ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.only(left: 40, right: 30, top: 20),
-          child: buildForm(context),
-        ),
-      ),
     );
   }
 }

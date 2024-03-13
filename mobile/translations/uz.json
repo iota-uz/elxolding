@@ -1,24 +1,40 @@
 {
-  "nav": {
-    "home": "Glavnaya",
-    "search":  "Poisk",
-    "profile": "Profil",
-    "cart": "Korzina"
-  },
-  "profile": {
-    "profile": "Profil",
-    "addresses": "Adreslar",
-    "language": "Til",
-    "logout": "Chiqish"
-  },
-  "product": {
-    "addToCart": "Korizanaga qushish"
-  },
-  "order": {
-    "your_order": "Ваш заказ"
-  },
   "login": {
+    "title": "Kirish",
+    "subtitle": "Boshqaruv tizimiga kirish",
+    "username": "Foydalanuvchi nomi",
     "password": "Parol",
-    "button": "Kirish"
+    "button": "Kirish",
+    "error": "Noto'g'ri foydalanuvchi nomi yoki parol"
+  },
+  "nav": {
+    "home": "Buyurtmalar",
+    "inventory": "Inventarizatsiya",
+    "rfid": "RFID",
+    "settings": "Sozlamalar"
+  },
+  "home": {
+    "order": "Buyurtma",
+    "productsCount-0": "{productsCount} ta mahsulot",
+    "productsCount-1": "{productsCount} ta mahsulot",
+    "productsCount-2": "{productsCount} ta mahsulot",
+    "productsCount-5": "{productsCount} ta mahsulot",
+    "orderType": {
+      "delivery": "Kirim",
+      "pickup": "Chiqim"
+    }
+  },
+  "inventory": {
+    "title": "Inventarizatsiya",
+    "new": "Inventarizatsiya o'tkazish"
+  },
+  "languageSelect": {
+    "title": "Interfeys tili",
+    "ru": "Rus tili",
+    "uz": "O'zbek tili"
+  },
+  "settings": {
+    "title": "Sozlamalar",
+    "language": "Interfeys tili"
   }
 }

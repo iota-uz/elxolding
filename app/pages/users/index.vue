@@ -124,17 +124,15 @@ const columns = ref<Column[]>([
         }
     },
     {
-        label: 'Пароль',
-        name: 'password'
-    },
-    {
         label: 'Дата создания',
         name: 'createdAt',
+        dateFormat: 'calendar',
         sortable: true
     },
     {
         label: 'Дата обновления',
         name: 'updatedAt',
+        dateFormat: 'calendar',
         sortable: true
     }
 ]);

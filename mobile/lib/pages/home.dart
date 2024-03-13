@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     ListTile(
                       onTap: () {
-                        context.goNamed("order-id", pathParameters: {"id": order.id.toString()});
+                        context.pushNamed("order-id", pathParameters: {"id": order.id.toString()});
                       },
                       shape: RoundedRectangleBorder(
                         side: const BorderSide(color: Colors.grey, width: 1),

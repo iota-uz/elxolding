@@ -134,6 +134,11 @@ const columns = ref<Column[]>([
     {
         label: 'Статус',
         name: 'status',
+        enums: {
+            in_stock: 'На складе',
+            in_development: 'В разработке',
+            approved: 'Одобрено'
+        },
         sortable: true
     },
     {
