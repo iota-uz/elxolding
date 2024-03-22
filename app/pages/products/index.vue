@@ -39,7 +39,7 @@
                 </div>
                 <NuxtLink :to="{name: 'products-id', params: {id: 'new'}}">
                     <BaseButton color="primary">
-                        Новый продукция
+                        Новая продукция
                     </BaseButton>
                 </NuxtLink>
             </div>
@@ -97,11 +97,11 @@ import {type PaginatedResponse} from '~/types/generics';
 
 definePageMeta({
     layout: 'account',
-    verbose: 'Сотрудники'
+    verbose: 'Продукция'
 });
 
 useHead({
-    title: 'Сотрудники'
+    title: 'Продукция'
 });
 
 const toast = useToast('GlobalToast');

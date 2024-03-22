@@ -65,11 +65,11 @@ import MultiSelect from '~/components/common/MultiSelect.vue';
 
 definePageMeta({
     layout: 'account',
-    verbose: 'Новая продукция'
+    verbose: 'Продукт'
 });
 
 useHead({
-    title: 'Новая продукция'
+    title: 'Продукт'
 });
 
 const route = useRoute();

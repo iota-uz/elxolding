@@ -42,7 +42,7 @@ export default defineAppConfig({
                         to: '/positions'
                     },
                     {
-                        name: 'Сотрудники',
+                        name: 'Пользователи',
                         icon: {
                             name: 'ph:users',
                             class: 'w-5 h-5'
