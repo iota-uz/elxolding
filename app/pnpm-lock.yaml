@@ -17,7 +17,7 @@ devDependencies:
     specifier: ^4.0.1
     version: 4.0.1
   '@diyor28/treeselect':
-    specifier: ^0.1.7
+    specifier: ^0.1.8
     version: 0.1.8(vue@3.4.15)
   '@headlessui-float/vue':
     specifier: ^0.13.0

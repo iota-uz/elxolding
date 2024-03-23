@@ -2,11 +2,11 @@
     <div class="flex flex-col gap-4 mt-4">
         <BaseTabSlider
             v-model="request.type"
-            class="w-full"
             :tabs="[
                 { label: 'Приход', value: 'in' },
                 { label: 'Отгрузка', value: 'out' },
             ]"
+            class="w-full"
             rounded="sm"
         />
         <div>
@@ -26,24 +26,40 @@
                     </tr>
                 </thead>
                 <tbody class="divide-muted-200 dark:divide-muted-700 dark:bg-muted-800 divide-y bg-white">
-                    <tr class="hover:bg-muted-50 dark:hover:bg-muted-900 transition-colors duration-300">
-                        <td class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4 w-1/2">
-                            Товар 1
-                        </td>
-                        <td class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4 w-1/3">
-                            32453241
-                        </td>
-                        <td class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4">
-                            <BaseInput
-                                v-model="request.quantity"
-                                :error="errors.quantity"
-                                name="quantity"
-                            />
-                        </td>
-                        <td class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4">
-                            <BaseButtonIcon>
-                                <Icon name="ph:trash" />
-                            </BaseButtonIcon>
+                    <template v-if="request.products.length">
+                        <tr
+                            v-for="(product, idx) in request.products"
+                            class="hover:bg-muted-50 dark:hover:bg-muted-900 transition-colors duration-300"
+                        >
+                            <td class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4 w-1/2">
+                                {{ product.position.title }}
+                            </td>
+                            <td class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4 w-1/3">
+                                {{ product.position.barcode }}
+                            </td>
+                            <td class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4">
+                                <BaseInput
+                                    v-model="product.quantity"
+                                    name="quantity"
+                                    type="number"
+                                />
+                            </td>
+                            <td class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4">
+                                <BaseButtonIcon
+                                    color="danger"
+                                    @click="removeProduct(idx)"
+                                >
+                                    <Icon name="ph:trash" />
+                                </BaseButtonIcon>
+                            </td>
+                        </tr>
+                    </template>
+                    <tr v-else>
+                        <td
+                            class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4 text-center"
+                            colspan="4"
+                        >
+                            Пока ничего
                         </td>
                     </tr>
                 </tbody>
@@ -52,7 +68,7 @@
         <div>
             <MultiSelect
                 v-model="selectedPositions"
-                :options="positions"
+                :options="positionOptions"
                 label="Наименования*"
                 multiple
                 name="name"
@@ -60,6 +76,7 @@
             <BaseButton
                 class="w-full mt-4"
                 color="primary"
+                @click="addPositions"
             >
                 Добавить
             </BaseButton>
@@ -89,7 +106,6 @@
 
 <script lang="ts" setup>
 import MultiSelect from '~/components/common/MultiSelect.vue';
-import type {Option} from '~/utils/search';
 
 definePageMeta({
     layout: 'account',
@@ -102,13 +118,14 @@ useHead({
 
 const route = useRoute();
 const toast = useToast('GlobalToast');
-const usersService = useService('users');
+const requestsService = useService('requests', {auth: true});
 
 const request = ref<Record<string, any>>({
     type: 'in',
-    quantity: 0
+    quantity: 0,
+    products: []
 });
-const positions = ref<Option[]>([]);
+const positions = ref<Record<string, any>[]>([]);
 const selectedPositions = ref<number[]>([]);
 
 const errors = ref<Record<string, string>>({});
@@ -119,19 +136,41 @@ onMounted(async () => {
     if (route.params.id === 'new') {
         request.value = {
             type: 'in',
-            quantity: 0
+            quantity: 0,
+            products: []
         };
     } else {
-        request.value = await usersService.get(route.params.id as string).exec();
+        request.value = await requestsService.get(route.params.id as string).exec();
     }
-    positions.value = await optionsList(useService('positions', {auth: true}), 'title');
+    positions.value = await useService('positions', {auth: true}).find({$limit: 1000}).list().exec();
 });
 
+const positionOptions = computed(() => {
+    return positions.value.map(el => ({id: el.id, label: el.title}));
+});
+
+
+function removeProduct(idx: number) {
+    request.value.products.splice(idx, 1);
+}
+
+function addPositions() {
+    for (const pos of selectedPositions.value) {
+        const isContained = request.value.products.find((el: any) => el.position.id === pos);
+        if (!isContained) {
+            request.value.products.push({
+                position: positions.value.find(el => el.id === pos),
+                quantity: 1
+            });
+        }
+    }
+    selectedPositions.value = [];
+}
 
 async function remove() {
     isDeletePending.value = true;
     try {
-        await usersService.remove(request.value.id).exec();
+        await requestsService.remove(request.value.id).exec();
         toast.show({message: 'Успешно удалено', timeout: 3000, type: 'success'});
         navigateTo('/requests');
     } catch (e: any) {
@@ -147,11 +186,11 @@ async function submit() {
     isSavePending.value = true;
     try {
         if (id) {
-            await usersService.patch(id, data).exec();
+            await requestsService.patch(id, data).exec();
         } else {
-            await usersService.create(data).exec();
+            await requestsService.create(data).exec();
         }
-        navigateTo('/users');
+        navigateTo('/requests');
     } catch (e: any) {
         if (e.code === 400 || e.code === 422) {
             for (const err of e.errors) {

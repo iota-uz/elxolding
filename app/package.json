@@ -14,7 +14,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-build-classic": "^36.0.1",
     "@ckeditor/ckeditor5-vue": "^4.0.1",
-    "@diyor28/treeselect": "^0.1.7",
+    "@diyor28/treeselect": "^0.1.8",
     "@headlessui-float/vue": "^0.13.0",
     "@headlessui/vue": "^1.7.17",
     "@nuxtjs/color-mode": "^3.3.2",

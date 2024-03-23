@@ -11,32 +11,15 @@
         <div class="flex flex-wrap gap-5 justify-between">
             <div class="flex items-center gap-4">
                 <DateSelect
-                    v-model:start="dateFilter.start"
                     v-model:end="dateFilter.end"
+                    v-model:start="dateFilter.start"
                     label="Дата создания"
                 />
                 <PerPageSelect v-model="perPage" />
             </div>
 
             <div class="flex gap-3">
-                <div class="flex">
-                    <BaseButton class="flex items-center !px-3 !rounded-r-none !border-e-0">
-                        {{ statusFilter.status }}
-                    </BaseButton>
-                    <BaseDropdown
-                        class="status-filter"
-                        flavor="button"
-                        label="Статус"
-                        orientation="start"
-                    >
-                        <BaseDropdownItem
-                            v-for="option in options"
-                            :key="option.label"
-                            :title="option.label"
-                            @click="statusFilter.status = option.value"
-                        />
-                    </BaseDropdown>
-                </div>
+                <ProductTypeFilter v-model="statusFilter" />
                 <NuxtLink :to="{name: 'products-id', params: {id: 'new'}}">
                     <BaseButton color="primary">
                         Новая продукция
@@ -76,10 +59,10 @@
             <BasePagination
                 v-if="products.total / perPage > 1"
                 v-model:current-page="currentPage"
-                class="my-2"
                 :item-per-page="perPage"
-                :total-items="products.total"
                 :max-links-displayed="10"
+                :total-items="products.total"
+                class="my-2"
                 shape="rounded"
             />
         </div>
@@ -92,6 +75,7 @@ import DateSelect from '~/components/common/DateSelect.vue';
 import PerPageSelect from '~/components/common/PerPageSelect.vue';
 import Search from '~/components/common/Search.vue';
 import {type Column} from '~/components/common/types';
+import ProductTypeFilter from '~/components/products/ProductTypeFilter.vue';
 import TairoTableCell from '~/components/tairo/TairoTableCell.vue';
 import {type PaginatedResponse} from '~/types/generics';
 
@@ -115,15 +99,8 @@ const products = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip
 const perPage = ref(app.pagination.defaultPageSize);
 const currentPage = ref(route.query.page ? parseInt(route.query.page as string) : 1);
 const dateFilter = reactive({start: '', end: ''});
-const statusFilter = reactive({status: ''});
+const statusFilter = ref<string[]>([]);
 const sortBy = ref<Record<string, any>>({createdAt: -1});
-
-const options = [
-    {label: 'Все', value: ''},
-    {label: 'На складе', value: 'in_stock'},
-    {label: 'В разработке', value: 'in_development'},
-    {label: 'Одобрено', value: 'approved'},
-];
 
 const columns = ref<Column[]>([
     {
@@ -186,12 +163,14 @@ async function fetch() {
             $gt: dateFilter.start
         };
     }
-    if (statusFilter.status) {
-        query.status = statusFilter.status;
+    if (statusFilter.value.length) {
+        query.status = {
+            $in: statusFilter.value
+        };
     }
     try {
         products.value = await productsService.find<PaginatedResponse<any>>(query).exec();
-    } catch(e: any) {
+    } catch (e: any) {
         toast.show({type: 'error', message: e.message, timeout: 3000});
     } finally {
         isFetchPending.value = false;

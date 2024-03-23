@@ -9,7 +9,7 @@ export function debounce(this: any, func: () => any, timeout: number = 500) {
 }
 
 export interface Option {
-    id: string;
+    id: number;
     label: string;
 }
 
