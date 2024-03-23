@@ -1,36 +1,83 @@
 <template>
-    <div class="mt-4 px-10">
-        <div class="flex flex-col gap-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 items-end">
-                <BaseSelect
-                    v-model="request.type"
-                    :error="errors.type"
-                    label="Тип заявки*"
-                    name="type"
-                >
-                    <option value="incoming">
-                        Приход
-                    </option>
-                    <option value="outgoing">
-                        Отгрузка
-                    </option>
-                </BaseSelect>
-            </div>
+    <div class="flex flex-col gap-4 mt-4">
+        <BaseTabSlider
+            v-model="request.type"
+            class="w-full"
+            :tabs="[
+                { label: 'Приход', value: 'in' },
+                { label: 'Отгрузка', value: 'out' },
+            ]"
+            rounded="sm"
+        />
+        <div>
+            <table class="divide-muted-200 dark:divide-muted-700 min-w-full table-fixed divide-y">
+                <thead>
+                    <tr>
+                        <th class="text-sm bg-muted-50 dark:bg-muted-800 py-3 text-muted-700 dark:text-muted-400 text-left font-sans font-semibold tracking-wider px-4">
+                            Наименование
+                        </th>
+                        <th class="text-sm bg-muted-50 dark:bg-muted-800 py-3 text-muted-700 dark:text-muted-400 text-left font-sans font-semibold tracking-wider px-4">
+                            Артикул
+                        </th>
+                        <th class="text-sm bg-muted-50 dark:bg-muted-800 py-3 text-muted-700 dark:text-muted-400 text-left font-sans font-semibold tracking-wider px-4">
+                            Количество
+                        </th>
+                        <th class="text-sm bg-muted-50 dark:bg-muted-800 py-3 text-muted-700 dark:text-muted-400 text-left font-sans font-semibold tracking-wider px-4" />
+                    </tr>
+                </thead>
+                <tbody class="divide-muted-200 dark:divide-muted-700 dark:bg-muted-800 divide-y bg-white">
+                    <tr class="hover:bg-muted-50 dark:hover:bg-muted-900 transition-colors duration-300">
+                        <td class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4 w-1/2">
+                            Товар 1
+                        </td>
+                        <td class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4 w-1/3">
+                            32453241
+                        </td>
+                        <td class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4">
+                            <BaseInput
+                                v-model="request.quantity"
+                                :error="errors.quantity"
+                                name="quantity"
+                            />
+                        </td>
+                        <td class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4">
+                            <BaseButtonIcon>
+                                <Icon name="ph:trash" />
+                            </BaseButtonIcon>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <MultiSelect
+                v-model="selectedPositions"
+                :options="positions"
+                label="Наименования*"
+                multiple
+                name="name"
+            />
+            <BaseButton
+                class="w-full mt-4"
+                color="primary"
+            >
+                Добавить
+            </BaseButton>
         </div>
         <div class="flex justify-end mt-6">
             <div>
                 <BaseButton
                     v-if="request.id"
-                    color="danger"
                     :loading="isDeletePending"
+                    color="danger"
                     @click="remove"
                 >
                     Удалить
                 </BaseButton>
                 <BaseButton
+                    :loading="isSavePending"
                     class="ml-2"
                     color="primary"
-                    :loading="isSavePending"
                     @click="submit"
                 >
                     Сохранить
@@ -41,22 +88,28 @@
 </template>
 
 <script lang="ts" setup>
-
+import MultiSelect from '~/components/common/MultiSelect.vue';
+import type {Option} from '~/utils/search';
 
 definePageMeta({
     layout: 'account',
-    verbose: 'Новая накладная'
+    verbose: 'Заявка'
 });
 
 useHead({
-    title: 'Новая накладная'
+    title: 'Заявка'
 });
 
 const route = useRoute();
 const toast = useToast('GlobalToast');
 const usersService = useService('users');
 
-const request = ref<any>({});
+const request = ref<Record<string, any>>({
+    type: 'in',
+    quantity: 0
+});
+const positions = ref<Option[]>([]);
+const selectedPositions = ref<number[]>([]);
 
 const errors = ref<Record<string, string>>({});
 const isDeletePending = ref(false);
@@ -64,20 +117,23 @@ const isSavePending = ref(false);
 
 onMounted(async () => {
     if (route.params.id === 'new') {
-        request.value = {};
+        request.value = {
+            type: 'in',
+            quantity: 0
+        };
     } else {
         request.value = await usersService.get(route.params.id as string).exec();
     }
-
+    positions.value = await optionsList(useService('positions', {auth: true}), 'title');
 });
 
 
 async function remove() {
     isDeletePending.value = true;
     try {
-        await usersService.remove(request.value.id);
+        await usersService.remove(request.value.id).exec();
         toast.show({message: 'Успешно удалено', timeout: 3000, type: 'success'});
-        navigateTo('/user');
+        navigateTo('/requests');
     } catch (e: any) {
         toast.show({message: e.message, timeout: 3000, type: 'error'});
     } finally {
