@@ -106,7 +106,7 @@ const columns = ref<Column[]>([
         }
     },
     {
-        label: 'Продукции',
+        label: 'Продуктов',
         name: 'total',
         sortable: true,
         field: (item) => {

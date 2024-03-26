@@ -32,7 +32,7 @@
                         В разработке
                     </option>
                     <option value="approved">
-                        Обобрено
+                        Одобрено
                     </option>
                 </BaseSelect>
             </div>

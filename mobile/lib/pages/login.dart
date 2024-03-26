@@ -20,8 +20,7 @@ class LoginPageState extends State<LoginPage> {
   Future<bool> isAuthenticated(BuildContext context) async {
     const storage = FlutterSecureStorage();
     var token = await storage.read(key: "jwt");
-    // return token != null && !JwtDecoder.isExpired(token);
-    return false;
+    return token != null && !JwtDecoder.isExpired(token);
   }
 
   Future<List<User>> fetchUsers() async {

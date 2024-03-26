@@ -104,6 +104,27 @@ const sortBy = ref<Record<string, any>>({createdAt: -1});
 
 const columns = ref<Column[]>([
     {
+        label: 'Название',
+        name: 'name',
+        field: (item) => {
+            return item.position.title;
+        }
+    },
+    {
+        label: 'Артикул',
+        name: 'article',
+        field: (item) => {
+            return item.position.barcode;
+        }
+    },
+    {
+        label: 'Ед. измерения',
+        name: 'unit',
+        field: (item) => {
+            return item.position.unit;
+        }
+    },
+    {
         label: 'RFID',
         name: 'rfid',
         sortable: true
@@ -140,10 +161,6 @@ const fields = ref([
     {
         label: 'Артикул',
         key: 'article'
-    },
-    {
-        label: 'Статус',
-        key: 'status'
     },
 ]);
 

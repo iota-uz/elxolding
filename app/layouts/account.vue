@@ -1,9 +1,9 @@
 <template>
     <TairoCollapseLayout>
-        <slot/>
-        <Toast id="GlobalToast"></Toast>
+        <slot />
+        <Toast id="GlobalToast" />
         <template #toolbar-title>
-            Elxolding
+            Система складского учета
         </template>
     </TairoCollapseLayout>
 </template>
