@@ -21,6 +21,7 @@ export default function (app: Application): typeof Model {
             allowNull: false
         }
     }, {
+        timestamps: true,
         hooks: {
             beforeCount(options: any): HookReturn {
                 options.raw = true;
@@ -30,8 +31,7 @@ export default function (app: Application): typeof Model {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (products as any).associate = function (models: any): void {
-        // Define associations here
-        // See https://sequelize.org/master/manual/assocs.html
+        products.belongsToMany(models.requests, {through: 'request_products'});
     };
 
     return products;

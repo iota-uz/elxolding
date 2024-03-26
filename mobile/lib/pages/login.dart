@@ -37,6 +37,9 @@ class LoginPage extends StatelessWidget {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const CircularProgressIndicator();
             }
+            if (snapshot.hasError) {
+              return Text(snapshot.error.toString());
+            }
             List<dynamic> data = snapshot.data?["data"];
             List<User> users = data.map<User>((e) => User.fromJson(e)).toList();
             return LoginForm(

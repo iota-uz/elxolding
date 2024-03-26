@@ -1,6 +1,6 @@
-import { SequelizeServiceOptions,Service } from 'feathers-sequelize';
+import {SequelizeServiceOptions, Service} from 'feathers-sequelize';
 
-import { Application } from '../../declarations';
+import {Application} from '../../declarations';
 
 export class Requests extends Service {
     //eslint-disable-next-line @typescript-eslint/no-unused-vars

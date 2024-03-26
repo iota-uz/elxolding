@@ -2,5 +2,5 @@
   "host": "localhost",
   "port": 3030,
   "images_url": "http://localhost:3030/uploads/media/",
-  "postgres": "postgres://postgres:postgres@localhost:5432/helios_test"
+  "postgres": "postgres://postgres:postgres@localhost:5432/elxolding_test"
 }

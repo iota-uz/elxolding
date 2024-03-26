@@ -26,9 +26,9 @@
                     </tr>
                 </thead>
                 <tbody class="divide-muted-200 dark:divide-muted-700 dark:bg-muted-800 divide-y bg-white">
-                    <template v-if="request.products.length">
+                    <template v-if="request.positions.length">
                         <tr
-                            v-for="(product, idx) in request.products"
+                            v-for="(product, idx) in request.positions"
                             class="hover:bg-muted-50 dark:hover:bg-muted-900 transition-colors duration-300"
                         >
                             <td class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4 w-1/2">
@@ -38,10 +38,10 @@
                                 {{ product.position.barcode }}
                             </td>
                             <td class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4">
-                                <BaseInput
+                                <BaseInputNumber
                                     v-model="product.quantity"
                                     name="quantity"
-                                    type="number"
+                                    :min="1"
                                 />
                             </td>
                             <td class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4">
@@ -123,7 +123,7 @@ const requestsService = useService('requests', {auth: true});
 const request = ref<Record<string, any>>({
     type: 'in',
     quantity: 0,
-    products: []
+    positions: []
 });
 const positions = ref<Record<string, any>[]>([]);
 const selectedPositions = ref<number[]>([]);
@@ -137,7 +137,7 @@ onMounted(async () => {
         request.value = {
             type: 'in',
             quantity: 0,
-            products: []
+            positions: []
         };
     } else {
         request.value = await requestsService.get(route.params.id as string).exec();
@@ -151,14 +151,14 @@ const positionOptions = computed(() => {
 
 
 function removeProduct(idx: number) {
-    request.value.products.splice(idx, 1);
+    request.value.positions.splice(idx, 1);
 }
 
 function addPositions() {
     for (const pos of selectedPositions.value) {
-        const isContained = request.value.products.find((el: any) => el.position.id === pos);
+        const isContained = request.value.positions.find((el: any) => el.position.id === pos);
         if (!isContained) {
-            request.value.products.push({
+            request.value.positions.push({
                 position: positions.value.find(el => el.id === pos),
                 quantity: 1
             });
@@ -172,7 +172,7 @@ async function remove() {
     try {
         await requestsService.remove(request.value.id).exec();
         toast.show({message: 'Успешно удалено', timeout: 3000, type: 'success'});
-        navigateTo('/requests');
+        navigateTo('/');
     } catch (e: any) {
         toast.show({message: e.message, timeout: 3000, type: 'error'});
     } finally {
@@ -182,6 +182,7 @@ async function remove() {
 
 async function submit() {
     const {id, ...data} = request.value;
+    data.positions = data.positions.map((el: any) => ({positionId: el.position.id, quantity: el.quantity}));
     errors.value = {};
     isSavePending.value = true;
     try {
@@ -190,7 +191,7 @@ async function submit() {
         } else {
             await requestsService.create(data).exec();
         }
-        navigateTo('/requests');
+        navigateTo('/');
     } catch (e: any) {
         if (e.code === 400 || e.code === 422) {
             for (const err of e.errors) {

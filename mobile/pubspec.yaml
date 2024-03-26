@@ -44,7 +44,6 @@ dependencies:
   flutter_native_splash: ^2.3.1
   cupertino_icons: ^1.0.2
   uhf_c72_plugin: ^1.0.1
-  firebase_core: ^2.24.2
 
 flutter_native_splash:
     color: "#04a8ce"

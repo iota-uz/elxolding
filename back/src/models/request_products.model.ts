@@ -7,13 +7,17 @@ import { Application } from '../declarations';
 
 export default function (app: Application): typeof Model {
     const sequelizeClient: Sequelize = app.get('sequelizeClient');
-    const requests = sequelizeClient.define('requests', {
-        type: {
-            type: DataTypes.ENUM('in', 'out'),
+    const requestProducts = sequelizeClient.define('request_products', {
+        requestId: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        productId: {
+            type: DataTypes.INTEGER,
             allowNull: false
         }
     }, {
-        timestamps: true,
+        timestamps: false,
         hooks: {
             beforeCount(options: any): HookReturn {
                 options.raw = true;
@@ -22,9 +26,9 @@ export default function (app: Application): typeof Model {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (requests as any).associate = function (models: any): void {
-        requests.belongsToMany(models.products, {through: 'request_products'});
+    (requestProducts as any).associate = function (models: any): void {
+        requestProducts.belongsTo(models.requests);
     };
 
-    return requests;
+    return requestProducts;
 }

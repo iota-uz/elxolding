@@ -23,7 +23,7 @@ export default defineAppConfig({
                             name: 'ph:archive-tray-fill',
                             class: 'w-5 h-5'
                         },
-                        to: '/requests',
+                        to: '/',
                     },
                     {
                         name: 'Продукция',

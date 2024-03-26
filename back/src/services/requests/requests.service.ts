@@ -1,19 +1,21 @@
 // Initializes the `requests` service on path `/requests`
-import { ServiceAddons } from '@feathersjs/feathers';
+import {ServiceAddons} from '@feathersjs/feathers';
 
-import { Application } from '../../declarations';
+import {Application} from '../../declarations';
+import createAuxiliaryModels from '../../models/request_products.model';
 import createModel from '../../models/requests.model';
-import { Requests } from './requests.class';
+import {Requests} from './requests.class';
 import hooks from './requests.hooks';
 
 // Add this service to the service type index
 declare module '../../declarations' {
-  interface ServiceTypes {
-    'requests': Requests & ServiceAddons<any>;
-  }
+    interface ServiceTypes {
+        'requests': Requests & ServiceAddons<any>;
+    }
 }
 
 export default function (app: Application): void {
+    createAuxiliaryModels(app);
     const options = {
         Model: createModel(app),
         paginate: app.get('paginate')
