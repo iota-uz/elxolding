@@ -381,6 +381,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.7.4"
+  rfid_c72_plugin:
+    dependency: "direct main"
+    description:
+      name: rfid_c72_plugin
+      sha256: "8a81542ffa5ce65d6e36d6383fc913febec9551120cfd07bc888897e631d9234"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   shimmer:
     dependency: "direct main"
     description:
@@ -458,14 +466,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
-  uhf_c72_plugin:
-    dependency: "direct main"
-    description:
-      name: uhf_c72_plugin
-      sha256: "8397f8a2c316364acaaa02d8458b71ac88a7d2932b88e3756a0361dd3f21394c"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   universal_io:
     dependency: transitive
     description:

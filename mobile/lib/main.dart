@@ -136,7 +136,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: _router,
-      title: 'Flutter Demo',
+      title: 'Elxolding',
       theme: ThemeData(
         primarySwatch: MaterialColor(0xff075b84, primaryColors),
         scaffoldBackgroundColor: Colors.white,

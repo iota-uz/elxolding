@@ -1,6 +1,6 @@
-import {Ref, UnwrapRef} from 'vue';
+import {type Ref, type UnwrapRef} from 'vue';
 
-import {Query} from '~/types/generics';
+import {type Query} from '~/types/generics';
 import {parseJwt} from '~/utils/login';
 
 export function useLoggedIn(): boolean {

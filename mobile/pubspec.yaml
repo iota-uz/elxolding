@@ -43,7 +43,7 @@ dependencies:
   flag: ^7.0.0
   flutter_native_splash: ^2.3.1
   cupertino_icons: ^1.0.2
-  uhf_c72_plugin: ^1.0.1
+  rfid_c72_plugin: ^0.0.2
 
 flutter_native_splash:
     color: "#04a8ce"

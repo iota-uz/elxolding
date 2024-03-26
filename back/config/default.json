@@ -21,7 +21,9 @@
         "typ": "access"
       },
       "audience": "http://localhost:3030",
-      "issuer": "feathers"
+      "issuer": "feathers",
+      "algorithm": "HS256",
+      "expiresIn": "14d"
     },
     "local": {
       "usernameField": "id",

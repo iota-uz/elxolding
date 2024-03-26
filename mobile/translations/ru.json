@@ -15,10 +15,10 @@
   },
   "home": {
     "order": "Заявка",
-    "productsCount-0": "{productsCount} наименований",
-    "productsCount-1": "{productsCount} наименование",
-    "productsCount-2": "{productsCount} наименования",
-    "productsCount-5": "{productsCount} наименований",
+    "productsCount-0": "{productsCount} н-ний",
+    "productsCount-1": "{productsCount} н-ние",
+    "productsCount-2": "{productsCount} н-ния",
+    "productsCount-5": "{productsCount} н-ний",
     "orderType": {
       "delivery": "Приход",
       "pickup": "Расход"
@@ -35,6 +35,7 @@
   },
   "settings": {
     "title": "Настройки",
-    "language": "Язык интерфейса"
+    "language": "Язык интерфейса",
+    "logout": "Выйти"
   }
 }

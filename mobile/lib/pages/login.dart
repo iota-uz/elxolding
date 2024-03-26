@@ -1,53 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mobile/constants.dart' as constants;
 
 import 'package:mobile/models/user.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
+  @override
+  State<StatefulWidget> createState() {
+    return LoginPageState();
+  }
+}
+
+class LoginPageState extends State<LoginPage> {
+  Future<bool> isAuthenticated(BuildContext context) async {
+    const storage = FlutterSecureStorage();
+    var token = await storage.read(key: "jwt");
+    // return token != null && !JwtDecoder.isExpired(token);
+    return false;
+  }
+
+  Future<List<User>> fetchUsers() async {
+    var res = await constants.feathersApp.service("users").find({});
+    List<dynamic> data = res["data"];
+    return data.map<User>((e) => User.fromJson(e)).toList();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    isAuthenticated(context).then((res) {
+      if (res) {
+        GoRouter.of(context).goNamed("home");
+      }
+    });
+  }
+
   Widget buildForm(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          FlutterI18n.translate(context, "login.title"),
-          style: const TextStyle(
-            fontSize: 36,
-            fontWeight: FontWeight.bold,
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            FlutterI18n.translate(context, "login.title"),
+            style: const TextStyle(
+              fontSize: 36,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        Text(
-          FlutterI18n.translate(context, "login.subtitle"),
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-            color: Colors.grey,
+          Text(
+            FlutterI18n.translate(context, "login.subtitle"),
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+              color: Colors.grey,
+            ),
           ),
-        ),
-        const SizedBox(
-          height: 40,
-        ),
-        FutureBuilder(
-          future: constants.feathersApp.service("users").find({}),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            }
-            if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            }
-            List<dynamic> data = snapshot.data?["data"];
-            List<User> users = data.map<User>((e) => User.fromJson(e)).toList();
-            return LoginForm(
-              users: users,
-            );
-          },
-        )
-      ],
+          const SizedBox(
+            height: 40,
+          ),
+          FutureBuilder(
+            future: fetchUsers(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              }
+              if (snapshot.hasError) {
+                return Text(snapshot.error.toString());
+              }
+              return LoginForm(
+                users: snapshot.data!,
+              );
+            },
+          )
+        ],
+      ),
     );
   }
 
