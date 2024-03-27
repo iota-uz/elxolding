@@ -56,8 +56,6 @@ class _RfidScannerState extends State<RfidScanner> {
 // If the widget was removed from the tree while the asynchronous platform
 // message was in flight, we want to discard the reply rather than calling
 // setState to update our non-existent appearance.
-
-    await RfidC72Plugin.connectBarcode; //connect barcode
     if (!mounted) return;
 
     setState(() {
@@ -121,7 +119,8 @@ class _RfidScannerState extends State<RfidScanner> {
                       style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () async {
-                      await RfidC72Plugin.startSingle;
+                      var started = await RfidC72Plugin.startSingle;
+                      print('Started: $started');
                     },
                   ),
                   ElevatedButton(

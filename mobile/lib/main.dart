@@ -7,6 +7,8 @@ import 'package:mobile/pages/login.dart';
 import 'package:mobile/pages/orders/id.dart';
 import 'package:mobile/pages/rfid.dart';
 import 'package:mobile/pages/settings.dart';
+import 'package:mobile/constants.dart' as constants;
+import 'package:mobile/rfid_scanner.dart';
 
 import 'layouts/navigation.dart';
 import 'pages/home.dart';
@@ -15,6 +17,8 @@ import 'pages/inventory.dart';
 void main() {
   // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  constants.feathersApp.registerService("requests");
+  constants.feathersApp.registerService("positions");
   runApp(const MyApp());
 }
 

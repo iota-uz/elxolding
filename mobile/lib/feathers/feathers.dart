@@ -84,7 +84,7 @@ class Service {
     return respData;
   }
 
-  Future<Map<String, dynamic>> get(String id, [Map? params]) async {
+  Future<Map<String, dynamic>> get(int id, [Map? params]) async {
     Map<String, dynamic> queryParams = {};
     var headers = await _getHeaders();
     var response = await _client.get("/$path/$id",

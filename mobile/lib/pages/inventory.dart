@@ -127,6 +127,8 @@ class _InventoryPageState extends State<InventoryPage> {
               ElevatedButton(
                 onPressed: () async {
                   bool? isStarted = await RfidC72Plugin.startSingle;
+                  bool? isConnected = await RfidC72Plugin.isConnected;
+                  log('Connected $isConnected');
                   log('Start signle $isStarted');
                 },
                 style: ElevatedButton.styleFrom(

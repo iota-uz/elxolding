@@ -15,14 +15,22 @@
   },
   "home": {
     "order": "Заявка",
-    "productsCount-0": "{productsCount} н-ний",
-    "productsCount-1": "{productsCount} н-ние",
-    "productsCount-2": "{productsCount} н-ния",
-    "productsCount-5": "{productsCount} н-ний",
+    "productsCount-0": "{productsCount} наменований",
+    "productsCount-1": "{productsCount} наменование",
+    "productsCount-2": "{productsCount} наменования",
+    "productsCount-5": "{productsCount} наменований",
     "orderType": {
-      "delivery": "Приход",
-      "pickup": "Расход"
+      "in": "Приход",
+      "out": "Расход"
     }
+  },
+  "rfid": {
+    "selectPosition": "Выберите наименование"
+  },
+  "order": {
+    "title": "Заявка #",
+    "in": "Оприходовать",
+    "out": "Отгрузить"
   },
   "inventory": {
     "title": "Инвентаризация",
@@ -35,6 +43,7 @@
   },
   "settings": {
     "title": "Настройки",
+    "profile": "Профиль",
     "language": "Язык интерфейса",
     "logout": "Выйти"
   }

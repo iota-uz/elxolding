@@ -22,12 +22,27 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       body: Center(
         child: Container(
-          padding: const EdgeInsets.only(left: 40, right: 30, top: 20),
+          padding: const EdgeInsets.only(left: 30, right: 30, top: 80),
           child: Column(
             children: [
+              const CircleAvatar(
+                radius: 70,
+                backgroundImage: AssetImage("assets/images/user-profile.png"),
+              ),
+              const SizedBox(height: 40),
+              // avatar
+              ListTile(
+                leading: const Icon(Icons.person),
+                title: Text(FlutterI18n.translate(context, "settings.profile")),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  // context.pushNamed("profile");
+                },
+              ),
               ListTile(
                 leading: const Icon(Icons.language),
-                title: Text(FlutterI18n.translate(context, "settings.language")),
+                title:
+                    Text(FlutterI18n.translate(context, "settings.language")),
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {
                   context.pushNamed("language-select");
