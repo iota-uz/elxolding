@@ -97,7 +97,7 @@ async function remove() {
     try {
         await productsService.remove(product.value.id);
         toast.show({message: 'Успешно удалено', timeout: 3000, type: 'success'});
-        navigateTo('/name');
+        navigateTo('/products');
     } catch (e: any) {
         toast.show({message: e.message, timeout: 3000, type: 'error'});
     } finally {

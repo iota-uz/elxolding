@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobile/pages/invetory/new.dart';
 import 'package:mobile/pages/language.dart';
 import 'package:mobile/pages/login.dart';
 import 'package:mobile/pages/orders/id.dart';
 import 'package:mobile/pages/rfid.dart';
 import 'package:mobile/pages/settings.dart';
 import 'package:mobile/constants.dart' as constants;
-import 'package:mobile/rfid_scanner.dart';
-
 import 'layouts/navigation.dart';
 import 'pages/home.dart';
-import 'pages/inventory.dart';
+import 'pages/invetory/index.dart';
 
 void main() {
   // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -80,6 +79,13 @@ final _router = GoRouter(
               name: "inventory",
               pageBuilder: (context, state) => const NoTransitionPage(
                 child: InventoryPage(),
+              ),
+            ),
+            GoRoute(
+              path: "/inventory-new",
+              name: "inventory-new",
+              pageBuilder: (context, state) => const NoTransitionPage(
+                child: NewInventoryPage(),
               ),
             ),
           ],
