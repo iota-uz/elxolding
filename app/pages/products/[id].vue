@@ -95,7 +95,7 @@ onMounted(async () => {
 async function remove() {
     isDeletePending.value = true;
     try {
-        await productsService.remove(product.value.id);
+        await productsService.remove(product.value.id).exec();
         toast.show({message: 'Успешно удалено', timeout: 3000, type: 'success'});
         navigateTo('/products');
     } catch (e: any) {

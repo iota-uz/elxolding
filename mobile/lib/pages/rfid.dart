@@ -27,7 +27,6 @@ class _RfidPageState extends State<RfidPage> {
   @override
   void initState() {
     super.initState();
-    _data = [TagEpc(id: "sdfas", epc: "sdfas", count: '1', rssi: 'sd')];
     initPlatformState();
   }
 
@@ -37,7 +36,6 @@ class _RfidPageState extends State<RfidPage> {
     closeAll();
   }
 
-//Hopefully we free memory in the device.
   closeAll() {
     RfidC72Plugin.stopScan;
     RfidC72Plugin.close;
@@ -208,7 +206,16 @@ class _RfidPageState extends State<RfidPage> {
                 ),
               );
             }
-            createProducts();
+            createProducts().then((value) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Продукты созданы'),
+                ),
+              );
+              setState(() {
+                _data.clear();
+              });
+            });
           },
           style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 20),
