@@ -2,7 +2,7 @@ import * as authentication from '@feathersjs/authentication';
 import {HookContext} from '@feathersjs/feathers';
 import {fastJoin, ResolverMap} from 'feathers-hooks-common';
 import {hooks} from 'feathers-sequelize';
-import {ModelStatic, Op} from 'sequelize';
+import {ModelStatic, Op, Sequelize} from 'sequelize';
 import dehydrate = hooks.dehydrate;
 import {BadRequest} from '@feathersjs/errors';
 // Don't remove this comment. It's needed to format import lines nicely.
@@ -22,23 +22,29 @@ function handleFK() {
         const productsModel: ModelStatic<any> = models.products;
         const requestProductsModel: ModelStatic<any> = models.request_products;
         const joinedProducts: number[] = [];
-        const availableProducts:Record<string, number> = {};
+        const availableProducts: Record<string, number> = {};
 
-        await Promise.all(positions.map(async (el) => {
-            const productsCount = await productsModel.count({
-                where: {
-                    positionId: el.positionId
-                }
-            });
-            availableProducts[el.positionId] = productsCount;
+        const productsCount = await productsModel.findAll({
+            raw: true,
+            attributes: [
+                'positionId',
+                [Sequelize.fn('COUNT', Sequelize.col('id')), 'productsCount']
+            ],
+            where: {
+                positionId: positions.map(position => position.positionId)
+            },
+            group: ['positionId']
+        });
 
-        }));
+        for (const count of productsCount) {
+            availableProducts[count.positionId] = count.productsCount;
+        }
 
         for (const position of positions) {
-            if (!availableProducts[position.positionId] || availableProducts[position.positionId] < position.quantity) {
+            const availableQuantity = availableProducts[position.positionId] || 0;
+            if (availableQuantity < position.quantity) {
                 throw new BadRequest('Недостаточно продуктов');
             }
-
         }
 
         await Promise.all(positions.map(async (el) => {
