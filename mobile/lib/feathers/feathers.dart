@@ -106,7 +106,7 @@ class Service {
     return response.data;
   }
 
-  Future<Map<String, dynamic>> patch(String id, Map data) async {
+  Future<Map<String, dynamic>> patch(int id, Map data) async {
     var headers = await _getHeaders();
     var response = await _client.patch(
       "/$path/$id",
@@ -126,7 +126,7 @@ class Service {
     return response.data;
   }
 
-  Future<Map<String, dynamic>> remove(String id) async {
+  Future<Map<String, dynamic>> remove(int id) async {
     var headers = await _getHeaders();
     var response =
         await _client.delete("/$path/$id", options: Options(headers: headers));

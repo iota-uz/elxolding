@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -6,6 +8,48 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mobile/constants.dart' as constants;
 
 import 'package:mobile/models/user.dart';
+
+class ErrorWidget extends StatelessWidget {
+  final String message;
+
+  const ErrorWidget({Key? key, required this.message}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          FlutterI18n.translate(context, "login.errors.default"),
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(message),
+        const SizedBox(
+          height: 20,
+        ),
+        ElevatedButton(
+          onPressed: () {
+            GoRouter.of(context).goNamed("login");
+          },
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            backgroundColor: Theme.of(context).primaryColor,
+            minimumSize: const Size.fromHeight(36),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            elevation: 0,
+          ),
+          child: Text(
+            FlutterI18n.translate(context, "login.buttons.retry"),
+          ),
+        )
+      ],
+    );
+  }
+}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -45,24 +89,6 @@ class LoginPageState extends State<LoginPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(
-            FlutterI18n.translate(context, "login.title"),
-            style: const TextStyle(
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            FlutterI18n.translate(context, "login.subtitle"),
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w400,
-              color: Colors.grey,
-            ),
-          ),
-          const SizedBox(
-            height: 40,
-          ),
           FutureBuilder(
             future: fetchUsers(),
             builder: (context, snapshot) {
@@ -70,10 +96,14 @@ class LoginPageState extends State<LoginPage> {
                 return const CircularProgressIndicator();
               }
               if (snapshot.hasError) {
-                return Text(snapshot.error.toString());
+                return ErrorWidget(message: snapshot.error.toString());
               }
-              return LoginForm(
-                users: snapshot.data!,
+              return Column(
+                children: [
+                  LoginForm(
+                    users: snapshot.data!,
+                  )
+                ],
               );
             },
           )
@@ -108,8 +138,6 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   late final List<User> users;
-  String userId = '1';
-  String password = '';
 
   @override
   void initState() {
@@ -120,81 +148,188 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        DropdownButtonFormField<String>(
-          isExpanded: true,
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            hintText: FlutterI18n.translate(context, "login.user"),
+        Text(
+          FlutterI18n.translate(context, "login.chooseUser.title"),
+          style: const TextStyle(
+            fontSize: 36,
+            fontWeight: FontWeight.bold,
           ),
-          items: users.map((value) {
-            return DropdownMenuItem<String>(
-              value: value.id.toString(),
-              child: Text("${value.firstName} ${value.lastName}"),
+        ),
+        Text(
+          FlutterI18n.translate(context, "login.chooseUser.subtitle"),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+            color: Colors.grey,
+          ),
+        ),
+        ListView(
+          shrinkWrap: true,
+          children: users.map((e) {
+            return ListTile(
+              contentPadding: const EdgeInsets.all(0),
+              leading: const Icon(Icons.person, size: 40),
+              title: Text("${e.firstName} ${e.lastName}"),
+              subtitle: Text(e.role),
+              onTap: () {
+                context.pushNamed("enter",
+                    pathParameters: {"userId": e.id.toString()});
+              },
             );
           }).toList(),
-          onChanged: (v) {
-            if (v == null) {
-              return;
+        ),
+      ],
+    );
+  }
+}
+
+class EnterPassword extends StatefulWidget {
+  final String userId;
+
+  const EnterPassword({Key? key, required this.userId}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _EnterPasswordState();
+  }
+}
+
+class _EnterPasswordState extends State<EnterPassword> {
+  late final userId = widget.userId;
+  String password = '';
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<User> getUserById() async {
+    var res = await constants.feathersApp
+        .service("users")
+        .get(int.parse(widget.userId));
+    return User.fromJson(res);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(""),
+      ),
+      body: Container(
+        padding: const EdgeInsets.only(left: 30, right: 30),
+        child: FutureBuilder(
+          future: getUserById(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
             }
-            setState(() {
-              userId = v;
-            });
-          },
-          value: userId,
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        TextField(
-          decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            hintText: FlutterI18n.translate(context, "login.password"),
-          ),
-          onChanged: (v) {
-            setState(() {
-              password = v;
-            });
-          },
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        ElevatedButton(
-          onPressed: () {
-            constants.feathersApp.authenticate({
-              "strategy": "local",
-              "id": userId,
-              "password": password,
-            }).then((res) {
-              constants.isLoggedIn = true;
-              GoRouter.of(context).goNamed("home");
-            }).catchError((e) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    FlutterI18n.translate(context, "login.error"),
+
+            if (snapshot.hasError) {
+              return ErrorWidget(message: snapshot.error.toString());
+            }
+
+            var user = snapshot.data!;
+
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  FlutterI18n.translate(context, "login.enterPassword.title"),
+                  style: const TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              );
-            });
+                Text(
+                  FlutterI18n.translate(context, "login.enterPassword.subtitle",
+                      translationParams: {
+                        "username": "${user.firstName} ${user.lastName}"
+                      }),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    border: const OutlineInputBorder(),
+                    hintText: FlutterI18n.translate(context, "login.password"),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: Colors.grey.shade300,
+                        width: 1,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).primaryColor,
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  onChanged: (v) {
+                    password = v;
+                  },
+                  obscureText: true,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    constants.feathersApp.authenticate({
+                      "strategy": "local",
+                      "id": user.id,
+                      "password": password,
+                    }).then((res) {
+                      constants.isLoggedIn = true;
+                      GoRouter.of(context).goNamed("home");
+                    }).catchError((e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            FlutterI18n.translate(context, "login.errors.401"),
+                          ),
+                        ),
+                      );
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    backgroundColor: Theme.of(context).primaryColor,
+                    minimumSize: const Size.fromHeight(36),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(60),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: Text(
+                    FlutterI18n.translate(context, "login.button"),
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                )
+              ],
+            );
           },
-          style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              backgroundColor: Theme.of(context).primaryColor,
-              minimumSize: const Size.fromHeight(36),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 0),
-          child: Text(
-            FlutterI18n.translate(context, "login.button"),
-            style: const TextStyle(
-              color: Colors.white,
-            ),
-          ),
-        )
-      ],
+        ),
+      ),
     );
   }
 }

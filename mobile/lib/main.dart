@@ -131,6 +131,13 @@ final _router = GoRouter(
       builder: (context, state) => const LoginPage(),
     ),
     GoRoute(
+      path: "/login/:userId",
+      name: "enter",
+      builder: (context, state) {
+        return EnterPassword(userId: state.pathParameters["userId"]!,);
+      },
+    ),
+    GoRoute(
       path: "/language-select",
       name: "language-select",
       builder: (context, state) => const LanguageSelectPage(),

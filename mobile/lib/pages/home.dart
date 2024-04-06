@@ -23,7 +23,8 @@ class _HomePageState extends State<HomePage> {
             children: [
               ListTile(
                 onTap: () {
-                  context.pushNamed("order-id", pathParameters: {"id": order.id.toString()});
+                  context.pushNamed("order-id",
+                      pathParameters: {"id": order.id.toString()});
                 },
                 shape: RoundedRectangleBorder(
                   side: const BorderSide(color: Colors.grey, width: 1),
@@ -34,7 +35,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Text(order.title(context)),
                     Text(order.typeText(context)),
-                    Text(order.productsCountText(context)),
+                    Text(order.positionsCountText(context)),
                   ],
                 ),
               ),
@@ -45,33 +46,85 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<List<Order>> fetchOrders() async {
-    var res = await constants.feathersApp.service("requests").find({});
+  Future<List<Order>> fetchOrders(String t) async {
+    var res = await constants.feathersApp.service("requests").find({
+      "type": t,
+    });
     List<dynamic> data = res["data"];
     return data.map<Order>((e) => Order.fromJson(e)).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Заявки'),
-      ),
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
-          child: FutureBuilder(
-            future: fetchOrders(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              }
-              if (snapshot.hasError) {
-                return Text(snapshot.error.toString());
-              }
-              return buildList(context, orders: snapshot.data!);
-            },
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Заявки'),
+          bottom: const TabBar(
+            tabs: [
+              Tab(
+                icon: Icon(Icons.arrow_downward),
+                text: "Поступление",
+              ),
+              Tab(
+                icon: Icon(Icons.arrow_upward),
+                text: "Отгрузка",
+              ),
+            ],
           ),
+        ),
+        body: TabBarView(
+          children: [
+            Center(
+              child: Container(
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+                child: FutureBuilder(
+                  future: fetchOrders("in"),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }
+                    if (snapshot.hasError) {
+                      return Text(snapshot.error.toString());
+                    }
+                    return buildList(context, orders: snapshot.data!);
+                  },
+                ),
+              ),
+            ),
+            Center(
+              child: Container(
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+                child: FutureBuilder(
+                  future: fetchOrders("out"),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    }
+                    if (snapshot.hasError) {
+                      return Text(snapshot.error.toString());
+                    }
+                    var orders = snapshot.data!;
+                    if (orders.isEmpty) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/images/empty.png",
+                            width: 120,
+                          ),
+                          const SizedBox(height: 10),
+                          const Text("Нет данных"),
+                        ],
+                      );
+                    }
+                    return buildList(context, orders: snapshot.data!);
+                  },
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );

@@ -13,6 +13,8 @@
 //         },
 
 
+import 'package:mobile/models/product.dart';
+
 class Position {
   final int id;
   final String title;

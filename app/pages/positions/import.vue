@@ -18,11 +18,11 @@
                 <p class="text-sm mb-1">
                     Пример:
                 </p>
-<!--                <img-->
-<!--                    src="/images/structureProducts.png"-->
-<!--                    alt="Excel"-->
-<!--                    class="w-full md:w-1/2 object-contain"-->
-<!--                >-->
+                <!--                <img-->
+                <!--                    src="/images/structureProducts.png"-->
+                <!--                    alt="Excel"-->
+                <!--                    class="w-full md:w-1/2 object-contain"-->
+                <!--                >-->
             </div>
         </div>
         <DragDrop

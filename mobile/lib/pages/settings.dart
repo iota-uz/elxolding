@@ -25,20 +25,13 @@ class _SettingsPageState extends State<SettingsPage> {
           padding: const EdgeInsets.only(left: 30, right: 30, top: 80),
           child: Column(
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 70,
-                backgroundImage: AssetImage("assets/images/user-profile.png"),
+                backgroundImage: const AssetImage("assets/images/user-profile.png"),
+                backgroundColor: Colors.grey.shade300,
               ),
               const SizedBox(height: 40),
               // avatar
-              ListTile(
-                leading: const Icon(Icons.person),
-                title: Text(FlutterI18n.translate(context, "settings.profile")),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  // context.pushNamed("profile");
-                },
-              ),
               ListTile(
                 leading: const Icon(Icons.language),
                 title:

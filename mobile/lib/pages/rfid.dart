@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:mobile/constants.dart' as constants;
 import 'package:mobile/models/position.dart';
+import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/rfid_c72_plugin.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
@@ -18,11 +18,10 @@ class RfidPage extends StatefulWidget {
 class _RfidPageState extends State<RfidPage> {
   int? positionId;
 
-  String _platformVersion = 'Unknown';
-  final List<String> _logs = [];
-  List<TagEpc> _data = [];
-  bool _isConnected = false;
+  final List<TagEpc> _data = [];
+  List<Position> _positions = [];
   bool _isLoading = false;
+  RfidWrapper rfid = RfidWrapper();
 
   @override
   void initState() {
@@ -42,54 +41,23 @@ class _RfidPageState extends State<RfidPage> {
   }
 
   Future<void> initPlatformState() async {
-    String platformVersion;
-    try {
-      platformVersion = (await RfidC72Plugin.platformVersion)!;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-    RfidC72Plugin.connectedStatusStream
-        .receiveBroadcastStream()
-        .listen(updateIsConnected);
-    RfidC72Plugin.tagsStatusStream.receiveBroadcastStream().listen(updateTags);
-    await RfidC72Plugin.connect;
-    await RfidC72Plugin.connectBarcode; //connect barcode
-    if (!mounted) return;
+    await rfid.connect();
+    var positions = await fetchPositions();
 
     setState(() {
-      _platformVersion = platformVersion;
       _isLoading = false;
+      _positions = positions;
     });
   }
 
-  void log(String msg) {
-    setState(() {
-      _logs.add(msg);
-    });
-  }
-
-  void updateTags(dynamic result) {
-    log('update tags');
-    setState(() {
-      _data = TagEpc.parseTags(result);
-    });
-  }
-
-  void updateIsConnected(dynamic isConnected) {
-    log('connected $isConnected');
-    //setState(() {
-    _isConnected = isConnected;
-    //});
-  }
-
-  Widget dropdownList(BuildContext context, List<Position> positions) {
+  Widget dropdownList(BuildContext context) {
     return DropdownButtonFormField<int>(
       isExpanded: true,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         hintText: FlutterI18n.translate(context, "rfid.selectPosition"),
       ),
-      items: positions.map((value) {
+      items: _positions.map((value) {
         return DropdownMenuItem<int>(
           value: value.id,
           child: Text(value.title),
@@ -114,25 +82,26 @@ class _RfidPageState extends State<RfidPage> {
   }
 
   Widget tagsList(BuildContext context) {
-    return _data.isEmpty
-        ? const Text('Начните сканирование меток')
-        : Column(
-            children: _data
-                .map(
-                  (TagEpc tag) => Card(
-                    color: Colors.blue.shade50,
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        tag.epc,
-                        style: const TextStyle(color: Colors.blue),
-                      ),
-                    ),
-                  ),
-                )
-                .toList(),
-          );
+    if (_data.isEmpty) {
+      return const Text('Начните сканирование меток');
+    }
+    return Column(
+      children: _data
+          .map(
+            (TagEpc tag) => Card(
+              color: Colors.blue.shade50,
+              child: Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  tag.epc,
+                  style: const TextStyle(color: Colors.blue),
+                ),
+              ),
+            ),
+          )
+          .toList(),
+    );
   }
 
   Future<void> createProducts() async {
@@ -151,85 +120,10 @@ class _RfidPageState extends State<RfidPage> {
     }
     return Column(
       children: [
-        FutureBuilder(
-          future: fetchPositions(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            }
-            if (snapshot.hasError) {
-              return Text(snapshot.error.toString());
-            }
-            var positions = snapshot.data!;
-            return dropdownList(context, positions);
-          },
-        ),
+        dropdownList(context),
         const SizedBox(height: 20),
         tagsList(context),
         const SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () async {
-            await RfidC72Plugin.startSingle;
-          },
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 20),
-            backgroundColor: Colors.white,
-            minimumSize: const Size.fromHeight(36),
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(color: Colors.black),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            elevation: 0,
-          ),
-          child: const Text(
-            'Сканировать',
-            style: TextStyle(
-              fontSize: 18,
-              color: Colors.black,
-            ),
-          ),
-        ),
-        const SizedBox(height: 20),
-        ElevatedButton(
-          onPressed: () {
-            if (positionId == null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Выберите наименование'),
-                ),
-              );
-            }
-            if (_data.isEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Сначала отсканируйте метки'),
-                ),
-              );
-            }
-            createProducts().then((value) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Продукты созданы'),
-                ),
-              );
-              setState(() {
-                _data.clear();
-              });
-            });
-          },
-          style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              backgroundColor: Theme.of(context).primaryColor,
-              minimumSize: const Size.fromHeight(36),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              elevation: 0),
-          child: const Text(
-            'Создать',
-            style: TextStyle(fontSize: 18),
-          ),
-        )
       ],
     );
   }
@@ -237,15 +131,96 @@ class _RfidPageState extends State<RfidPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Отсканируйте метки'),
-      ),
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-          child: mainUI(context),
+        appBar: AppBar(
+          title: const Text('Отсканируйте метки'),
         ),
-      ),
-    );
+        body: Center(
+          child: Container(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+            child: mainUI(context),
+          ),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          height: 165,
+          child: Container(
+            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+            child: Column(
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    var tag = await rfid.readSingleTag();
+                    setState(() {
+                      for (var item in _data) {
+                        if (item.epc == tag.epc) {
+                          return;
+                        }
+                      }
+                      _data.add(tag);
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    backgroundColor: Colors.white,
+                    minimumSize: const Size.fromHeight(36),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.grey.shade400),
+                      borderRadius: BorderRadius.circular(80),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    'Сканировать',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    if (positionId == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Выберите наименование'),
+                        ),
+                      );
+                    }
+                    if (_data.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Сначала отсканируйте метки'),
+                        ),
+                      );
+                    }
+                    createProducts().then((value) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Продукты созданы'),
+                        ),
+                      );
+                      setState(() {
+                        _data.clear();
+                      });
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    backgroundColor: Theme.of(context).primaryColor,
+                    minimumSize: const Size.fromHeight(36),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(80),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    'Создать',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ));
   }
 }

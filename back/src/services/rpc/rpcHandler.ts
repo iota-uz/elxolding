@@ -1,4 +1,5 @@
 import {BadRequest} from '@feathersjs/errors';
+import {ModelStatic} from 'sequelize';
 
 import {Application} from '../../declarations';
 
@@ -24,6 +25,28 @@ export class RpcHandler {
             });
         }));
         return {createdProducts: result.length};
+    }
+
+    public async CompleteOrder(data: { orderId: number }): Promise<{ success: boolean }> {
+        if (!data.orderId) {
+            throw new BadRequest('Invalid data');
+        }
+        const {orderId} = data;
+        const {models} = this.app.get('sequelizeClient');
+        const orderModel: ModelStatic<any> = models.orders;
+        const productsModel: ModelStatic<any> = models.products;
+
+        const order = await orderModel.findByPk(orderId);
+        if (!order) {
+            throw new BadRequest('Order not found');
+        }
+        if (order.type === 'in') {
+            await productsModel.update({status: 'approved'}, {where: {orderId}});
+        } else {
+            await productsModel.destroy({where: {orderId}});
+        }
+        await order.remove();
+        return {success: true};
     }
 
     public async GetInventory(): Promise<{ inventory: any[] }> {
