@@ -60,6 +60,42 @@ export class RpcHandler {
         return {inventory: positions};
     }
 
+    public async CompleteInventoryCheck(data: { positions: {positionId: number, found: number}[] }): Promise<{ success: boolean }> {
+        if (!data.positions || !Array.isArray(data.positions)) {
+            throw new BadRequest('Invalid data');
+        }
+        const {models} = this.app.get('sequelizeClient');
+        const positionsModel: ModelStatic<any> = models.positions;
+        const productsModel: ModelStatic<any> = models.products;
+        const inventoryModel: ModelStatic<any> = models.inventory;
+        const inventoryResultsModel: ModelStatic<any> = models.inventory_results;
+
+        const {id} = await inventoryModel.create({
+            status: 'completed',
+        });
+
+        await Promise.all(data.positions.map(async (position: any) => {
+            const {positionId, found} = position;
+            const positionModel = await positionsModel.findByPk(positionId);
+            if (!positionModel) {
+                throw new BadRequest('Position not found');
+            }
+            const products = await productsModel.findAll({where: {
+                positionId,
+                status: 'approved'
+            }});
+            const expected = products.length;
+            await inventoryResultsModel.create({
+                inventoryId: id,
+                positionId,
+                expected,
+                found,
+                difference: found - expected
+            });
+        }));
+        return {success: true};
+    }
+
     getRPCMethods() {
         const properties = Object.getOwnPropertyNames(RpcHandler.prototype) as (keyof RpcHandler)[];
         const methodNames = properties.filter(el => {

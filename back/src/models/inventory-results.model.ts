@@ -7,10 +7,26 @@ import {Application} from '../declarations';
 
 export default function (app: Application): typeof Model {
     const sequelizeClient: Sequelize = app.get('sequelizeClient');
-    const inventory = sequelizeClient.define('inventory', {
-        status: {
-            type: DataTypes.ENUM('successful', 'incomplete', 'failed'),
+    const inventory = sequelizeClient.define('inventory_results', {
+        inventoryId: {
+            type: DataTypes.INTEGER,
             allowNull: false,
+        },
+        positionId: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        found: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        expected: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        difference: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         },
     }, {
         timestamps: true,

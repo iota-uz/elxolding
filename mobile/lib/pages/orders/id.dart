@@ -18,7 +18,7 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPageState extends State<OrderPage> {
-  int orderID = 0;
+  int orderId = 0;
   Order? order;
   bool isLoading = true;
   RfidWrapper rfid = RfidWrapper();
@@ -27,8 +27,8 @@ class _OrderPageState extends State<OrderPage> {
   @override
   void initState() {
     super.initState();
-    orderID = int.parse(widget.pk);
-    fetchOrder(orderID).then((value) {
+    orderId = int.parse(widget.pk);
+    fetchOrder(orderId).then((value) {
       setState(() {
         order = value;
         isLoading = false;
@@ -53,6 +53,27 @@ class _OrderPageState extends State<OrderPage> {
     return Order.fromJson(res);
   }
 
+  bool buttonDisabled() {
+    var found = 0;
+    if (order == null) {
+      return true;
+    }
+    for (var position in order!.positions) {
+      var quantity = position.products.length;
+      for (var tag in tags) {
+        for (var product in position.products) {
+          if (tag.epc == "EPC:${product.rfid}") {
+            found++;
+          }
+        }
+      }
+      if (found < quantity) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   List<Widget> buildProductsList(BuildContext context) {
     var list = <Widget>[];
     for (var position in order!.positions) {
@@ -75,7 +96,6 @@ class _OrderPageState extends State<OrderPage> {
               Text("$found/$quantity"),
             ],
           ),
-          subtitle: Text("x$quantity"),
         ),
       );
     }
@@ -102,22 +122,29 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 
-  Future<void> changeStatus() async {
-    await constants.feathersApp.service("requests").patch(orderID, {
-      "status": "done",
+  Future<void> completeOrder() async {
+    await constants.feathersApp.service("rpc").create({
+      "method": "CompleteOrder",
+      "params": {
+        "orderId": orderId,
+      },
     });
   }
 
   void _onPressed() {
-    changeStatus();
-    GoRouter.of(context).go("/orders");
+    if (buttonDisabled()) {
+      return;
+    }
+    completeOrder();
+    GoRouter.of(context).goNamed("home");
   }
 
   @override
   Widget build(BuildContext context) {
+    var disabled = buttonDisabled();
     return Scaffold(
       appBar: AppBar(
-        title: Text("${FlutterI18n.translate(context, "order.title")}$orderID"),
+        title: Text("${FlutterI18n.translate(context, "order.title")}$orderId"),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -133,8 +160,8 @@ class _OrderPageState extends State<OrderPage> {
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 minimumSize: const Size.fromHeight(36),
+                backgroundColor: disabled ? Colors.grey : Colors.green,
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(color: Colors.grey.shade400),
                   borderRadius: BorderRadius.circular(80),
                 ),
                 elevation: 0,

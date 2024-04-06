@@ -164,29 +164,6 @@ module.exports = {
                 defaultValue: Sequelize.fn('now')
             }
         });
-        await queryInterface.createTable('inventory', {
-            id: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-                autoIncrement: true,
-                primaryKey: true
-            },
-            text: {
-                type: DataTypes.STRING,
-                allowNull: false
-            },
-            created_at: {
-                type: DataTypes.DATE,
-                allowNull: false,
-                defaultValue: Sequelize.fn('now')
-            },
-            updated_at: {
-                type: DataTypes.DATE,
-                allowNull: false,
-                defaultValue: Sequelize.fn('now')
-            }
-        });
-
     },
     async down(queryInterface: QueryInterface) {
         await queryInterface.dropTable('users');
@@ -194,7 +171,6 @@ module.exports = {
         await queryInterface.dropTable('requests');
         await queryInterface.dropTable('products');
         await queryInterface.dropTable('positions');
-        await queryInterface.dropTable('inventory');
 
     }
 };

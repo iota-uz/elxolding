@@ -2,7 +2,7 @@
 import {ServiceAddons} from '@feathersjs/feathers';
 
 import {Application} from '../../declarations';
-import createModel from '../../models/inventory.model';
+import createModel from '../../models/inventory-results.model';
 import {Inventory} from './inventory.class';
 import hooks from './inventory.hooks';
 
@@ -20,10 +20,10 @@ export default function (app: Application): void {
     };
 
     // Initialize our service with any options it requires
-    app.use('/inventory', new Inventory(options, app));
+    app.use('/inventory-results', new Inventory(options, app));
 
     // Get our initialized service so that we can register hooks
-    const service = app.service('inventory');
+    const service = app.service('inventory-results');
 
     service.hooks(hooks);
 }
