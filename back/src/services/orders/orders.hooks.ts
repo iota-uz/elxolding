@@ -20,7 +20,7 @@ function handleFK() {
         const positions: Position[] = data.positions || [];
         const models = app.get('sequelizeClient').models;
         const productsModel: ModelStatic<any> = models.products;
-        const requestProductsModel: ModelStatic<any> = models.request_products;
+        const orderProductsModel: ModelStatic<any> = models.order_products;
         const joinedProducts: number[] = [];
         const availableProducts: Record<string, number> = {};
 
@@ -59,16 +59,16 @@ function handleFK() {
             joinedProducts.push(...products.map((p) => p.id));
         }));
         await Promise.all(joinedProducts.map((productId) => {
-            return requestProductsModel.findOrCreate({
+            return orderProductsModel.findOrCreate({
                 where: {
-                    requestId: result.id,
+                    orderId: result.id,
                     productId
                 }
             });
         }));
-        await requestProductsModel.destroy({
+        await orderProductsModel.destroy({
             where: {
-                requestId: result.id,
+                orderId: result.id,
                 productId: {
                     [Op.notIn]: joinedProducts
                 }
@@ -87,7 +87,7 @@ function includeProducts() {
                     model: models.products,
                     as: 'products',
                     through: {
-                        model: models.request_products,
+                        model: models.order_products,
                         attributes: []
                     }
                 }
@@ -100,24 +100,24 @@ function includeProducts() {
 function groupProductsByPosition() {
     const postResolvers: ResolverMap<any> = {
         joins: {
-            products: () => async (request: any, context: HookContext) => {
+            products: () => async (order: any, context: HookContext) => {
                 const {app} = context;
                 const {models} = app.get('sequelizeClient');
-                const groupedProducts = request.products.reduce((acc: any, product: any) => {
+                const groupedProducts = order.products.reduce((acc: any, product: any) => {
                     if (!acc[product.positionId]) {
                         acc[product.positionId] = [];
                     }
                     acc[product.positionId].push(product);
                     return acc;
                 }, {});
-                request.positions = await Promise.all(Object.entries(groupedProducts).map(async ([positionId, products]) => {
+                order.positions = await Promise.all(Object.entries(groupedProducts).map(async ([positionId, products]) => {
                     const position = await models.positions.findByPk(positionId);
                     return {
                         position,
                         products
                     };
                 }));
-                return request;
+                return order;
             }
         }
     };
