@@ -17,7 +17,7 @@ class NewInventoryPage extends StatefulWidget {
 }
 
 class _NewInventoryPageState extends State<NewInventoryPage> {
-  List<TagEpc> _data = [];
+  List<TagEpc> tags = [];
   List<dynamic> _inventory = [];
   bool _isLoading = true;
   RfidWrapper rfid = RfidWrapper();
@@ -37,11 +37,11 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   Future<void> fetchData() async {
     var inventory = await fetchInventory();
     rfid.connect();
-    rfid.readContinuous((t) {
-      setState(() {
-        _data = t;
-      });
-    });
+    // rfid.readContinuous((t) {
+    //   setState(() {
+    //     tags = t;
+    //   });
+    // });
     setState(() {
       _inventory = inventory;
       _isLoading = false;
@@ -70,7 +70,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
             .toList();
         var matches = 0;
         for (var product in products) {
-          for (var tag in _data) {
+          for (var tag in tags) {
             if ("EPC:${product.rfid}" == tag.epc) {
               matches++;
             }
@@ -107,7 +107,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
           .toList();
       var matches = 0;
       for (var product in products) {
-        for (var tag in _data) {
+        for (var tag in tags) {
           if ("EPC:${product.rfid}" == tag.epc) {
             matches++;
           }
@@ -128,45 +128,82 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(FlutterI18n.translate(context, "inventory.title")),
-        ),
-        body: Center(
-          child: Container(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-            child: Column(
-              children: [
-                mainUI(context),
-              ],
-            ),
+      appBar: AppBar(
+        title: Text(FlutterI18n.translate(context, "inventory.title")),
+      ),
+      body: Center(
+        child: Container(
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+          child: Column(
+            children: [
+              mainUI(context),
+            ],
           ),
         ),
-        bottomNavigationBar: BottomAppBar(
-          child: Container(
-            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-            child: ElevatedButton(
-              onPressed: () {
-                onPressed();
-                context.pop();
-              },
-              style: ElevatedButton.styleFrom(
+      ),
+      bottomNavigationBar: BottomAppBar(
+        height: 165,
+        child: Container(
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+          child: Column(
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  var tag = await rfid.readSingleTag();
+                  setState(() {
+                    for (var item in tags) {
+                      if (item.epc == tag.epc) {
+                        return;
+                      }
+                    }
+                    tags.add(tag);
+                  });
+                },
+                style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 20),
-                  backgroundColor: Theme.of(context).primaryColor,
-                  minimumSize: const Size.fromHeight(40),
+                  backgroundColor: Colors.white,
+                  minimumSize: const Size.fromHeight(36),
                   shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Colors.grey.shade400),
                     borderRadius: BorderRadius.circular(80),
                   ),
-                  elevation: 0),
-              child: const Text(
-                "Завершить",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
+                  elevation: 0,
+                ),
+                child: const Text(
+                  'Сканировать',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
+                  ),
                 ),
               ),
-            ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  onPressed();
+                  context.pop();
+                },
+                style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    backgroundColor: Theme.of(context).primaryColor,
+                    minimumSize: const Size.fromHeight(40),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(80),
+                    ),
+                    elevation: 0),
+                child: const Text(
+                  "Завершить",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              )
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

@@ -221,6 +221,7 @@ class _RfidPageState extends State<RfidPage> {
               ],
             ),
           ),
-        ));
+        ),
+    );
   }
 }

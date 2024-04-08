@@ -172,7 +172,7 @@ async function remove() {
     try {
         await ordersService.remove(order.value.id).exec();
         toast.show({message: 'Успешно удалено', timeout: 3000, type: 'success'});
-        navigateTo('/');
+        navigateTo('/orders');
     } catch (e: any) {
         toast.show({message: e.message, timeout: 3000, type: 'error'});
     } finally {
@@ -191,7 +191,7 @@ async function submit() {
         } else {
             await ordersService.create(data).exec();
         }
-        navigateTo('/');
+        navigateTo('/orders');
     } catch (e: any) {
         if (e.code === 400 || e.code === 422) {
             if (e.errors) {
