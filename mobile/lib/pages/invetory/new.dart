@@ -5,7 +5,7 @@ import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 import 'package:mobile/constants.dart' as constants;
 
-import '../../models/product.dart';
+import 'package:mobile/models/product.dart';
 
 class NewInventoryPage extends StatefulWidget {
   const NewInventoryPage({Key? key}) : super(key: key);
@@ -153,6 +153,11 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                   setState(() {
                     for (var item in tags) {
                       if (item.epc == tag.epc) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Метка уже добавлена'),
+                          ),
+                        );
                         return;
                       }
                     }

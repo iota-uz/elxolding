@@ -1,5 +1,5 @@
 import {BadRequest} from '@feathersjs/errors';
-import {ModelStatic} from 'sequelize';
+import {ModelStatic, Op, Sequelize} from 'sequelize';
 
 import {Application} from '../../declarations';
 
@@ -51,12 +51,13 @@ export class RpcHandler {
 
     public async GetInventory(): Promise<{ inventory: any[] }> {
         const positionsModel = this.app.service('positions').Model;
-        const positions = await positionsModel.findAll({
+        let positions = await positionsModel.findAll({
             include: [
                 {model: this.app.service('products').Model, as: 'products'}
             ],
             raw: false
         });
+        positions = positions.filter((el: any) => el.products.length > 0);
         return {inventory: positions};
     }
 
