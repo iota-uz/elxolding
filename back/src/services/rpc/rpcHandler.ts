@@ -60,7 +60,9 @@ export class RpcHandler {
         return {inventory: positions};
     }
 
-    public async CompleteInventoryCheck(data: { positions: {positionId: number, found: number}[] }): Promise<{ success: boolean }> {
+    public async CompleteInventoryCheck(data: { positions: { positionId: number, found: number }[] }): Promise<{
+        success: boolean
+    }> {
         if (!data.positions || !Array.isArray(data.positions)) {
             throw new BadRequest('Invalid data');
         }
@@ -80,10 +82,12 @@ export class RpcHandler {
             if (!positionModel) {
                 throw new BadRequest('Position not found');
             }
-            const products = await productsModel.findAll({where: {
-                positionId,
-                status: 'approved'
-            }});
+            const products = await productsModel.findAll({
+                where: {
+                    positionId,
+                    status: 'approved'
+                }
+            });
             const expected = products.length;
             await inventoryResultsModel.create({
                 inventoryId: id,
@@ -94,6 +98,28 @@ export class RpcHandler {
             });
         }));
         return {success: true};
+    }
+
+    public async DashboardStats(): Promise<{ products: number, positions: number, depth: number, orders: number }> {
+        const {models} = this.app.get('sequelizeClient');
+        const productsModel: ModelStatic<any> = models.products;
+        const positionsModel: ModelStatic<any> = models.positions;
+        const ordersModel: ModelStatic<any> = models.orders;
+
+        const [products, positions, orders] = await Promise.all([
+            productsModel.count({
+                where: {
+                    status: 'approved'
+                }
+            }),
+            positionsModel.count({}),
+            ordersModel.count({
+                where: {
+                    status: 'pending'
+                }
+            })
+        ]);
+        return {products, positions, depth: products / positions, orders};
     }
 
     getRPCMethods() {

@@ -1,14 +1,14 @@
 // See https://sequelize.org/master/manual/model-basics.html
 // for more of what you can do here.
-import { DataTypes, Model,Sequelize } from 'sequelize';
-import { HookReturn } from 'sequelize/types/hooks';
+import {DataTypes, Model, Sequelize} from 'sequelize';
+import {HookReturn} from 'sequelize/types/hooks';
 
-import { Application } from '../declarations';
+import {Application} from '../declarations';
 
 export default function (app: Application): typeof Model {
     const sequelizeClient: Sequelize = app.get('sequelizeClient');
-    const requestProducts = sequelizeClient.define('request_products', {
-        requestId: {
+    const orderProducts = sequelizeClient.define('order_products', {
+        orderId: {
             type: DataTypes.INTEGER,
             allowNull: false
         },
@@ -26,9 +26,9 @@ export default function (app: Application): typeof Model {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (requestProducts as any).associate = function (models: any): void {
-        requestProducts.belongsTo(models.requests);
+    (orderProducts as any).associate = function (models: any): void {
+        orderProducts.belongsTo(models.orders);
     };
 
-    return requestProducts;
+    return orderProducts;
 }

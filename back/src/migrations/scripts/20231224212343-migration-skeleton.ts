@@ -22,7 +22,7 @@ module.exports = {
                 allowNull: true
             },
             role: {
-                type: DataTypes.ENUM('admin', 'user'),
+                type: DataTypes.ENUM('superuser', 'user', 'polygraphy', 'tci', 'warehouse_manager'),
                 allowNull: false
             },
             password: {
@@ -44,7 +44,6 @@ module.exports = {
                 defaultValue: Sequelize.fn('now')
             }
         });
-
         await queryInterface.createTable('uploads', {
             id: {
                 type: DataTypes.INTEGER,
@@ -75,7 +74,7 @@ module.exports = {
                 defaultValue: Sequelize.fn('now')
             }
         });
-        await queryInterface.createTable('requests', {
+        await queryInterface.createTable('orders', {
             id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
@@ -84,6 +83,10 @@ module.exports = {
             },
             type: {
                 type: DataTypes.ENUM('in', 'out'),
+                allowNull: false
+            },
+            status: {
+                type: DataTypes.ENUM('pending', 'completed'),
                 allowNull: false
             },
             created_at: {
@@ -164,13 +167,108 @@ module.exports = {
                 defaultValue: Sequelize.fn('now')
             }
         });
+        await queryInterface.createTable('order_products', {
+            order_id: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                primaryKey: true,
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE',
+                references: {
+                    model: 'orders',
+                    key: 'id'
+                }
+            },
+            product_id: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                primaryKey: true,
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE',
+                references: {
+                    model: 'products',
+                    key: 'id'
+                }
+            }
+        });
+        await queryInterface.createTable('inventory', {
+            id: {
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+                type: DataTypes.INTEGER
+            },
+            status: {
+                type: DataTypes.ENUM('successful', 'incomplete', 'failed'),
+                allowNull: false
+            },
+            createdAt: {
+                allowNull: false,
+                type: DataTypes.DATE
+            },
+            updatedAt: {
+                allowNull: false,
+                type: DataTypes.DATE
+            }
+        });
+        await queryInterface.createTable('inventory_results', {
+            id: {
+                allowNull: false,
+                autoIncrement: true,
+                primaryKey: true,
+                type: DataTypes.INTEGER
+            },
+            positionId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: 'positions',
+                    key: 'id'
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE'
+            },
+            inventoryId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                references: {
+                    model: 'inventory',
+                    key: 'id'
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'CASCADE'
+            },
+            found: {
+                type: DataTypes.INTEGER,
+                allowNull: false
+            },
+            expected: {
+                type: DataTypes.INTEGER,
+                allowNull: false
+            },
+            difference: {
+                type: DataTypes.INTEGER,
+                allowNull: false
+            },
+            createdAt: {
+                allowNull: false,
+                type: DataTypes.DATE
+            },
+            updatedAt: {
+                allowNull: false,
+                type: DataTypes.DATE
+            }
+        });
     },
     async down(queryInterface: QueryInterface) {
-        await queryInterface.dropTable('users');
-        await queryInterface.dropTable('uploads');
-        await queryInterface.dropTable('requests');
+        await queryInterface.dropTable('inventory_results');
+        await queryInterface.dropTable('inventory');
+        await queryInterface.dropTable('order_products');
         await queryInterface.dropTable('products');
         await queryInterface.dropTable('positions');
+        await queryInterface.dropTable('orders');
+        await queryInterface.dropTable('uploads');
+        await queryInterface.dropTable('users');
 
     }
 };

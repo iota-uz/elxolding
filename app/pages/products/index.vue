@@ -193,10 +193,6 @@ async function fetch() {
         isFetchPending.value = false;
     }
 }
-
-onMounted(async () => {
-    await fetch();
-});
 </script>
 
 <style>

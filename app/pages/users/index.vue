@@ -117,10 +117,11 @@ const columns = ref<Column[]>([
         label: 'Роль',
         name: 'role',
         enums: {
-            admin: 'Администратор',
-            editor: 'Редактор',
-            manager: 'Менеджер',
-            user: 'Пользователь'
+            superuser: 'Руководитель',
+            user: 'Администратор',
+            polygraphy: 'Сотрудник полиграфии',
+            tci: 'Сотрудник ОТК',
+            warehouse_manager: 'Сотрудник склада'
         }
     },
     {
@@ -174,10 +175,6 @@ async function fetch() {
         isFetchPending.value = false;
     }
 }
-
-onMounted(async () => {
-    await fetch();
-});
 </script>
 
 <style>

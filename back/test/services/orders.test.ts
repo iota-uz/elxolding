@@ -2,15 +2,15 @@ import * as assert from 'assert';
 
 import app from '../../src/app';
 
-describe('\'requests\' service', () => {
+describe('\'orders\' service', () => {
     it('registered the service', () => {
-        const service = app.service('requests');
+        const service = app.service('orders');
 
         assert.ok(service, 'Registered the service');
     });
 
-    it('test create/get request', async () => {
-        const service = app.service('requests');
+    it('test create/get order', async () => {
+        const service = app.service('orders');
         const [position1, position2] = await Promise.all([
             app.service('positions').create({
                 title: 'position1',
@@ -54,13 +54,13 @@ describe('\'requests\' service', () => {
                 }
             ]
         });
-        const request = await service.get(id);
+        const order = await service.get(id);
 
-        assert.strictEqual(request.type, 'in');
-        assert.strictEqual(request.positions.length, 2);
-        assert.ok(request.positions[0].position.id);
-        assert.ok(request.positions[0].position.title);
+        assert.strictEqual(order.type, 'in');
+        assert.strictEqual(order.positions.length, 2);
+        assert.ok(order.positions[0].position.id);
+        assert.ok(order.positions[0].position.title);
 
-        assert.strictEqual(request.products.length, 3);
+        assert.strictEqual(order.products.length, 3);
     });
 });

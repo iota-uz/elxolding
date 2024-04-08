@@ -23,7 +23,7 @@ class RfidWrapper {
     } on PlatformException {
       platformVersion = '-';
     }
-    if (platformVersion.contains("android")) {
+    if (platformVersion.contains("Android")) {
       _platformVersion = "Android";
     } else if (platformVersion.contains("iOS")) {
       _platformVersion = "IOS";
@@ -73,7 +73,10 @@ class RfidWrapper {
     if (!started) {
       throw Exception("Failed to start single read");
     }
-    return _data.last;
+    var tag = _data.first;
+    await RfidC72Plugin.clearData;
+    _data = [];
+    return tag;
   }
 
   void updateTags(dynamic result) {

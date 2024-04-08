@@ -13,4 +13,4 @@ CMD pnpm dev
 FROM build-stage as prod
 RUN pnpm compile
 
-CMD pnpm migrate && pnpm start
+CMD pnpm migrate && pnpm seed && pnpm start

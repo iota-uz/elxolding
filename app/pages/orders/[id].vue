@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-col gap-4 mt-4">
         <BaseTabSlider
-            v-model="request.type"
+            v-model="order.type"
             :tabs="[
                 { label: 'Приход', value: 'in' },
                 { label: 'Отгрузка', value: 'out' },
@@ -26,9 +26,9 @@
                     </tr>
                 </thead>
                 <tbody class="divide-muted-200 dark:divide-muted-700 dark:bg-muted-800 divide-y bg-white">
-                    <template v-if="request.positions.length">
+                    <template v-if="order.positions.length">
                         <tr
-                            v-for="(product, idx) in request.positions"
+                            v-for="(product, idx) in order.positions"
                             class="hover:bg-muted-50 dark:hover:bg-muted-900 transition-colors duration-300"
                         >
                             <td class="font-alt whitespace-nowrap text-sm text-muted-800 dark:text-white p-4 w-1/2">
@@ -84,7 +84,7 @@
         <div class="flex justify-end mt-6">
             <div>
                 <BaseButton
-                    v-if="request.id"
+                    v-if="order.id"
                     :loading="isDeletePending"
                     color="danger"
                     @click="remove"
@@ -118,9 +118,9 @@ useHead({
 
 const route = useRoute();
 const toast = useToast('GlobalToast');
-const requestsService = useService('requests', {auth: true});
+const ordersService = useService('orders', {auth: true});
 
-const request = ref<Record<string, any>>({
+const order = ref<Record<string, any>>({
     type: 'in',
     quantity: 0,
     positions: []
@@ -134,13 +134,13 @@ const isSavePending = ref(false);
 
 onMounted(async () => {
     if (route.params.id === 'new') {
-        request.value = {
+        order.value = {
             type: 'in',
             quantity: 0,
             positions: []
         };
     } else {
-        request.value = await requestsService.get(route.params.id as string).exec();
+        order.value = await ordersService.get(route.params.id as string).exec();
     }
     positions.value = await useService('positions', {auth: true}).find({$limit: 1000}).list().exec();
 });
@@ -151,14 +151,14 @@ const positionOptions = computed(() => {
 
 
 function removeProduct(idx: number) {
-    request.value.positions.splice(idx, 1);
+    order.value.positions.splice(idx, 1);
 }
 
 function addPositions() {
     for (const pos of selectedPositions.value) {
-        const isContained = request.value.positions.find((el: any) => el.position.id === pos);
+        const isContained = order.value.positions.find((el: any) => el.position.id === pos);
         if (!isContained) {
-            request.value.positions.push({
+            order.value.positions.push({
                 position: positions.value.find(el => el.id === pos),
                 quantity: 1
             });
@@ -170,7 +170,7 @@ function addPositions() {
 async function remove() {
     isDeletePending.value = true;
     try {
-        await requestsService.remove(request.value.id).exec();
+        await ordersService.remove(order.value.id).exec();
         toast.show({message: 'Успешно удалено', timeout: 3000, type: 'success'});
         navigateTo('/');
     } catch (e: any) {
@@ -181,21 +181,25 @@ async function remove() {
 }
 
 async function submit() {
-    const {id, ...data} = request.value;
+    const {id, ...data} = order.value;
     data.positions = data.positions.map((el: any) => ({positionId: el.position.id, quantity: el.quantity}));
     errors.value = {};
     isSavePending.value = true;
     try {
         if (id) {
-            await requestsService.patch(id, data).exec();
+            await ordersService.patch(id, data).exec();
         } else {
-            await requestsService.create(data).exec();
+            await ordersService.create(data).exec();
         }
         navigateTo('/');
     } catch (e: any) {
         if (e.code === 400 || e.code === 422) {
-            for (const err of e.errors) {
-                errors.value[err.path] = useText(`errors.${err.type}`);
+            if (e.errors) {
+                for (const err of e.errors) {
+                    errors.value[err.path] = useText(`errors.${err.type}`);
+                }
+            } else {
+                toast.show({message: e.message, timeout: 3000, type: 'error'});
             }
         } else {
             toast.show({message: e.message, timeout: 3000, type: 'error'});

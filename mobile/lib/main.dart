@@ -16,7 +16,7 @@ import 'pages/invetory/index.dart';
 void main() {
   // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  constants.feathersApp.registerService("requests");
+  constants.feathersApp.registerService("orders");
   constants.feathersApp.registerService("positions");
   runApp(const MyApp());
 }

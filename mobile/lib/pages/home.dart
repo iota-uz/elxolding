@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<List<Order>> fetchOrders(String t) async {
-    var res = await constants.feathersApp.service("requests").find({
+    var res = await constants.feathersApp.service("orders").find({
       "type": t,
     });
     List<dynamic> data = res["data"];

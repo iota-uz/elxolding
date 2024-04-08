@@ -18,12 +18,20 @@ export default defineAppConfig({
                 enabled: true,
                 items: [
                     {
+                        name: 'Панель управления',
+                        icon: {
+                            name: 'ph:gauge',
+                            class: 'w-5 h-5'
+                        },
+                        to: '/',
+                    },
+                    {
                         name: 'Заявки',
                         icon: {
                             name: 'ph:archive-tray-fill',
                             class: 'w-5 h-5'
                         },
-                        to: '/',
+                        to: '/orders',
                     },
                     {
                         name: 'Продукция',

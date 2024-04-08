@@ -99,6 +99,32 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     );
   }
 
+  Future<void> onPressed() async {
+    List<Map<String, int>> positions = [];
+    for (var item in _inventory) {
+      var products = (item['products'] as List<dynamic>)
+          .map<Product>((e) => Product.fromJson(e))
+          .toList();
+      var matches = 0;
+      for (var product in products) {
+        for (var tag in _data) {
+          if ("EPC:${product.rfid}" == tag.epc) {
+            matches++;
+          }
+        }
+      }
+      if (matches > 0) {
+        positions.add({"positionId": item['id'], "found": matches});
+      }
+    }
+    await constants.feathersApp.service('rpc').create({
+      'method': 'CompleteInventoryCheck',
+      'params': {
+        'positions': positions,
+      },
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,6 +146,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
             padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
             child: ElevatedButton(
               onPressed: () {
+                onPressed();
                 context.pop();
               },
               style: ElevatedButton.styleFrom(

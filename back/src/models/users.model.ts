@@ -19,7 +19,7 @@ export default function (app: Application): typeof Model {
             allowNull: true
         },
         role: {
-            type: DataTypes.ENUM('admin', 'user'),
+            type: DataTypes.ENUM('superuser', 'user', 'polygraphy', 'tci', 'warehouse_manager'),
             allowNull: false
         },
         password: {

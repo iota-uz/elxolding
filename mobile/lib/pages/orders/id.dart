@@ -49,7 +49,7 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   Future<Order> fetchOrder(int id) async {
-    var res = await constants.feathersApp.service("requests").get(id);
+    var res = await constants.feathersApp.service("orders").get(id);
     return Order.fromJson(res);
   }
 

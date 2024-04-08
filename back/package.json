@@ -24,6 +24,8 @@
     "compile:ws": "rm -fo lib/ && tsc",
     "createsu": "ts-node src/scripts/createsu.ts",
     "createsu:ws": "ts-node src/scripts/createsu.ts",
+    "seed": "ts-node src/scripts/seed.ts",
+    "seed:ws": "ts-node src/scripts/seed.ts",
     "createmigration": "sequelize migration:create --name",
     "deploy": "node lib/sendDeployMsg.js",
     "dev": "nodemon",

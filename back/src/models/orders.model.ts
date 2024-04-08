@@ -7,9 +7,14 @@ import { Application } from '../declarations';
 
 export default function (app: Application): typeof Model {
     const sequelizeClient: Sequelize = app.get('sequelizeClient');
-    const requests = sequelizeClient.define('requests', {
+    const orders = sequelizeClient.define('orders', {
         type: {
             type: DataTypes.ENUM('in', 'out'),
+            allowNull: false
+        },
+        status: {
+            type: DataTypes.ENUM('pending', 'completed'),
+            defaultValue: 'pending',
             allowNull: false
         }
     }, {
@@ -22,9 +27,9 @@ export default function (app: Application): typeof Model {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (requests as any).associate = function (models: any): void {
-        requests.belongsToMany(models.products, {through: 'request_products'});
+    (orders as any).associate = function (models: any): void {
+        orders.belongsToMany(models.products, {through: 'order_products'});
     };
 
-    return requests;
+    return orders;
 }

@@ -5,7 +5,7 @@
                 <DateSelect
                     v-model:start="dateFilter.start"
                     v-model:end="dateFilter.end"
-                    label="Дата создания"
+                    label="Дата проведения"
                 />
                 <PerPageSelect v-model="perPage" />
             </div>
@@ -55,11 +55,11 @@ import {type PaginatedResponse} from '~/types/generics';
 
 definePageMeta({
     layout: 'account',
-    verbose: 'Инвентаризация'
+    verbose: 'История инвентаризации'
 });
 
 useHead({
-    title: 'Инвентаризация'
+    title: 'История инвентаризации'
 });
 
 const toast = useToast('GlobalToast');

@@ -31,7 +31,7 @@ export default function (app: Application): typeof Model {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (products as any).associate = function (models: any): void {
-        products.belongsToMany(models.requests, {through: 'request_products'});
+        products.belongsToMany(models.orders, {through: 'order_products'});
         products.belongsTo(models.positions, {as: 'position'});
     };
 

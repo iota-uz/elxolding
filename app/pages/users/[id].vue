@@ -32,17 +32,20 @@
                     label="Роль*"
                     name="role"
                 >
-                    <option value="admin">
-                        Администратор
-                    </option>
-                    <option value="manager">
-                        Менеджер
-                    </option>
-                    <option value="editor">
-                        Редактор
+                    <option value="superuser">
+                        Руководитель
                     </option>
                     <option value="user">
-                        Пользователь
+                        Администратор
+                    </option>
+                    <option value="polygraphy">
+                        Сотрудник полиграфии
+                    </option>
+                    <option value="tci">
+                        Сотрудник ОТК
+                    </option>
+                    <option value="warehouse_manager">
+                        Сотрудник склада
                     </option>
                 </BaseSelect>
                 <BaseInput
