@@ -88,7 +88,21 @@ class _HomePageState extends State<HomePage> {
                     if (snapshot.hasError) {
                       return Text(snapshot.error.toString());
                     }
-                    return buildList(context, orders: snapshot.data!);
+                    var orders = snapshot.data!;
+                    if (orders.isEmpty) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/images/empty.png",
+                            width: 120,
+                          ),
+                          const SizedBox(height: 10),
+                          const Text("Нет данных"),
+                        ],
+                      );
+                    }
+                    return buildList(context, orders: orders);
                   },
                 ),
               ),
@@ -119,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                         ],
                       );
                     }
-                    return buildList(context, orders: snapshot.data!);
+                    return buildList(context, orders: orders);
                   },
                 ),
               ),

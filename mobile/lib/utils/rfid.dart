@@ -4,15 +4,17 @@ import 'package:rfid_c72_plugin/tag_epc.dart';
 
 class RfidWrapper {
   String _platformVersion = '';
-  List<TagEpc> _data = [];
-  bool _isConnected = false;
-  bool _isLoading = false;
+
+  Function(List<TagEpc>)? onTagsUpdate;
+  Function(bool)? onConnected;
 
   closeAll() async {
     if (_platformVersion == "IOS") {
       return;
     }
-    await RfidC72Plugin.stopScan;
+    onTagsUpdate = null;
+    onConnected = null;
+    await RfidC72Plugin.stop;
     await RfidC72Plugin.close;
   }
 
@@ -33,18 +35,28 @@ class RfidWrapper {
     if (_platformVersion == "Android") {
       RfidC72Plugin.connectedStatusStream
           .receiveBroadcastStream()
-          .listen(updateIsConnected);
-      RfidC72Plugin.tagsStatusStream
-          .receiveBroadcastStream()
-          .listen(updateTags);
+          .listen((event) {
+        if (onConnected == null) {
+          return;
+        }
+        onConnected!(event);
+      });
+      RfidC72Plugin.tagsStatusStream.receiveBroadcastStream().listen((event) {
+        if (onTagsUpdate == null) {
+          return;
+        }
+        onTagsUpdate!(TagEpc.parseTags(event));
+      });
       await RfidC72Plugin.connect;
     }
-    _isLoading = false;
   }
 
-  readContinuous(void Function(List<TagEpc>) callback) async {
+  readContinuous() async {
+    if (onTagsUpdate == null) {
+      throw Exception("onTagsUpdate is not set");
+    }
     if (_platformVersion == "IOS") {
-      callback([
+      onTagsUpdate!([
         TagEpc(
           id: '1',
           epc: "E28011606000000000000000",
@@ -55,35 +67,26 @@ class RfidWrapper {
       return;
     }
     await RfidC72Plugin.startContinuous;
-    RfidC72Plugin.tagsStatusStream.receiveBroadcastStream().listen(
-          (event) => callback(TagEpc.parseTags(event)),
-        );
   }
 
-  Future<TagEpc> readSingleTag() async {
+  Future<void> readSingleTag() async {
+    if (onTagsUpdate == null) {
+      throw Exception("onTagsUpdate is not set");
+    }
     if (_platformVersion == "IOS") {
-      return TagEpc(
-        id: '1',
-        epc: "E28011606000000000000000",
-        rssi: "-50",
-        count: '1',
-      );
+      onTagsUpdate!([
+        TagEpc(
+          id: '1',
+          epc: "E28011606000000000000000",
+          rssi: "-50",
+          count: '1',
+        )
+      ]);
+      return;
     }
     bool started = (await RfidC72Plugin.startSingle)!;
     if (!started) {
       throw Exception("Failed to start single read");
     }
-    var tag = _data.first;
-    await RfidC72Plugin.clearData;
-    _data = [];
-    return tag;
-  }
-
-  void updateTags(dynamic result) {
-    _data = TagEpc.parseTags(result);
-  }
-
-  void updateIsConnected(dynamic isConnected) {
-    _isConnected = isConnected;
   }
 }

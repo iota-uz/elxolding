@@ -134,7 +134,9 @@ final _router = GoRouter(
       path: "/login/:userId",
       name: "enter",
       builder: (context, state) {
-        return EnterPassword(userId: state.pathParameters["userId"]!,);
+        return EnterPassword(
+          userId: state.pathParameters["userId"]!,
+        );
       },
     ),
     GoRoute(

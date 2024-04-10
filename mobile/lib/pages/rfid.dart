@@ -41,6 +41,18 @@ class _RfidPageState extends State<RfidPage> {
   }
 
   Future<void> initPlatformState() async {
+    rfid.onTagsUpdate = (List<TagEpc> tags) {
+      setState(() {
+        for (var tag in tags) {
+          for (var item in _data) {
+            if (item.epc == tag.epc) {
+              return;
+            }
+          }
+          _data.add(tag);
+        }
+      });
+    };
     await rfid.connect();
     var positions = await fetchPositions();
 
@@ -119,9 +131,11 @@ class _RfidPageState extends State<RfidPage> {
       return const CircularProgressIndicator();
     }
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         dropdownList(context),
         const SizedBox(height: 20),
+        Text('Всего отсканировано: ${_data.length}'),
         tagsList(context),
         const SizedBox(height: 20),
       ],
@@ -134,10 +148,12 @@ class _RfidPageState extends State<RfidPage> {
         appBar: AppBar(
           title: const Text('Отсканируйте метки'),
         ),
-        body: Center(
-          child: Container(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-            child: mainUI(context),
+        body: SingleChildScrollView(
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+              child: mainUI(context),
+            ),
           ),
         ),
         bottomNavigationBar: BottomAppBar(
@@ -148,15 +164,7 @@ class _RfidPageState extends State<RfidPage> {
               children: [
                 ElevatedButton(
                   onPressed: () async {
-                    var tag = await rfid.readSingleTag();
-                    setState(() {
-                      for (var item in _data) {
-                        if (item.epc == tag.epc) {
-                          return;
-                        }
-                      }
-                      _data.add(tag);
-                    });
+                    await rfid.readSingleTag();
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 20),

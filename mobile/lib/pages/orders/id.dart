@@ -35,11 +35,7 @@ class _OrderPageState extends State<OrderPage> {
       });
     });
     rfid.connect();
-    rfid.readContinuous((t) {
-      setState(() {
-        tags = t;
-      });
-    });
+    rfid.readContinuous();
   }
 
   @override
