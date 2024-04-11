@@ -3,13 +3,13 @@ import {ServiceAddons} from '@feathersjs/feathers';
 
 import {Application} from '../../declarations';
 import createModel from '../../models/inventory-results.model';
-import {Inventory} from './inventory.class';
-import hooks from './inventory.hooks';
+import {Inventory} from './inventory-results.class';
+import hooks from './inventory-results.hooks';
 
 // Add this service to the service type index
 declare module '../../declarations' {
     interface ServiceTypes {
-        'inventory': Inventory & ServiceAddons<any>;
+        'inventory-results': Inventory & ServiceAddons<any>;
     }
 }
 

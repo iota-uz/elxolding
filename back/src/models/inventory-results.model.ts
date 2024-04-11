@@ -7,7 +7,7 @@ import {Application} from '../declarations';
 
 export default function (app: Application): typeof Model {
     const sequelizeClient: Sequelize = app.get('sequelizeClient');
-    const inventory = sequelizeClient.define('inventory_results', {
+    const inventory_results = sequelizeClient.define('inventory_results', {
         inventoryId: {
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -38,10 +38,10 @@ export default function (app: Application): typeof Model {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    (inventory as any).associate = function (models: any): void {
+    (inventory_results as any).associate = function (models: any): void {
         // Define associations here
         // See https://sequelize.org/master/manual/assocs.html
     };
 
-    return inventory;
+    return inventory_results;
 }

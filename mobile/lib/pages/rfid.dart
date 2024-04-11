@@ -135,7 +135,21 @@ class _RfidPageState extends State<RfidPage> {
       children: [
         dropdownList(context),
         const SizedBox(height: 20),
-        Text('Всего отсканировано: ${_data.length}'),
+        Row(
+          children: [
+            Text('Всего отсканировано: ${_data.length}'),
+            const Spacer(),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  _data.clear();
+                  rfid.clear();
+                });
+              },
+              icon: const Icon(Icons.close),
+            ),
+          ],
+        ),
         tagsList(context),
         const SizedBox(height: 20),
       ],
@@ -145,91 +159,91 @@ class _RfidPageState extends State<RfidPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Отсканируйте метки'),
-        ),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Container(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-              child: mainUI(context),
-            ),
+      appBar: AppBar(
+        title: const Text('Отсканируйте метки'),
+      ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+            child: mainUI(context),
           ),
         ),
-        bottomNavigationBar: BottomAppBar(
-          height: 165,
-          child: Container(
-            padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-            child: Column(
-              children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    await rfid.readSingleTag();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    backgroundColor: Colors.white,
-                    minimumSize: const Size.fromHeight(36),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.grey.shade400),
-                      borderRadius: BorderRadius.circular(80),
-                    ),
-                    elevation: 0,
+      ),
+      bottomNavigationBar: BottomAppBar(
+        height: 165,
+        child: Container(
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+          child: Column(
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  await rfid.readSingleTag();
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  backgroundColor: Colors.white,
+                  minimumSize: const Size.fromHeight(36),
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(color: Colors.grey.shade400),
+                    borderRadius: BorderRadius.circular(80),
                   ),
-                  child: const Text(
-                    'Сканировать',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
+                  elevation: 0,
+                ),
+                child: const Text(
+                  'Сканировать',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    if (positionId == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Выберите наименование'),
-                        ),
-                      );
-                    }
-                    if (_data.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Сначала отсканируйте метки'),
-                        ),
-                      );
-                    }
-                    createProducts().then((value) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Продукты созданы'),
-                        ),
-                      );
-                      setState(() {
-                        _data.clear();
-                      });
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  if (positionId == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Выберите наименование'),
+                      ),
+                    );
+                  }
+                  if (_data.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Сначала отсканируйте метки'),
+                      ),
+                    );
+                  }
+                  createProducts().then((value) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Продукты созданы'),
+                      ),
+                    );
+                    setState(() {
+                      _data.clear();
                     });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    backgroundColor: Theme.of(context).primaryColor,
-                    minimumSize: const Size.fromHeight(36),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(80),
-                    ),
-                    elevation: 0,
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  backgroundColor: Theme.of(context).primaryColor,
+                  minimumSize: const Size.fromHeight(36),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(80),
                   ),
-                  child: const Text(
-                    'Создать',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                )
-              ],
-            ),
+                  elevation: 0,
+                ),
+                child: const Text(
+                  'Создать',
+                  style: TextStyle(fontSize: 18),
+                ),
+              )
+            ],
           ),
         ),
+      ),
     );
   }
 }

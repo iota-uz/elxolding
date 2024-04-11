@@ -51,6 +51,13 @@ class RfidWrapper {
     }
   }
 
+  Future<void> clear() async {
+    if (_platformVersion == "IOS") {
+      return;
+    }
+    await RfidC72Plugin.clearData;
+  }
+
   readContinuous() async {
     if (onTagsUpdate == null) {
       throw Exception("onTagsUpdate is not set");
@@ -67,6 +74,14 @@ class RfidWrapper {
       return;
     }
     await RfidC72Plugin.startContinuous;
+  }
+
+  setPower(int power) async {
+    if (_platformVersion == "IOS") {
+      return;
+    }
+    await RfidC72Plugin.setWorkArea('2');
+    await RfidC72Plugin.setPowerLevel(power.toString());
   }
 
   Future<void> readSingleTag() async {

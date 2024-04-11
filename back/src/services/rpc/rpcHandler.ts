@@ -61,9 +61,7 @@ export class RpcHandler {
         return {inventory: positions};
     }
 
-    public async CompleteInventoryCheck(data: { positions: { positionId: number, found: number }[] }): Promise<{
-        success: boolean
-    }> {
+    public async CompleteInventoryCheck(data: { positions: { positionId: number, found: number }[] }): Promise<Record<string, any>> {
         if (!data.positions || !Array.isArray(data.positions)) {
             throw new BadRequest('Invalid data');
         }
@@ -73,8 +71,8 @@ export class RpcHandler {
         const inventoryModel: ModelStatic<any> = models.inventory;
         const inventoryResultsModel: ModelStatic<any> = models.inventory_results;
 
-        const {id} = await inventoryModel.create({
-            status: 'completed',
+        const result = await inventoryModel.create({
+            status: 'successful',
         });
 
         await Promise.all(data.positions.map(async (position: any) => {
@@ -86,19 +84,19 @@ export class RpcHandler {
             const products = await productsModel.findAll({
                 where: {
                     positionId,
-                    status: 'approved'
+                    status: 'in_stock'
                 }
             });
             const expected = products.length;
             await inventoryResultsModel.create({
-                inventoryId: id,
+                inventoryId: result.id,
                 positionId,
                 expected,
                 found,
                 difference: found - expected
             });
         }));
-        return {success: true};
+        return result;
     }
 
     public async DashboardStats(): Promise<{ products: number, positions: number, depth: number, orders: number }> {

@@ -1,5 +1,6 @@
 import {Application} from '../declarations';
 import inventory from './inventory/inventory.service';
+import inventoryResults from './inventory-results/inventory-results.service';
 import orders from './orders/orders.service';
 import positions from './positions/positions.service';
 import products from './products/products.service';
@@ -16,4 +17,5 @@ export default function (app: Application): void {
     app.configure(orders);
     app.configure(inventory);
     app.configure(positions);
+    app.configure(inventoryResults);
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +15,29 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  // String _batteryLevel = 'Unknown battery level.';
+  // static const platform = MethodChannel('samples.flutter.dev/battery');
+  //
+  // Future<void> _getBatteryLevel() async {
+  //   String batteryLevel;
+  //   try {
+  //     final result = await platform.invokeMethod<int>('getBatteryLevel');
+  //     batteryLevel = 'Battery level at $result % .';
+  //   } on PlatformException catch (e) {
+  //     batteryLevel = "Failed to get battery level: '${e.message}'.";
+  //   }
+  //
+  //   setState(() {
+  //     _batteryLevel = batteryLevel;
+  //   });
+  // }
+  //
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _getBatteryLevel();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,6 +76,10 @@ class _SettingsPageState extends State<SettingsPage> {
                   context.pushNamed("login");
                 },
               ),
+              // Text(
+              //   _batteryLevel,
+              //   style: const TextStyle(color: Colors.blue),
+              // )
             ],
           ),
         ),

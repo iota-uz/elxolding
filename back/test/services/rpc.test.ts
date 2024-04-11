@@ -68,6 +68,45 @@ describe('\'rpc\' service', function () {
             assert.strictEqual(result.inventory[0].products.length, 2);
         });
     });
+
+    describe('CompleteInventoryCheck', function () {
+        it('should complete inventory check', async () => {
+            await Promise.all([
+                app.service('products').create({
+                    positionId: positions[0].id,
+                    status: 'in_stock',
+                    rfid: 'rfid1'
+                }),
+                app.service('products').create({
+                    positionId: positions[0].id,
+                    status: 'in_stock',
+                    rfid: 'rfid2'
+                }),
+            ]);
+            const rpc = app.service('rpc');
+            const {result, error} = await rpc.create({
+                method: 'CompleteInventoryCheck',
+                params: {
+                    positions: [
+                        {
+                            positionId: positions[0].id,
+                            found: 2
+                        }
+                    ]
+                }
+            });
+            const results = await app.service('inventory-results').find({
+                query: {
+                    inventoryId: result.id
+                },
+                paginate: false
+            });
+            assert.strictEqual(error, undefined);
+            assert.strictEqual(results.length, 1);
+            assert.strictEqual(results[0].expected, 2);
+            assert.strictEqual(results[0].found, 2);
+        });
+    });
 });
 
 

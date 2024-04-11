@@ -56,6 +56,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       _isConnected = connected;
     };
     rfid.connect();
+    rfid.setPower(30);
     fetchData();
   }
 
