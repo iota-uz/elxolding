@@ -73,15 +73,17 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
 
   void onTagsUpdate(List<TagEpc> newTags) {
     for (var tag in newTags) {
-      if (scannedTag(tag.epc)) {
-        continue;
-      }
       if (!inventoryTags.contains(tag.epc)) {
+        print("Not in inventory: ${tag.epc}");
         continue;
       }
+      print("Scanned: ${tag.epc}");
       const alarmAudioPath = "audio/beep.wav";
       player.play(AssetSource(alarmAudioPath));
-      tags.add(tag);
+      if (!scannedTag(tag.epc)) {
+        tags.add(tag);
+        continue;
+      }
     }
     for (var item in _inventory) {
       item.matches = 0;

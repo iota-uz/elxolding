@@ -25,10 +25,7 @@ export class RpcHandler {
                     status: 'in_development'
                 });
                 return true;
-            } catch (e: any) {
-                if (e.code !== 11000) {
-                    throw e;
-                }
+            } catch (e) {
                 return false;
             }
         }));

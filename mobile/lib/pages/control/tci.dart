@@ -41,8 +41,7 @@ class _TciPageState extends State<TciPage> {
   }
 
   Future<void> initPlatformState() async {
-    rfid.onConnected = (bool connected) {
-    };
+    rfid.onConnected = (bool connected) {};
     rfid.onTagsUpdate = (List<TagEpc> tags) {
       setState(() {
         for (var tag in tags) {
@@ -118,7 +117,7 @@ class _TciPageState extends State<TciPage> {
     );
   }
 
-  Future<void> createProducts() async {
+  Future<Map<String, dynamic>> createProducts() async {
     var res = await constants.feathersApp.service("rpc").create({
       "method": "CreateProductsWithTags",
       "params": {
@@ -126,6 +125,7 @@ class _TciPageState extends State<TciPage> {
         "tags": _data.map((e) => e.epc).toList(),
       }
     });
+    return res;
   }
 
   Widget mainUI(BuildContext context) {
@@ -218,14 +218,30 @@ class _TciPageState extends State<TciPage> {
                     );
                   }
                   createProducts().then((value) {
+                    if (value["error"] != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(value["error"]["message"]),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Продукция внесена в базу'),
+                        ),
+                      );
+                      setState(() {
+                        _data.clear();
+                      });
+                    }
+                  }).catchError((e) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Продукция внесена в базу'),
+                      SnackBar(
+                        content: Text(
+                            'Ошибка при создании продукции. ${e.toString()}',
+                            style: const TextStyle(color: Colors.red)),
                       ),
                     );
-                    setState(() {
-                      _data.clear();
-                    });
                   });
                 },
                 style: ElevatedButton.styleFrom(
