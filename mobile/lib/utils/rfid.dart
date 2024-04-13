@@ -48,6 +48,8 @@ class RfidWrapper {
         onTagsUpdate!(TagEpc.parseTags(event));
       });
       await RfidC72Plugin.connect;
+    } else {
+      onConnected!(true);
     }
   }
 

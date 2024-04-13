@@ -7,89 +7,23 @@ async function main() {
         logger.info('User already exists');
         process.exit(0);
     }
-    const firstName = 'Диер';
-    const lastName = 'Хайдаров';
-    const password = 'admin1234';
     await app.service('users').create({
-        firstName: firstName,
-        lastName: lastName,
-        password: password,
+        firstName: 'Диер',
+        lastName: 'Хайдаров',
+        password: 'admin1234',
         role: 'superuser'
     });
-    const positions = await Promise.all([
-        app.service('positions').create({
-            title: 'Позиция 1',
-            barcode: '0000000000001',
-            unit: 'm3'
-        }),
-        app.service('positions').create({
-            title: 'Позиция 2',
-            barcode: '0000000000002',
-            unit: 'm3'
-        }),
-        app.service('positions').create({
-            title: 'Позиция 3',
-            barcode: '0000000000003',
-            unit: 'm3'
-        }),
-        app.service('positions').create({
-            title: 'Позиция 4',
-            barcode: '0000000000004',
-            unit: 'm3'
-        }),
-        app.service('positions').create({
-            title: 'Позиция 5',
-            barcode: '0000000000005',
-            unit: 'm3'
-        }),
-        app.service('positions').create({
-            title: 'Позиция 6',
-            barcode: '0000000000006',
-            unit: 'm3'
-        }),
-        app.service('positions').create({
-            title: 'Позиция 7',
-            barcode: '0000000000007',
-            unit: 'm3'
-        }),
-    ]);
-    await Promise.all([
-        app.service('products').create({
-            positionId: positions[0].id,
-            status: 'in_stock',
-            rfid: '0000000000000001'
-        }),
-        app.service('products').create({
-            positionId: positions[1].id,
-            status: 'in_stock',
-            rfid: '0000000000000002'
-        }),
-        app.service('products').create({
-            positionId: positions[2].id,
-            status: 'in_stock',
-            rfid: '0000000000000003'
-        }),
-        app.service('products').create({
-            positionId: positions[3].id,
-            status: 'in_stock',
-            rfid: '0000000000000004'
-        }),
-        app.service('products').create({
-            positionId: positions[4].id,
-            status: 'in_stock',
-            rfid: '0000000000000005'
-        }),
-        app.service('products').create({
-            positionId: positions[5].id,
-            status: 'in_stock',
-            rfid: '0000000000000006'
-        }),
-        app.service('products').create({
-            positionId: positions[6].id,
-            status: 'in_stock',
-            rfid: '0000000000000007'
-        }),
-    ]);
+
+    const positions = await Promise.all(Array.from({length: 50_000}).map((_, i) => app.service('positions').create({
+        title: `Позиция ${i + 1}`,
+        barcode: `000000000000${i + 1}`,
+        unit: 'm3'
+    })));
+    await Promise.all(Array.from({length: 50_000}).map((_, i) => app.service('products').create({
+        positionId: positions[i].id,
+        status: 'in_stock',
+        rfid: `000000000000${i + 1}`
+    })));
     process.exit(0);
 }
 

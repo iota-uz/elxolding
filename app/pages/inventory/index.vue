@@ -14,7 +14,7 @@
             <BaseTable
                 v-model:sortBy="sortBy"
                 :columns="columns"
-                :data="users.data"
+                :data="inventory.data"
                 :loading="isFetchPending"
                 class="flex-auto"
             >
@@ -33,11 +33,11 @@
                 </template>
             </BaseTable>
             <BasePagination
-                v-if="users.total / perPage > 1"
+                v-if="inventory.total / perPage > 1"
                 v-model:current-page="currentPage"
                 class="my-2"
                 :item-per-page="perPage"
-                :total-items="users.total"
+                :total-items="inventory.total"
                 :max-links-displayed="10"
                 shape="rounded"
             />
@@ -65,10 +65,10 @@ useHead({
 const toast = useToast('GlobalToast');
 const route = useRoute();
 const app = useAppConfig();
-const usersService = useService('users');
+const inventoryService = useService('inventory', {auth: true});
 
 const isFetchPending = ref(false);
-const users = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip: 0});
+const inventory = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip: 0});
 const perPage = ref(app.pagination.defaultPageSize);
 const currentPage = ref(route.query.page ? parseInt(route.query.page as string) : 1);
 const dateFilter = reactive({start: '', end: ''});
@@ -99,7 +99,7 @@ async function fetch() {
         };
     }
     try {
-        users.value = await usersService.find<PaginatedResponse<any>>(query).exec();
+        inventory.value = await inventoryService.find<PaginatedResponse<any>>(query).exec();
     } catch(e: any) {
         toast.show({type: 'error', message: e.message, timeout: 3000});
     } finally {

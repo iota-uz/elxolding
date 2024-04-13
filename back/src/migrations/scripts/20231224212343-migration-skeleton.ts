@@ -202,11 +202,11 @@ module.exports = {
                 type: DataTypes.ENUM('successful', 'incomplete', 'failed'),
                 allowNull: false
             },
-            createdAt: {
+            created_at: {
                 allowNull: false,
                 type: DataTypes.DATE
             },
-            updatedAt: {
+            updated_at: {
                 allowNull: false,
                 type: DataTypes.DATE
             }
@@ -218,7 +218,7 @@ module.exports = {
                 primaryKey: true,
                 type: DataTypes.INTEGER
             },
-            positionId: {
+            position_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 references: {
@@ -228,7 +228,7 @@ module.exports = {
                 onUpdate: 'CASCADE',
                 onDelete: 'CASCADE'
             },
-            inventoryId: {
+            inventory_id: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
                 references: {
@@ -250,15 +250,25 @@ module.exports = {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
-            createdAt: {
+            created_at: {
                 allowNull: false,
                 type: DataTypes.DATE
             },
-            updatedAt: {
+            updated_at: {
                 allowNull: false,
                 type: DataTypes.DATE
             }
         });
+
+        await queryInterface.addIndex('products', ['rfid'], {
+            unique: true
+        });
+        await queryInterface.addIndex('products', ['status']);
+        await queryInterface.addIndex('products', ['position_id']);
+        await queryInterface.addIndex('order_products', ['order_id']);
+        await queryInterface.addIndex('order_products', ['product_id']);
+        await queryInterface.addIndex('inventory_results', ['position_id']);
+        await queryInterface.addIndex('inventory_results', ['inventory_id']);
     },
     async down(queryInterface: QueryInterface) {
         await queryInterface.dropTable('inventory_results');

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
@@ -15,17 +17,13 @@ class CustomProduct extends Product {
 class InventoryPosition {
   final int id;
   final String title;
-  final List<CustomProduct> products;
   int matches = 0;
-
-  InventoryPosition(this.id, this.title, this.products);
+  final List<String> tags;
 
   InventoryPosition.fromJson(Map<String, dynamic> json)
       : id = json["id"],
         title = json["title"],
-        products = (json["products"] as List<dynamic>)
-            .map<CustomProduct>((e) => CustomProduct.fromJson(e))
-            .toList();
+        tags = List<String>.from(json["tags"]);
 }
 
 class NewInventoryPage extends StatefulWidget {
@@ -55,8 +53,9 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       }
       _isConnected = connected;
     };
-    rfid.connect();
-    rfid.setPower(30);
+    rfid.connect().then((v) {
+      rfid.setPower(30);
+    });
     fetchData();
   }
 
@@ -68,7 +67,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
 
   void onTagsUpdate(List<TagEpc> newTags) {
     var inventoryRfid = _inventory
-        .expand((element) => element.products.map((e) => "EPC:${e.rfid}"))
+        .expand((element) => element.tags.map((e) => "EPC:$e"))
         .toList();
     for (var tag in newTags) {
       if (scannedTag(tag.epc)) {
@@ -83,15 +82,16 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     }
     for (var item in _inventory) {
       item.matches = 0;
-      for (var product in item.products) {
+      for (var productTag in item.tags) {
         for (var tag in tags) {
-          var rfid = "EPC:${product.rfid}";
+          var rfid = "EPC:$productTag";
           if (rfid == tag.epc) {
             item.matches++;
           }
         }
       }
     }
+    _inventory.sort((a, b) => b.matches.compareTo(a.matches));
     setState(() {});
   }
 
@@ -126,12 +126,18 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
         .toList();
   }
 
+  List<InventoryPosition> get inventoryPreview {
+    var result = _inventory.where((element) => element.matches < element.tags.length).toList();
+    return result.take(200).toList();
+  }
+
   Widget mainUI(BuildContext context) {
-    if (_isLoading || !_isConnected) {
-      return const CircularProgressIndicator();
-    }
-    return Column(
-      children: _inventory.map<Widget>((item) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: inventoryPreview.length,
+      itemBuilder: (context, index) {
+        var item = inventoryPreview[index];
         return Card(
           color: Colors.blue.shade50,
           child: Container(
@@ -145,14 +151,14 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                   style: const TextStyle(color: Colors.blue),
                 ),
                 Text(
-                  '${item.matches} / ${item.products.length}',
+                  '${item.matches} / ${item.tags.length}',
                   style: const TextStyle(color: Colors.blue),
                 ),
               ],
             ),
           ),
         );
-      }).toList(),
+      },
     );
   }
 
@@ -175,22 +181,40 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     });
   }
 
+  Widget body(BuildContext context) {
+    if (_isLoading || !_isConnected) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            alignment: Alignment.center,
+            child: const CircularProgressIndicator(),
+          )
+        ],
+      );
+    }
+    return SingleChildScrollView(
+      child: Center(
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [mainUI(context)],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(FlutterI18n.translate(context, "inventory.title")),
       ),
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-          child: Column(
-            children: [
-              mainUI(context),
-            ],
-          ),
-        ),
-      ),
+      body: body(context),
       bottomNavigationBar: BottomAppBar(
         child: Container(
           padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),

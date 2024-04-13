@@ -3,7 +3,7 @@
         <BaseHeading size="xl">
             Статистика
         </BaseHeading>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
             <NuxtLink
                 :to="{name: 'positions'}"
                 class="bg-muted-100/80 dark:bg-muted-700 flex items-center gap-2 rounded-md px-5 py-10 hover:bg-muted-200/80 dark:hover:bg-muted-600 transition-colors duration-200 ease-in-out"

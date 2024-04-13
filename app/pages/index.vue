@@ -15,7 +15,7 @@
                     </div>
                 </div>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
                 <Stats />
                 <BaseCard class="mt-6 p-6">
                     <BaseHeading size="xl">
@@ -24,8 +24,8 @@
                     <BaseTable
                         :columns="columns"
                         :data="data"
+                        :sort-by="{}"
                         class="flex-auto mt-6"
-                        sort-by=""
                     >
                         <template #buttons="{item}">
                             <TairoTableCell class="px-6 py-4 flex justify-end">

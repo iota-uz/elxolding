@@ -18,7 +18,7 @@ export class RpcHandler {
         }
         const {positionId, tags} = data;
         const result = await Promise.all(tags.map(async (tag: any) => {
-            await this.app.service('products').create({
+            return this.app.service('products').create({
                 positionId,
                 rfid: tag,
                 status: 'in_development'
@@ -41,7 +41,7 @@ export class RpcHandler {
             throw new BadRequest('Order not found');
         }
         if (order.type === 'in') {
-            await productsModel.update({status: 'approved'}, {where: {orderId}});
+            await productsModel.update({status: 'in_stock'}, {where: {orderId}});
         } else {
             await productsModel.destroy({where: {orderId}});
         }
@@ -51,17 +51,47 @@ export class RpcHandler {
 
     public async GetInventory(): Promise<{ inventory: any[] }> {
         const positionsModel = this.app.service('positions').Model;
-        let positions = <any[]>await positionsModel.findAll({
+        const sequelizeClient = this.app.get('sequelizeClient');
+        const positions = <any[]>await positionsModel.findAll({
+            raw: false,
             include: [
-                {model: this.app.service('products').Model, as: 'products'}
+                {
+                    model: this.app.service('products').Model,
+                    attributes: ['rfid'],
+                    where: {
+                        status: 'in_stock'
+                    },
+                    as: 'products'
+                }
             ],
-            raw: false
+            attributes: {
+                include: [
+                    sequelizeClient.literal(`(
+                        SELECT COUNT(*)
+                        FROM products
+                        WHERE
+                            products.position_id = positions.id AND
+                            products.status = 'in_stock'
+                    )`)
+                ],
+                exclude: ['barcode', 'unit', 'createdAt', 'updatedAt']
+            },
         });
-        positions = positions.map(el => el.toJSON()).filter((el: any) => el.products.length > 0);
-        return {inventory: positions};
+        const inventory = positions.map((el: any) => {
+            const position = el.toJSON();
+            const products = position.products as any[];
+            return {
+                id: position.id,
+                title: position.title,
+                tags: products.map((product) => product.rfid),
+            };
+        });
+        return {inventory};
     }
 
-    public async CompleteInventoryCheck(data: { positions: { positionId: number, found: number }[] }): Promise<Record<string, any>> {
+    public async CompleteInventoryCheck(data: {
+        positions: { positionId: number, found: number }[]
+    }): Promise<Record<string, any>> {
         if (!data.positions || !Array.isArray(data.positions)) {
             throw new BadRequest('Invalid data');
         }
@@ -108,7 +138,7 @@ export class RpcHandler {
         const [products, positions, orders] = await Promise.all([
             productsModel.count({
                 where: {
-                    status: 'approved'
+                    status: 'in_stock'
                 }
             }),
             positionsModel.count({}),

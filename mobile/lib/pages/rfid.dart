@@ -41,6 +41,8 @@ class _RfidPageState extends State<RfidPage> {
   }
 
   Future<void> initPlatformState() async {
+    rfid.onConnected = (bool connected) {
+    };
     rfid.onTagsUpdate = (List<TagEpc> tags) {
       setState(() {
         for (var tag in tags) {
