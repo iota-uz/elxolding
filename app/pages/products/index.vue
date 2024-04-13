@@ -125,11 +125,6 @@ const columns = ref<Column[]>([
         }
     },
     {
-        label: 'RFID',
-        name: 'rfid',
-        sortable: true
-    },
-    {
         label: 'Статус',
         name: 'status',
         enums: {
