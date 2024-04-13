@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:go_router/go_router.dart';
@@ -41,7 +38,6 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   List<String> inventoryTags = [];
   bool _isLoading = true;
   bool _isConnected = false;
-  static AudioPlayer player = AudioPlayer();
   RfidWrapper rfid = RfidWrapper();
 
   @override
@@ -50,7 +46,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     rfid.onTagsUpdate = onTagsUpdate;
     rfid.onConnected = (bool connected) {
       if (connected) {
-        rfid.setPower(30);
+        // rfid.setPower(30);
       }
       _isConnected = connected;
     };
@@ -71,16 +67,13 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
         0, (previousValue, element) => previousValue + element.matches);
   }
 
-  void onTagsUpdate(List<TagEpc> newTags) {
+  void onTagsUpdate(List<TagEpc> newTags) async {
     for (var tag in newTags) {
       if (!inventoryTags.contains(tag.epc)) {
-        print("Not in inventory: ${tag.epc}");
         continue;
       }
-      print("Scanned: ${tag.epc}");
-      const alarmAudioPath = "audio/beep.wav";
-      player.play(AssetSource(alarmAudioPath));
       if (!scannedTag(tag.epc)) {
+        rfid.beep();
         tags.add(tag);
         continue;
       }
@@ -121,13 +114,11 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   }
 
   Future<List<InventoryPosition>> fetchInventory() async {
-    final response = await constants.feathersApp
-        .service('rpc')
-        .create({'method': 'GetInventory', 'params': {}});
-    if (response["error"] != null) {
-      throw Exception(response["error"]);
+    final response = await constants.feathersApp.rpc('GetInventory', {});
+    if (response.hasError()) {
+      throw Exception(response.error);
     }
-    var result = response["result"] as Map<String, dynamic>;
+    var result = response.result as Map<String, dynamic>;
     var positions = result["inventory"] as List<dynamic>;
     return positions
         .map<InventoryPosition>((e) => InventoryPosition.fromJson(e))
@@ -176,7 +167,6 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   }
 
   Future<void> onPressed() async {
-    rfid.closeAll();
     List<Map<String, int>> positions = [];
     for (var item in _inventory) {
       if (item.matches > 0) {

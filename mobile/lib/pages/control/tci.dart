@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:mobile/constants.dart' as constants;
+import 'package:mobile/feathers/types.dart';
 import 'package:mobile/models/position.dart';
 import 'package:mobile/utils/rfid.dart';
-import 'package:rfid_c72_plugin/rfid_c72_plugin.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
 class TciPage extends StatefulWidget {
@@ -32,12 +32,16 @@ class _TciPageState extends State<TciPage> {
   @override
   void dispose() {
     super.dispose();
-    closeAll();
+    rfid.closeAll();
   }
 
-  closeAll() {
-    RfidC72Plugin.stopScan;
-    RfidC72Plugin.close;
+  bool isScanned(TagEpc tag) {
+    for (var item in _data) {
+      if (item.epc == tag.epc) {
+        return true;
+      }
+    }
+    return false;
   }
 
   Future<void> initPlatformState() async {
@@ -45,12 +49,10 @@ class _TciPageState extends State<TciPage> {
     rfid.onTagsUpdate = (List<TagEpc> tags) {
       setState(() {
         for (var tag in tags) {
-          for (var item in _data) {
-            if (item.epc == tag.epc) {
-              return;
-            }
+          if (!isScanned(tag)) {
+            rfid.beep();
+            _data.add(tag);
           }
-          _data.add(tag);
         }
       });
     };
@@ -94,38 +96,54 @@ class _TciPageState extends State<TciPage> {
     return data.map<Position>((e) => Position.fromJson(e)).toList();
   }
 
-  Widget tagsList(BuildContext context) {
-    if (_data.isEmpty) {
-      return const Text('Начните сканирование меток');
-    }
-    return Column(
-      children: _data
-          .map(
-            (TagEpc tag) => Card(
-              color: Colors.blue.shade50,
-              child: Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  tag.epc,
-                  style: const TextStyle(color: Colors.blue),
-                ),
-              ),
-            ),
-          )
-          .toList(),
-    );
-  }
-
-  Future<Map<String, dynamic>> createProducts() async {
-    var res = await constants.feathersApp.service("rpc").create({
-      "method": "CreateProductsWithTags",
-      "params": {
-        "positionId": positionId,
-        "tags": _data.map((e) => e.epc).toList(),
-      }
+  Future<RpcResponse> createProducts() async {
+    var res = await constants.feathersApp.rpc("CreateProductsWithTags", {
+      "positionId": positionId,
+      "tags": _data.map((e) => e.epc).toList(),
     });
     return res;
+  }
+
+  void onCreatePressed() {
+    if (positionId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Выберите наименование'),
+        ),
+      );
+    }
+    if (_data.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Сначала отсканируйте метки'),
+        ),
+      );
+    }
+    createProducts().then((value) {
+      if (value.hasError()) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(value.error["message"]),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Продукция внесена в базу'),
+          ),
+        );
+        setState(() {
+          _data.clear();
+        });
+      }
+    }).catchError((e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Ошибка при создании продукции. ${e.toString()}',
+              style: const TextStyle(color: Colors.red)),
+        ),
+      );
+    });
   }
 
   Widget mainUI(BuildContext context) {
@@ -139,7 +157,7 @@ class _TciPageState extends State<TciPage> {
         const SizedBox(height: 20),
         Row(
           children: [
-            Text('Всего отсканировано: ${_data.length}'),
+            Text('Отсканировано: ${_data.length}'),
             const Spacer(),
             IconButton(
               onPressed: () {
@@ -152,10 +170,17 @@ class _TciPageState extends State<TciPage> {
             ),
           ],
         ),
-        tagsList(context),
         const SizedBox(height: 20),
       ],
     );
+  }
+
+  void onScanPressed() async {
+    if (await rfid.isStarted) {
+      rfid.stop();
+    } else {
+      rfid.readContinuous();
+    }
   }
 
   @override
@@ -179,9 +204,7 @@ class _TciPageState extends State<TciPage> {
           child: Column(
             children: [
               ElevatedButton(
-                onPressed: () async {
-                  await rfid.readSingleTag();
-                },
+                onPressed: onScanPressed,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   backgroundColor: Colors.white,
@@ -192,58 +215,29 @@ class _TciPageState extends State<TciPage> {
                   ),
                   elevation: 0,
                 ),
-                child: const Text(
-                  'Сканировать',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
+                child: FutureBuilder(
+                  future: rfid.isStarted,
+                  builder: (context, snapshot) {
+                    var style = const TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                    );
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Text('...', style: style);
+                    }
+                    if (snapshot.data == true) {
+                      return Text('Остановить', style: style);
+                    }
+                    return Text(
+                      'Сканировать',
+                      style: style,
+                    );
+                  },
                 ),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  if (positionId == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Выберите наименование'),
-                      ),
-                    );
-                  }
-                  if (_data.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Сначала отсканируйте метки'),
-                      ),
-                    );
-                  }
-                  createProducts().then((value) {
-                    if (value["error"] != null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(value["error"]["message"]),
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Продукция внесена в базу'),
-                        ),
-                      );
-                      setState(() {
-                        _data.clear();
-                      });
-                    }
-                  }).catchError((e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                            'Ошибка при создании продукции. ${e.toString()}',
-                            style: const TextStyle(color: Colors.red)),
-                      ),
-                    );
-                  });
-                },
+                onPressed: onCreatePressed,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   backgroundColor: Theme.of(context).primaryColor,

@@ -3,7 +3,6 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:mobile/constants.dart' as constants;
 import 'package:mobile/models/position.dart';
 import 'package:mobile/utils/rfid.dart';
-import 'package:rfid_c72_plugin/rfid_c72_plugin.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
 class PolygraphyPage extends StatefulWidget {
@@ -32,17 +31,11 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
   @override
   void dispose() {
     super.dispose();
-    closeAll();
-  }
-
-  closeAll() {
-    RfidC72Plugin.stopScan;
-    RfidC72Plugin.close;
+    rfid.closeAll();
   }
 
   Future<void> initPlatformState() async {
-    rfid.onConnected = (bool connected) {
-    };
+    rfid.onConnected = (bool connected) {};
     rfid.onTagsUpdate = (List<TagEpc> tags) {
       setState(() {
         for (var tag in tags) {
@@ -119,12 +112,9 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
   }
 
   Future<void> createProducts() async {
-    var res = await constants.feathersApp.service("rpc").create({
-      "method": "CreateProductsWithTags",
-      "params": {
-        "positionId": positionId,
-        "tags": _data.map((e) => e.epc).toList(),
-      }
+    var res = await constants.feathersApp.rpc("CreateProductsWithTags", {
+      "positionId": positionId,
+      "tags": _data.map((e) => e.epc).toList(),
     });
   }
 
@@ -180,7 +170,15 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
             children: [
               ElevatedButton(
                 onPressed: () async {
-                  await rfid.readSingleTag();
+                  try {
+                    await rfid.readSingleTag();
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(e.toString()),
+                      ),
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 20),

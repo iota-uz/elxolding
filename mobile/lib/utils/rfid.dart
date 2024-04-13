@@ -1,10 +1,10 @@
 import 'package:flutter/services.dart';
+import 'package:flutter_beep/flutter_beep.dart';
 import 'package:rfid_c72_plugin/rfid_c72_plugin.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
 class RfidWrapper {
   String _platformVersion = '';
-
   Function(List<TagEpc>)? onTagsUpdate;
   Function(bool)? onConnected;
 
@@ -16,6 +16,25 @@ class RfidWrapper {
     onConnected = null;
     await RfidC72Plugin.stop;
     await RfidC72Plugin.close;
+  }
+
+  stop() async {
+    if (_platformVersion == "IOS") {
+      return;
+    }
+    await RfidC72Plugin.stop;
+  }
+
+  void beep() {
+    FlutterBeep.beep();
+  }
+
+  Future<bool> get isStarted async {
+    if (_platformVersion == "IOS") {
+      return true;
+    }
+    var started = await RfidC72Plugin.isStarted;
+    return started ?? false;
   }
 
   Future<void> connect() async {

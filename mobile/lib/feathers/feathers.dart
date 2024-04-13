@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:mobile/feathers/types.dart';
 
 import 'exceptions.dart';
 
@@ -190,15 +191,12 @@ class FeathersClient {
     return await _usersService.patch(decodedToken["userId"], data);
   }
 
-  Future<Map> rpc(String method, Map data) async {
+  Future<RpcResponse> rpc(String method, Map data) async {
     var response = await _rpcService.create({
       "method": method,
       "params": data,
     });
-    if (response["result"] == null) {
-      throw GeneralException(response["error"]);
-    }
-    return response;
+    return RpcResponse.fromJson(response);
   }
 
   Future<void> logout() async {
