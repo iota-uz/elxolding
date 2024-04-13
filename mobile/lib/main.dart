@@ -6,7 +6,9 @@ import 'package:mobile/pages/invetory/new.dart';
 import 'package:mobile/pages/language.dart';
 import 'package:mobile/pages/login.dart';
 import 'package:mobile/pages/orders/id.dart';
-import 'package:mobile/pages/rfid.dart';
+import 'package:mobile/pages/control/polygraphy.dart';
+import 'package:mobile/pages/control/tci.dart';
+import 'package:mobile/pages/control.dart';
 import 'package:mobile/pages/settings.dart';
 import 'package:mobile/constants.dart' as constants;
 import 'layouts/navigation.dart';
@@ -94,10 +96,24 @@ final _router = GoRouter(
           navigatorKey: GlobalKey<NavigatorState>(debugLabel: "rfid"),
           routes: [
             GoRoute(
-              path: "/rfid",
-              name: "rfid",
+              path: "/control",
+              name: "control",
               pageBuilder: (context, state) => const NoTransitionPage(
                 child: RfidPage(),
+              ),
+            ),
+            GoRoute(
+              path: "/control/tci",
+              name: "control-tci",
+              pageBuilder: (context, state) => const NoTransitionPage(
+                child: TciPage(),
+              ),
+            ),
+            GoRoute(
+              path: "/control/polygraphy",
+              name: "control-polygraphy",
+              pageBuilder: (context, state) => const NoTransitionPage(
+                child: PolygraphyPage(),
               ),
             ),
           ],

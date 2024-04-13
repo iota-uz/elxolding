@@ -6,16 +6,16 @@ import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/rfid_c72_plugin.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
-class RfidPage extends StatefulWidget {
-  const RfidPage({Key? key}) : super(key: key);
+class TciPage extends StatefulWidget {
+  const TciPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _RfidPageState();
+    return _TciPageState();
   }
 }
 
-class _RfidPageState extends State<RfidPage> {
+class _TciPageState extends State<TciPage> {
   int? positionId;
 
   final List<TagEpc> _data = [];
@@ -220,7 +220,7 @@ class _RfidPageState extends State<RfidPage> {
                   createProducts().then((value) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Продукты созданы'),
+                        content: Text('Продукция внесена в базу'),
                       ),
                     );
                     setState(() {

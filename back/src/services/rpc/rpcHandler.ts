@@ -17,12 +17,20 @@ export class RpcHandler {
             throw new BadRequest('Invalid data');
         }
         const {positionId, tags} = data;
-        const result = await Promise.all(tags.map(async (tag: any) => {
-            return this.app.service('products').create({
-                positionId,
-                rfid: tag,
-                status: 'in_development'
-            });
+        const result = await Promise.all(tags.map(async (tag): Promise<boolean> => {
+            try {
+                await this.app.service('products').create({
+                    positionId,
+                    rfid: tag,
+                    status: 'in_development'
+                });
+                return true;
+            } catch (e: any) {
+                if (e.code !== 11000) {
+                    throw e;
+                }
+                return false;
+            }
         }));
         return {createdProducts: result.length};
     }

@@ -38,6 +38,7 @@ class NewInventoryPage extends StatefulWidget {
 class _NewInventoryPageState extends State<NewInventoryPage> {
   List<TagEpc> tags = [];
   List<InventoryPosition> _inventory = [];
+  List<String> inventoryTags = [];
   bool _isLoading = true;
   bool _isConnected = false;
   static AudioPlayer player = AudioPlayer();
@@ -49,14 +50,14 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     rfid.onTagsUpdate = onTagsUpdate;
     rfid.onConnected = (bool connected) {
       if (connected) {
-        rfid.readContinuous();
+        rfid.setPower(30);
       }
       _isConnected = connected;
     };
-    rfid.connect().then((v) {
-      rfid.setPower(30);
+    rfid.connect();
+    fetchData().then((_) {
+      rfid.readContinuous();
     });
-    fetchData();
   }
 
   @override
@@ -65,15 +66,17 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     rfid.closeAll();
   }
 
+  int get totalFound {
+    return _inventory.fold(
+        0, (previousValue, element) => previousValue + element.matches);
+  }
+
   void onTagsUpdate(List<TagEpc> newTags) {
-    var inventoryRfid = _inventory
-        .expand((element) => element.tags.map((e) => "EPC:$e"))
-        .toList();
     for (var tag in newTags) {
       if (scannedTag(tag.epc)) {
         continue;
       }
-      if (!inventoryRfid.contains(tag.epc)) {
+      if (!inventoryTags.contains(tag.epc)) {
         continue;
       }
       const alarmAudioPath = "audio/beep.wav";
@@ -108,6 +111,9 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     var inventory = await fetchInventory();
     setState(() {
       _inventory = inventory;
+      inventoryTags = inventory
+          .expand((element) => element.tags.map((e) => "EPC:$e"))
+          .toList();
       _isLoading = false;
     });
   }
@@ -127,8 +133,13 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   }
 
   List<InventoryPosition> get inventoryPreview {
-    var result = _inventory.where((element) => element.matches < element.tags.length).toList();
-    return result.take(200).toList();
+    if (_inventory.length < 50) {
+      return _inventory;
+    }
+    var result = _inventory
+        .where((element) => element.matches < element.tags.length)
+        .toList();
+    return result.take(50).toList();
   }
 
   Widget mainUI(BuildContext context) {
@@ -201,7 +212,15 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
           padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [mainUI(context)],
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                "Найдено: $totalFound/${inventoryTags.length}",
+                style: const TextStyle(fontSize: 14),
+              ),
+              const SizedBox(height: 20),
+              mainUI(context),
+            ],
           ),
         ),
       ),

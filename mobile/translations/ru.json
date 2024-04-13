@@ -24,7 +24,7 @@
   "nav": {
     "home": "Заявки",
     "inventory": "Инвентаризация",
-    "rfid": "RFID",
+    "control": "Контроль",
     "settings": "Настройки"
   },
   "home": {
@@ -38,7 +38,10 @@
       "out": "Расход"
     }
   },
-  "rfid": {
+  "control": {
+    "title": "Контроль",
+    "tci": "ОТК",
+    "polygraphy": "Полиграфии",
     "selectPosition": "Выберите наименование"
   },
   "order": {

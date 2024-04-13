@@ -50,7 +50,7 @@ class _NavigationState extends State<NavigationWidget> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Symbols.barcode_scanner, size: iconSize),
-            label: FlutterI18n.translate(context, "nav.rfid"),
+            label: FlutterI18n.translate(context, "nav.control"),
           ),
           BottomNavigationBarItem(
             icon: Icon(Symbols.settings, size: iconSize),
