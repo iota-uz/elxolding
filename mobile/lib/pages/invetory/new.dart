@@ -35,7 +35,8 @@ class NewInventoryPage extends StatefulWidget {
 class _NewInventoryPageState extends State<NewInventoryPage> {
   List<TagEpc> tags = [];
   List<InventoryPosition> _inventory = [];
-  List<String> inventoryTags = [];
+  List<InventoryPosition> inventoryPreview = [];
+  Set<String> inventoryTags = {};
   bool _isLoading = true;
   bool _isConnected = false;
   RfidWrapper rfid = RfidWrapper();
@@ -68,15 +69,19 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   }
 
   void onTagsUpdate(List<TagEpc> newTags) async {
+    int changes = 0;
     for (var tag in newTags) {
-      if (!inventoryTags.contains(tag.epc)) {
+      if (scannedTag(tag.epc)) {
         continue;
       }
-      if (!scannedTag(tag.epc)) {
+      tags.add(tag);
+      if (inventoryTags.contains(tag.epc)) {
         rfid.beep();
-        tags.add(tag);
-        continue;
+        changes++;
       }
+    }
+    if (changes == 0) {
+      return;
     }
     for (var item in _inventory) {
       item.matches = 0;
@@ -90,6 +95,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       }
     }
     _inventory.sort((a, b) => b.matches.compareTo(a.matches));
+    inventoryPreview = _preview();
     setState(() {});
   }
 
@@ -106,9 +112,10 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     var inventory = await fetchInventory();
     setState(() {
       _inventory = inventory;
+      inventoryPreview = _preview();
       inventoryTags = inventory
           .expand((element) => element.tags.map((e) => "EPC:$e"))
-          .toList();
+          .toSet();
       _isLoading = false;
     });
   }
@@ -125,14 +132,14 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
         .toList();
   }
 
-  List<InventoryPosition> get inventoryPreview {
-    if (_inventory.length < 50) {
+  List<InventoryPosition> _preview() {
+    if (_inventory.length < 200) {
       return _inventory;
     }
     var result = _inventory
         .where((element) => element.matches < element.tags.length)
         .toList();
-    return result.take(50).toList();
+    return result.take(200).toList();
   }
 
   Widget mainUI(BuildContext context) {
@@ -140,26 +147,37 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: inventoryPreview.length,
+      prototypeItem: const ListTile(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              "Наименование",
+              style: TextStyle(color: Colors.blue),
+            ),
+            Text(
+              "Найдено",
+              style: TextStyle(color: Colors.blue),
+            ),
+          ],
+        ),
+      ),
       itemBuilder: (context, index) {
         var item = inventoryPreview[index];
-        return Card(
-          color: Colors.blue.shade50,
-          child: Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  item.title,
-                  style: const TextStyle(color: Colors.blue),
+        return ListTile(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(item.title),
+              Text(
+                "${item.matches}/${item.tags.length}",
+                style: TextStyle(
+                  color: item.matches == item.tags.length
+                      ? Colors.green
+                      : Colors.red,
                 ),
-                Text(
-                  '${item.matches} / ${item.tags.length}',
-                  style: const TextStyle(color: Colors.blue),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },
@@ -206,6 +224,9 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              Text(
+                "Всего меток: ${tags.length}",
+              ),
               Text(
                 "Найдено: $totalFound/${inventoryTags.length}",
                 style: const TextStyle(fontSize: 14),

@@ -21,8 +21,11 @@ class _OrderPageState extends State<OrderPage> {
   int orderId = 0;
   Order? order;
   bool isLoading = true;
+  bool isConnected = false;
   RfidWrapper rfid = RfidWrapper();
   List<TagEpc> tags = [];
+  List<String> scanned = [];
+  List<String> inventoryTags = [];
 
   @override
   void initState() {
@@ -31,11 +34,32 @@ class _OrderPageState extends State<OrderPage> {
     fetchOrder(orderId).then((value) {
       setState(() {
         order = value;
+        inventoryTags = value.positions.expand((e) => e.products.map((e) => "EPC:${e.rfid}")).toList();
         isLoading = false;
       });
     });
-    rfid.connect();
-    rfid.readContinuous();
+    rfid.connect().then((value) {
+      rfid.readContinuous();
+    });
+    rfid.onConnected = (bool connected) {
+      setState(() {
+        isConnected = connected;
+      });
+    };
+    rfid.onTagsUpdate = (List<TagEpc> tags) {
+      for (var tag in tags) {
+        if (!inventoryTags.contains(tag.epc)) {
+          continue;
+        }
+        if (!scanned.contains(tag.epc)) {
+          scanned.add(tag.epc);
+          rfid.beep();
+        }
+      }
+      setState(() {
+        this.tags = tags;
+      });
+    };
   }
 
   @override

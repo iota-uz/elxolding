@@ -79,62 +79,66 @@ class _HomePageState extends State<HomePage> {
             Center(
               child: Container(
                 padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
-                child: FutureBuilder(
-                  future: fetchOrders("in"),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    }
-                    if (snapshot.hasError) {
-                      return Text(snapshot.error.toString());
-                    }
-                    var orders = snapshot.data!;
-                    if (orders.isEmpty) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            "assets/images/empty.png",
-                            width: 120,
-                          ),
-                          const SizedBox(height: 10),
-                          const Text("Нет данных"),
-                        ],
-                      );
-                    }
-                    return buildList(context, orders: orders);
-                  },
+                child: SingleChildScrollView(
+                  child: FutureBuilder(
+                    future: fetchOrders("in"),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      }
+                      if (snapshot.hasError) {
+                        return Text(snapshot.error.toString());
+                      }
+                      var orders = snapshot.data!;
+                      if (orders.isEmpty) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/images/empty.png",
+                              width: 120,
+                            ),
+                            const SizedBox(height: 10),
+                            const Text("Нет данных"),
+                          ],
+                        );
+                      }
+                      return buildList(context, orders: orders);
+                    },
+                  ),
                 ),
               ),
             ),
             Center(
               child: Container(
                 padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
-                child: FutureBuilder(
-                  future: fetchOrders("out"),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    }
-                    if (snapshot.hasError) {
-                      return Text(snapshot.error.toString());
-                    }
-                    var orders = snapshot.data!;
-                    if (orders.isEmpty) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            "assets/images/empty.png",
-                            width: 120,
-                          ),
-                          const SizedBox(height: 10),
-                          const Text("Нет данных"),
-                        ],
-                      );
-                    }
-                    return buildList(context, orders: orders);
-                  },
+                child: SingleChildScrollView(
+                  child: FutureBuilder(
+                    future: fetchOrders("out"),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      }
+                      if (snapshot.hasError) {
+                        return Text(snapshot.error.toString());
+                      }
+                      var orders = snapshot.data!;
+                      if (orders.isEmpty) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/images/empty.png",
+                              width: 120,
+                            ),
+                            const SizedBox(height: 10),
+                            const Text("Нет данных"),
+                          ],
+                        );
+                      }
+                      return buildList(context, orders: orders);
+                    },
+                  ),
                 ),
               ),
             )

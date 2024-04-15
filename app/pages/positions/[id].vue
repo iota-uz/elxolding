@@ -1,6 +1,7 @@
 <template>
     <div class="mt-4 px-10">
         <div class="flex flex-col gap-4">
+            <DragDrop v-model="position.photoId" />
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 items-end">
                 <BaseInput
                     v-model="position.title"
@@ -65,13 +66,15 @@
 <script lang="ts" setup>
 
 
+import DragDrop from '~/components/common/DragDrop.vue';
+
 definePageMeta({
     layout: 'account',
-    verbose: 'Новое наименование'
+    verbose: 'Наименование'
 });
 
 useHead({
-    title: 'Новое наименование'
+    title: 'Наименование'
 });
 
 const route = useRoute();

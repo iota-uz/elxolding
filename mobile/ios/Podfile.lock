@@ -1,45 +1,38 @@
 PODS:
-  - audioplayers_darwin (0.0.1):
-    - Flutter
   - Flutter (1.0.0)
+  - flutter_beep (0.0.1):
+    - Flutter
   - flutter_native_splash (0.0.1):
     - Flutter
   - flutter_secure_storage (6.0.0):
     - Flutter
-  - path_provider_foundation (0.0.1):
-    - Flutter
-    - FlutterMacOS
   - rfid_c72_plugin (0.0.1):
     - Flutter
 
 DEPENDENCIES:
-  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
   - Flutter (from `Flutter`)
+  - flutter_beep (from `.symlinks/plugins/flutter_beep/ios`)
   - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
-  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - rfid_c72_plugin (from `.symlinks/plugins/rfid_c72_plugin/ios`)
 
 EXTERNAL SOURCES:
-  audioplayers_darwin:
-    :path: ".symlinks/plugins/audioplayers_darwin/ios"
   Flutter:
     :path: Flutter
+  flutter_beep:
+    :path: ".symlinks/plugins/flutter_beep/ios"
   flutter_native_splash:
     :path: ".symlinks/plugins/flutter_native_splash/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
-  path_provider_foundation:
-    :path: ".symlinks/plugins/path_provider_foundation/darwin"
   rfid_c72_plugin:
     :path: ".symlinks/plugins/rfid_c72_plugin/ios"
 
 SPEC CHECKSUMS:
-  audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_beep: 54fb393b22dfa0f0e4573c81b1c74dd71c4e5af8
   flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
   flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be
-  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
   rfid_c72_plugin: 3066c5a9f0ba16298007d8aa0690287c043a54ea
 
 PODFILE CHECKSUM: 70d9d25280d0dd177a5f637cdb0f0b0b12c6a189

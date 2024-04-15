@@ -84,14 +84,22 @@ class RfidWrapper {
       throw Exception("onTagsUpdate is not set");
     }
     if (_platformVersion == "IOS") {
-      onTagsUpdate!([
-        TagEpc(
-          id: '1',
-          epc: "E28011606000000000000000",
-          rssi: "-50",
-          count: '1',
-        )
-      ]);
+      () async {
+        while (true) {
+          await Future.delayed(const Duration(milliseconds: 200));
+          if (onTagsUpdate == null) {
+            return;
+          }
+          onTagsUpdate!([
+            TagEpc(
+              id: '1',
+              epc: "E28011606000${DateTime.now().millisecondsSinceEpoch}",
+              rssi: "-50",
+              count: '1',
+            )
+          ]);
+        }
+      }();
       return;
     }
     await RfidC72Plugin.startContinuous;
