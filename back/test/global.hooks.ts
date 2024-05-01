@@ -1,20 +1,15 @@
 import {Server} from 'http';
 
 import app from '../src/app';
-import {Application} from '../src/declarations';
 
 async function sync() {
-
     const sequelizeClient = app.get('sequelizeClient');
     await sequelizeClient.sync({force: true});
-
 }
 
 async function drop() {
-
     const sequelizeClient = app.get('sequelizeClient');
     await sequelizeClient.drop({force: true});
-
 }
 
 let server: Server;

@@ -1,0 +1,60 @@
+{
+  "currency": "$",
+  "pcs": "pcs.",
+  "nav": {
+    "home": "Home",
+    "search": "Search",
+    "cart": "Cart",
+    "orders": "Orders",
+    "profile": "Profile"
+  },
+  "profile": {
+    "profile": "Profile",
+    "addresses": "Address",
+    "language": "Language",
+    "logout": "Logout",
+    "save": "Save changes"
+  },
+  "product": {
+    "addToCart": "Add to cart",
+    "inStock": "In stock:",
+    "intName": "International brand:",
+    "manufacturer": "Manufacturer: ",
+    "kind": "Kind:",
+    "farmGroup": "Pharmacological group",
+    "pcs": "PCS"
+  },
+  "cart": {
+    "fill": "Let's fill up",
+    "next": "Order"
+  },
+  "order": {
+    "your_order": "Your order",
+    "address": "Delivery address",
+    "total": "Total",
+    "paymentMethod": "Payment method",
+    "cash": "Cash",
+    "card": "Card",
+    "completed": "Order processed",
+    "order": "Order ",
+    "next": "Continue",
+    "confirm": "Pay"
+  },
+  "ordersPage": {
+    "title": "Orders",
+    "total": "Total",
+    "current": "Active",
+    "history": "History",
+    "order": "Order "
+  },
+  "login": {
+    "password": "Password",
+    "code_sent": "",
+    "title": "Your phone number",
+    "code_title": "Confirmation code",
+    "button": "Continue"
+  },
+  "nothing_yet": "We did not find anything",
+  "general_error": "Something went wrong",
+  "saved_toast": "Saved successfully"
+}

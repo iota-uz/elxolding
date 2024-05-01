@@ -1,16 +1,16 @@
 // Initializes the `inventory` service on path `/inventory`
-import { ServiceAddons } from '@feathersjs/feathers';
+import {ServiceAddons} from '@feathersjs/feathers';
 
-import { Application } from '../../declarations';
+import {Application} from '../../declarations';
 import createModel from '../../models/inventory.model';
-import { Inventory } from './inventory.class';
+import {Inventory} from './inventory.class';
 import hooks from './inventory.hooks';
 
 // Add this service to the service type index
 declare module '../../declarations' {
-  interface ServiceTypes {
-    'inventory': Inventory & ServiceAddons<any>;
-  }
+    interface ServiceTypes {
+        'inventory': Inventory & ServiceAddons<any>;
+    }
 }
 
 export default function (app: Application): void {

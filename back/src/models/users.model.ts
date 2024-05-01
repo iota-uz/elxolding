@@ -18,13 +18,8 @@ export default function (app: Application): typeof Model {
             type: DataTypes.STRING,
             allowNull: true
         },
-        phone: {
-            type: DataTypes.STRING,
-            allowNull: true,
-            unique: true
-        },
         role: {
-            type: DataTypes.ENUM('admin', 'user'),
+            type: DataTypes.ENUM('superuser', 'user', 'polygraphy', 'tci', 'warehouse_manager'),
             allowNull: false
         },
         password: {

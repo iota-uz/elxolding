@@ -34,7 +34,7 @@ const props = withDefaults(defineProps<{ collapse?: boolean, horizontalScroll?: 
 
 const app = useAppConfig();
 const route = useRoute();
-const user = useState('user');
+const user = await useUser();
 
 const showNavBurger = computed(() => props.collapse && app.tairo.collapse?.toolbar?.showNavBurger);
 </script>

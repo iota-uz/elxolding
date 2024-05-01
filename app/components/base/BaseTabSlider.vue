@@ -30,9 +30,7 @@ const props = withDefaults(
     },
 );
 
-const [modelValue] = defineModel<string>({
-    default: () => props.tabs[0]?.value,
-});
+const [modelValue] = defineModel<string>({});
 
 const justify = useNuiDefaultProperty(props, 'BaseTabSlider', 'justify');
 const size = useNuiDefaultProperty(props, 'BaseTabSlider', 'size');
@@ -90,12 +88,18 @@ function toggle(value: string) {
                 >
                     {{ tab?.label ?? tab?.value }}
                 </button>
-                <div v-show="modelValue" class="nui-tab-slider-naver"></div>
+                <div
+                    v-show="modelValue"
+                    class="nui-tab-slider-naver"
+                />
             </div>
         </div>
 
         <div class="nui-tab-content">
-            <slot :active-value="modelValue" :toggle="toggle"></slot>
+            <slot
+                :active-value="modelValue"
+                :toggle="toggle"
+            />
         </div>
     </div>
 </template>

@@ -1,7 +1,7 @@
-FROM node:16-alpine as build-stage
+FROM node:20-alpine as build-stage
 
 WORKDIR /app
-RUN npm install -g pnpm@7.22.0
+RUN npm install -g pnpm@8.15.2
 COPY package.json pnpm-lock.yaml .npmrc ./
 RUN pnpm i --frozen-lockfile
 COPY . .

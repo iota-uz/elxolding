@@ -1,8 +1,12 @@
 <template>
     <div class="flex flex-col gap-8">
         <div>
-            <h1 class="text-xl">Пользователи</h1>
-            <h2 class="text-sm text-gray-500">Список пользователей</h2>
+            <h1 class="text-xl">
+                Пользователи
+            </h1>
+            <h2 class="text-sm text-gray-500">
+                Список пользователей
+            </h2>
         </div>
         <div class="flex flex-wrap gap-5 justify-between">
             <div class="flex items-center gap-4">
@@ -105,32 +109,31 @@ const columns = ref<Column[]>([
         sortable: true
     },
     {
-        label: 'Email',
-        name: 'email',
+        label: 'Отчество',
+        name: 'middleName',
         sortable: true
     },
     {
         label: 'Роль',
         name: 'role',
         enums: {
-            admin: 'Администратор',
-            editor: 'Редактор',
-            manager: 'Менеджер',
-            user: 'Пользователь'
+            superuser: 'Руководитель',
+            user: 'Администратор',
+            polygraphy: 'Сотрудник полиграфии',
+            tci: 'Сотрудник ОТК',
+            warehouse_manager: 'Сотрудник склада'
         }
-    },
-    {
-        label: 'Пароль',
-        name: 'password'
     },
     {
         label: 'Дата создания',
         name: 'createdAt',
+        dateFormat: 'calendar',
         sortable: true
     },
     {
         label: 'Дата обновления',
         name: 'updatedAt',
+        dateFormat: 'calendar',
         sortable: true
     }
 ]);
@@ -172,10 +175,6 @@ async function fetch() {
         isFetchPending.value = false;
     }
 }
-
-onMounted(async () => {
-    await fetch();
-});
 </script>
 
 <style>

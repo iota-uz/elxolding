@@ -1,6 +1,9 @@
 <template>
     <div class="container flex justify-center items-center h-screen px-5 md:px-0">
         <div class="flex flex-col justify-center md:flex-row-reverse items-center gap-4 md:gap-24 w-full">
+            <div class="w-full hidden md:block md:w-2/3 max-w-lg md:max-w-3xl">
+                <LoginIllustration class="w-full" />
+            </div>
             <div class="flex flex-col items-center w-full md:w-1/2 max-w-sm">
                 <div class="text-center w-full">
                     <h1 class="text-3xl">
@@ -14,13 +17,17 @@
                         @submit.prevent="submit"
                     >
                         <BaseSelect
-                            v-model.trim="loginData.email"
-                            label="Сотрудник"
-                            placeholder="Иван Васильевич"
+                            v-model="loginData.id"
                             icon="ph:user"
+                            label="Сотрудник"
+                            placeholder="Сотрудник"
                         >
-                            <option value="some">
-                                Меняет профессию
+                            <option
+                                v-for="user in users"
+                                :value="user.id"
+                            >
+                                {{ user.firstName }}
+                                {{ user.lastName }}
                             </option>
                         </BaseSelect>
                         <PasswordInput
@@ -32,8 +39,8 @@
                         <BaseButton
                             :loading="isCreatePending"
                             class="btn-primary w-full"
-                            type="submit"
                             color="primary"
+                            type="submit"
                         >
                             Войти
                         </BaseButton>
@@ -46,31 +53,38 @@
 
 <script lang="ts" setup>
 import PasswordInput from '~/components/common/PasswordInput.vue';
+import LoginIllustration from '~/components/illustrations/LoginIllustration.vue';
+import type {User} from '~/types/user';
 import {login} from '~/utils/login';
 
 useHead({
     title: 'Войти'
 });
 
-const loginData = reactive({email: '', password: ''});
+const loginData = reactive({id: 0, password: ''});
 const isCreatePending = ref(false);
-const errors = ref({email: '', password: ''});
+const errors = ref({id: '', password: ''});
 const toast = useToast('GlobalToast');
+const users = ref<User[]>([]);
+
+onMounted(async () => {
+    users.value = await fetchUsers();
+});
 
 async function submit() {
-    errors.value = {email: '', password: ''};
-    if (!loginData.email) {
-        errors.value.email = 'Данное поле обязательное';
+    errors.value = {id: '', password: ''};
+    if (!loginData.id) {
+        errors.value.id = 'Данное поле обязательное';
     }
     if (!loginData.password) {
         errors.value.password = 'Данное поле обязательное';
     }
-    if (errors.value.email || errors.value.password) {
+    if (errors.value.id || errors.value.password) {
         return;
     }
     isCreatePending.value = true;
     try {
-        await login(loginData.email, loginData.password);
+        await login(loginData.id, loginData.password);
         navigateTo({path: '/'});
     } catch (e: any) {
         if (e.code === 401 || e.code === 403) {
@@ -81,6 +95,10 @@ async function submit() {
     } finally {
         isCreatePending.value = false;
     }
+}
+
+async function fetchUsers() {
+    return useService('users').find().list().exec();
 }
 </script>
 

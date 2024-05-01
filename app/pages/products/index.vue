@@ -1,40 +1,28 @@
 <template>
     <div class="flex flex-col gap-8">
         <div>
-            <h1 class="text-xl">Продукция</h1>
-            <h2 class="text-sm text-gray-500">Список продуктов</h2>
+            <h1 class="text-xl">
+                Продукция
+            </h1>
+            <h2 class="text-sm text-gray-500">
+                Список продуктов
+            </h2>
         </div>
         <div class="flex flex-wrap gap-5 justify-between">
             <div class="flex items-center gap-4">
                 <DateSelect
-                    v-model:start="dateFilter.start"
                     v-model:end="dateFilter.end"
+                    v-model:start="dateFilter.start"
                     label="Дата создания"
                 />
                 <PerPageSelect v-model="perPage" />
             </div>
 
             <div class="flex gap-3">
-                <div class="flex">
-                    <BaseButton class="flex items-center !px-3 !rounded-r-none !border-e-0">
-                        {{ statusFilter.status }}
-                    </BaseButton>
-                    <BaseDropdown
-                        class="status-filter"
-                        flavor="button"
-                        label="Статус"
-                        orientation="start"
-                    >
-                        <BaseDropdownItem v-for="option in options"
-                                          @click="statusFilter.status = option.value"
-                                          :key="option.label"
-                                          :title="option.label"
-                        />
-                    </BaseDropdown>
-                </div>
+                <ProductTypeFilter v-model="statusFilter" />
                 <NuxtLink :to="{name: 'products-id', params: {id: 'new'}}">
                     <BaseButton color="primary">
-                        Новый продукция
+                        Новая продукция
                     </BaseButton>
                 </NuxtLink>
             </div>
@@ -50,7 +38,7 @@
             <BaseTable
                 v-model:sortBy="sortBy"
                 :columns="columns"
-                :data="users.data"
+                :data="products.data"
                 :loading="isFetchPending"
                 class="flex-auto"
             >
@@ -69,12 +57,12 @@
                 </template>
             </BaseTable>
             <BasePagination
-                v-if="users.total / perPage > 1"
+                v-if="products.total / perPage > 1"
                 v-model:current-page="currentPage"
-                class="my-2"
                 :item-per-page="perPage"
-                :total-items="users.total"
                 :max-links-displayed="10"
+                :total-items="products.total"
+                class="my-2"
                 shape="rounded"
             />
         </div>
@@ -87,63 +75,75 @@ import DateSelect from '~/components/common/DateSelect.vue';
 import PerPageSelect from '~/components/common/PerPageSelect.vue';
 import Search from '~/components/common/Search.vue';
 import {type Column} from '~/components/common/types';
+import ProductTypeFilter from '~/components/products/ProductTypeFilter.vue';
 import TairoTableCell from '~/components/tairo/TairoTableCell.vue';
 import {type PaginatedResponse} from '~/types/generics';
 
 definePageMeta({
     layout: 'account',
-    verbose: 'Сотрудники'
+    verbose: 'Продукция'
 });
 
 useHead({
-    title: 'Сотрудники'
+    title: 'Продукция'
 });
 
 const toast = useToast('GlobalToast');
 const route = useRoute();
 const app = useAppConfig();
-const usersService = useService('users');
+const productsService = useService('products', {auth: true});
 
 const searchQ = ref({});
 const isFetchPending = ref(false);
-const users = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip: 0});
+const products = ref<PaginatedResponse<any>>({total: 0, data: [], limit: 0, skip: 0});
 const perPage = ref(app.pagination.defaultPageSize);
 const currentPage = ref(route.query.page ? parseInt(route.query.page as string) : 1);
 const dateFilter = reactive({start: '', end: ''});
-const statusFilter = reactive({status: 'Все'});
+const statusFilter = ref<string[]>([]);
 const sortBy = ref<Record<string, any>>({createdAt: -1});
-
-const options = [
-    {label: 'Все', value: ''},
-    {label: 'На складе', value: 'На складе'},
-    {label: 'В разработке', value: 'В разработке'},
-    {label: 'Одобрено', value: 'Одобрено'},
-];
 
 const columns = ref<Column[]>([
     {
         label: 'Название',
         name: 'name',
-        sortable: true
+        field: (item) => {
+            return item.position.title;
+        }
     },
     {
         label: 'Артикул',
         name: 'article',
-        sortable: true
+        field: (item) => {
+            return item.position.barcode;
+        }
+    },
+    {
+        label: 'Ед. измерения',
+        name: 'unit',
+        field: (item) => {
+            return item.position.unit;
+        }
     },
     {
         label: 'Статус',
         name: 'status',
+        enums: {
+            in_stock: 'На складе',
+            in_development: 'В разработке',
+            approved: 'Одобрено'
+        },
         sortable: true
     },
     {
         label: 'Дата создания',
         name: 'createdAt',
+        dateFormat: 'calendar',
         sortable: true
     },
     {
         label: 'Дата обновления',
         name: 'updatedAt',
+        dateFormat: 'calendar',
         sortable: true
     }
 ]);
@@ -152,12 +152,10 @@ const fields = ref([
     {
         label: 'Название',
         key: 'name'
-    },{
+    },
+    {
         label: 'Артикул',
         key: 'article'
-    },{
-        label: 'Статус',
-        key: 'status'
     },
 ]);
 
@@ -177,21 +175,19 @@ async function fetch() {
             $gt: dateFilter.start
         };
     }
-    if (statusFilter.status) {
-        query.status = dateFilter.status;
+    if (statusFilter.value.length) {
+        query.status = {
+            $in: statusFilter.value
+        };
     }
     try {
-        users.value = await usersService.find<PaginatedResponse<any>>(query).exec();
-    } catch(e: any) {
+        products.value = await productsService.find<PaginatedResponse<any>>(query).exec();
+    } catch (e: any) {
         toast.show({type: 'error', message: e.message, timeout: 3000});
     } finally {
         isFetchPending.value = false;
     }
 }
-
-onMounted(async () => {
-    await fetch();
-});
 </script>
 
 <style>

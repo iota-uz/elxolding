@@ -1,11 +1,9 @@
 export interface User {
-    id: string
-    email: string
-    username: string
-    company: string
-    company_id: number
+    id: number
+    firstName: string
+    lastName: string
+    middleName: string
     role: string
-    permissions: any
     createdAt: string
     updatedAt: string
 }

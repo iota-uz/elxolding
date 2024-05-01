@@ -18,12 +18,20 @@ export default defineAppConfig({
                 enabled: true,
                 items: [
                     {
+                        name: 'Панель управления',
+                        icon: {
+                            name: 'ph:gauge',
+                            class: 'w-5 h-5'
+                        },
+                        to: '/',
+                    },
+                    {
                         name: 'Заявки',
                         icon: {
                             name: 'ph:archive-tray-fill',
                             class: 'w-5 h-5'
                         },
-                        to: '/applications',
+                        to: '/orders',
                     },
                     {
                         name: 'Продукция',
@@ -39,15 +47,15 @@ export default defineAppConfig({
                             name: 'ph:notepad-fill',
                             class: 'w-5 h-5'
                         },
-                        to: '/names'
+                        to: '/positions'
                     },
                     {
-                        name: 'Сотрудники',
+                        name: 'Пользователи',
                         icon: {
                             name: 'ph:users',
                             class: 'w-5 h-5'
                         },
-                        to: '/employees'
+                        to: '/users'
                     },
                     {
                         name: 'Инвентаризация',

@@ -1,10 +1,11 @@
 import assert from 'assert';
+
 import app from '../../src/app';
 
 describe('\'products\' service', () => {
-  it('registered the service', () => {
-    const service = app.service('products');
+    it('registered the service', () => {
+        const service = app.service('products');
 
-    assert.ok(service, 'Registered the service');
-  });
+        assert.ok(service, 'Registered the service');
+    });
 });

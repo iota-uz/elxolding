@@ -1,7 +1,6 @@
 import {HooksObject} from '@feathersjs/feathers';
 
-import {logRequests, logRequestsDb} from './hooks/logging';
-
+import {logRequests} from './hooks/logging';
 
 
 export default <HooksObject>{
@@ -15,10 +14,8 @@ export default <HooksObject>{
         remove: []
     },
     after: {
-        all: [logRequestsDb()],
-        find: [
-            // printHello()
-        ],
+        all: [],
+        find: [],
         get: [],
         create: [],
         update: [],

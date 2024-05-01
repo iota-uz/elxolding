@@ -3,7 +3,7 @@
   "port": 3030,
   "public": "../public/",
   "uploads": "../uploads/media/",
-  "images_url": "http://localhost:3030/uploads/media/",
+  "images_url": "http://localhost:3030/uploads/",
   "paginate": {
     "default": 50,
     "max": 300
@@ -21,20 +21,17 @@
         "typ": "access"
       },
       "audience": "http://localhost:3030",
-      "issuer": "feathers"
+      "issuer": "feathers",
+      "algorithm": "HS256",
+      "expiresIn": "14d"
     },
     "local": {
-      "usernameField": "email",
+      "usernameField": "id",
       "passwordField": "password"
     }
   },
   "postgres": "postgres://postgres:postgres@localhost:5432/elxolding",
   "embeddings": {
     "url": "http://localhost:8000"
-  },
-  "openai": {
-    "gpt4": "gpt-4-0613",
-    "gpt3": "gpt-3.5-turbo-1106",
-    "secret": "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"
   }
 }

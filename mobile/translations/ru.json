@@ -1,0 +1,67 @@
+{
+  "login": {
+    "title": "Вход",
+    "chooseUser": {
+      "title": "Вход в систему",
+      "subtitle": "Выполните вход в систему под своим аккаунтом"
+    },
+    "enterPassword": {
+      "title": "Введите пароль",
+      "subtitle": "Пароль для пользователя {username}"
+    },
+    "username": "Имя пользователя",
+    "password": "Пароль",
+    "button": "Войти",
+    "errors": {
+      "401": "Неверное имя пользователя или пароль",
+      "500": "Ошибка сервера",
+      "default": "Ошибка сервера"
+    },
+    "buttons": {
+      "retry": "Повторить"
+    }
+  },
+  "nav": {
+    "home": "Заявки",
+    "inventory": "Инвентаризация",
+    "control": "Контроль",
+    "settings": "Настройки"
+  },
+  "home": {
+    "order": "Заявка",
+    "positionsCount-0": "{positionsCount} продуктов",
+    "positionsCount-1": "{positionsCount} продукт",
+    "positionsCount-2": "{positionsCount} продукта",
+    "positionsCount-5": "{positionsCount} продуктов",
+    "orderType": {
+      "in": "Приход",
+      "out": "Расход"
+    }
+  },
+  "control": {
+    "title": "Контроль",
+    "tci": "ОТК",
+    "polygraphy": "Полиграфии",
+    "selectPosition": "Выберите наименование"
+  },
+  "order": {
+    "title": "Заявка #",
+    "in": "Оприходовать",
+    "out": "Отгрузить"
+  },
+  "inventory": {
+    "title": "Инвентаризация",
+    "new": "Начать"
+  },
+  "languageSelect": {
+    "title": "Язык интерфейса",
+    "ru": "Русский язык",
+    "uz": "O'zbek tili"
+  },
+  "settings": {
+    "title": "Настройки",
+    "profile": "Профиль",
+    "language": "Язык интерфейса",
+    "logout": "Выйти"
+  }
+}

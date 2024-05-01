@@ -24,8 +24,31 @@ func Build(runner *pipeline.Runner) {
 	if runner.Branch != "staging" {
 		return
 	}
-	var branch, containerName, imageName string
+	var branch, containerName, imageName, apiHost, dbName, ssrUrl string
 	branch = runner.Branch
+
+	containerName = fmt.Sprintf("%s-back-%s", projectName, branch)
+	imageName = fmt.Sprintf("%s-back:%s", projectName, branch)
+	apiHost = fmt.Sprintf("api-%s-%s.apollos.studio", branch, projectName)
+	dbName = fmt.Sprintf("%s-postgres-%s", projectName, branch)
+	ssrUrl = fmt.Sprintf("http://%s:3030", containerName)
+
+	runner.Pipeline(
+		docker.RmContainer(dbName, true),
+		docker.Run(dbName, "postgres:15.1").Config(
+			docker.Volume(fmt.Sprintf("%s-%s-postgres-data", projectName, branch), "/var/lib/postgresql/data"),
+			docker.Env("POSTGRES_DB", "elxolding"),
+			docker.Env("POSTGRES_PASSWORD", "postgres"),
+			docker.Hostname("elxolding_db"),
+		),
+        docker.Build(imageName, "./back").Target("prod"),
+        docker.RmContainer(containerName, true),
+        docker.Run(containerName, imageName).Config(
+			docker.Expose(apiHost, "3030"),
+			docker.Volume(fmt.Sprintf("%s-%s-uploads-data", branch, projectName), "/app/uploads"),
+			docker.Env("NODE_ENV", "gcidp"),
+        ),
+	)
 	containerName = fmt.Sprintf("%s-app-%s", projectName, branch)
 	imageName = fmt.Sprintf("%s-app:%s", projectName, branch)
 	runner.Pipeline(
@@ -33,6 +56,8 @@ func Build(runner *pipeline.Runner) {
 		docker.RmContainer(containerName, true),
 		docker.Run(containerName, imageName).Config(
 			docker.Expose(fmt.Sprintf("%s-%s.apollos.studio", branch, projectName), "80"),
+			docker.Env("NUXT_PUBLIC_API_URL", fmt.Sprintf("https://%s", apiHost)),
+			docker.Env("NUXT_PUBLIC_SSR_API_URL", ssrUrl),
 		),
 	)
 

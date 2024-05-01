@@ -20,7 +20,7 @@ Query language syntax (serializer included as a part of useService hook): https:
 # PNPM
 For Windows and Mac
 ```shell
-npm install -g pnpm@7.22.0
+npm install -g pnpm@8.15.0
 ```
 
 # Husky

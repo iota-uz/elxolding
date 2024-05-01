@@ -15,7 +15,7 @@ import channels from './channels';
 import {Application} from './declarations';
 import logger from './logger';
 import middleware from './middleware';
-import tasksPlugin from './plugins/tasksPlugin';
+// import tasksPlugin from './plugins/tasksPlugin';
 import sequelize from './sequelize';
 import services from './services';
 
@@ -91,7 +91,7 @@ app.configure(swagger({
 
 app.configure(services);
 app.configure(channels);
-app.configure(tasksPlugin('tasks'));
+// app.configure(tasksPlugin('tasks'));
 
 app.use(express.notFound());
 app.use(express.errorHandler({logger} as any));

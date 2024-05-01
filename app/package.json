@@ -12,9 +12,7 @@
     "lint:fix": "eslint --fix --ext \".ts,.js,.vue\" --ignore-path .eslintignore --quiet ."
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^36.0.1",
-    "@ckeditor/ckeditor5-vue": "^4.0.1",
-    "@diyor28/treeselect": "^0.1.7",
+    "@diyor28/treeselect": "^0.1.8",
     "@headlessui-float/vue": "^0.13.0",
     "@headlessui/vue": "^1.7.17",
     "@nuxtjs/color-mode": "^3.3.2",
@@ -41,7 +39,7 @@
     "sass": "1.53.0",
     "text-mask-core": "^5.1.2",
     "typescript": "^5.2.2",
-    "vue": "3.4.15",
+    "vue": "3.4.21",
     "vue-router": "^4.2.0",
     "vue-tsc": "^1.8.16",
     "vue3-apexcharts": "^1.4.1",

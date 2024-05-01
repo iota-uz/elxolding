@@ -7,7 +7,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     }
 
     const user = useState('user');
-    const promise = useUser().exec().then(r => user.value = r);
+    const promise = useUser().then(r => user.value = r);
     if (!user.value) {
         await promise;
     }

@@ -14,6 +14,16 @@
             class="slimscroll relative w-full grow overflow-y-auto py-6"
         >
             <!--Menu-->
+            <div class="flex items-center gap-3 mb-4 ml-3">
+                <img
+                    alt="logo"
+                    src="~/assets/images/logo.png"
+                    class="w-12 grayscale fill-white dark:fill-muted-400/80"
+                >
+                <p class="text-lg text-white dark:text-muted-400/80">
+                    Elxolding
+                </p>
+            </div>
             <ul
                 id="sidebar-menu"
                 class="space-y-2"

@@ -20,15 +20,16 @@ export function setToken(token: string) {
     localStorage.setItem('token', token);
 }
 
-export function login(email: string, password: string) {
-    return useService('auth/login')
+export function login(id: number, password: string) {
+    return useService('authentication')
         .create({
-            email,
+            id,
+            strategy: 'local',
             password
         })
         .exec()
         .then((response: any) => {
-            localStorage.setItem('token', response.access_token);
+            localStorage.setItem('token', response.accessToken);
             return response;
         });
 }

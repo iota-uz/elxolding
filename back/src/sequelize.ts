@@ -1,10 +1,6 @@
-import pgvector from 'pgvector/sequelize';
 import {Sequelize} from 'sequelize';
 
 import {Application} from './declarations';
-
-
-pgvector.registerType(Sequelize);
 
 export default function (app: Application): void {
     const connectionString = app.get('postgres');

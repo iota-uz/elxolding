@@ -16,7 +16,7 @@
     "test": "test/"
   },
   "engines": {
-    "node": "^16.0.0",
+    "node": "^20.0.0",
     "npm": ">= 3.0.0"
   },
   "scripts": {
@@ -24,6 +24,8 @@
     "compile:ws": "rm -fo lib/ && tsc",
     "createsu": "ts-node src/scripts/createsu.ts",
     "createsu:ws": "ts-node src/scripts/createsu.ts",
+    "seed": "ts-node src/scripts/seed.ts",
+    "seed:ws": "ts-node src/scripts/seed.ts",
     "createmigration": "sequelize migration:create --name",
     "deploy": "node lib/sendDeployMsg.js",
     "dev": "nodemon",
@@ -77,14 +79,11 @@
     "multer": "^1.4.5-lts.1",
     "nodemon": "^1.14.9",
     "openai": "^4.24.1",
-    "otplib": "^12.0.1",
     "pg": "^8.11.3",
-    "pgvector": "^0.1.7",
     "sequelize": "^6.32.0",
     "serve-favicon": "^2.5.0",
-    "sharp": "^0.31.1",
+    "sharp": "^0.33.3",
     "swagger-ui-dist": "^5.10.3",
-    "telegraf": "^4.11.2",
     "typescript": "^4.8.4",
     "winston": "^3.8.2"
   },

@@ -5,3 +5,8 @@ services:
     build:
       context: ./app
       target: prod
+
+  back:
+    build:
+      context: ./back
+      target: prod

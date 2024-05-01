@@ -6,7 +6,6 @@ import logger from '../logger';
 async function main() {
     logger.info('Initializing... Please wait');
     await new Promise(resolve => setTimeout(resolve, 500));
-    const {phone} = await inquirer.prompt({type: 'input', name: 'phone'});
     const {password} = await inquirer.prompt({type: 'password', name: 'password'});
     const {firstName, lastName} = await inquirer.prompt([
         {type: 'input', name: 'firstName'},
@@ -15,7 +14,6 @@ async function main() {
     await app.service('users').create({
         firstName: firstName,
         lastName: lastName,
-        phone: phone,
         password: password,
         role: 'admin'
     });

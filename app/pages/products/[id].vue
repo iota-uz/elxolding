@@ -2,17 +2,37 @@
     <div class="mt-4 px-10">
         <div class="flex flex-col gap-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 items-end">
-                <BaseInput :error="errors.name" type="text" v-model="product.name" label="Наименование*" name="name" placeholder="пр.: Коробка"/>
-                <BaseInput v-model="product.rfid" label="RFID метка*" name="rfid" placeholder="пр.: 6548231" :error="errors.rfid" type="text"/>
-                <BaseSelect :error="errors.status" v-model="product.status" label="Ед. измерения*" name="status">
-                    <option value="admin">
+                <MultiSelect
+                    v-model="product.positionId"
+                    :error="errors.positionId"
+                    :options="positions"
+                    type="text"
+                    label="Наименование*"
+                    name="name"
+                    placeholder="Начните печатать"
+                />
+                <BaseInput
+                    v-model="product.rfid"
+                    label="RFID метка*"
+                    name="rfid"
+                    placeholder="пр.: 6548231"
+                    :error="errors.rfid"
+                    type="text"
+                />
+                <BaseSelect
+                    v-model="product.status"
+                    :error="errors.status"
+                    label="Статус*"
+                    name="status"
+                >
+                    <option value="in_stock">
                         На складе
                     </option>
-                    <option value="manager">
+                    <option value="in_development">
                         В разработке
                     </option>
-                    <option value="editor">
-                        Обобрено
+                    <option value="approved">
+                        Одобрено
                     </option>
                 </BaseSelect>
             </div>
@@ -41,23 +61,23 @@
 </template>
 
 <script lang="ts" setup>
-
+import MultiSelect from '~/components/common/MultiSelect.vue';
 
 definePageMeta({
     layout: 'account',
-    verbose: 'Новая продукция'
+    verbose: 'Продукт'
 });
 
 useHead({
-    title: 'Новая продукция'
+    title: 'Продукт'
 });
 
 const route = useRoute();
 const toast = useToast('GlobalToast');
-const productsService = useService('products');
+const productsService = useService('products', {auth: true});
 
 const product = ref<any>({});
-
+const positions = ref<any[]>([]);
 const errors = ref<Record<string, string>>({});
 const isDeletePending = ref(false);
 const isSavePending = ref(false);
@@ -68,16 +88,16 @@ onMounted(async () => {
     } else {
         product.value = await productsService.get(route.params.id as string).exec();
     }
-
+    positions.value = await optionsList(useService('positions', {auth: true}), 'title');
 });
 
 
 async function remove() {
     isDeletePending.value = true;
     try {
-        await productsService.remove(product.value.id);
+        await productsService.remove(product.value.id).exec();
         toast.show({message: 'Успешно удалено', timeout: 3000, type: 'success'});
-        navigateTo('/name');
+        navigateTo('/products');
     } catch (e: any) {
         toast.show({message: e.message, timeout: 3000, type: 'error'});
     } finally {

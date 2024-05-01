@@ -2,53 +2,109 @@ import * as assert from 'assert';
 
 import app from '../../src/app';
 
-
 describe('\'rpc\' service', function () {
     this.timeout(30000);
 
-    describe('OpexAggregateMeta', function () {
-        it('OpexAggregateMeta test', async () => {
-            const subdivision = await app.service('subdivisions').create({
-                name: 'ПЕГАС',
-            });
-            const account = await app.service('accounts').create({
-                name: 'ПЕГАС',
-                subdivisionId: subdivision.id,
-                currency: 'usd'
-            });
-            const opex = await app.service('opex').create({
-                name: 'Зарплата',
-                amount: 10000,
+    let positions;
 
-            });
-            await Promise.all([
-                app.service('expenses').create({
-                    name: 'Зарплата',
-                    amount: 20000,
-                    accountId: account.id,
-                    opexId: opex.id,
-                    date: '2024-03-02'
-                }),
-                app.service('expenses').create({
-                    name: 'Зарплата',
-                    amount: 20000,
-                    accountId: account.id,
-                    opexId: opex.id,
-                    date: '2024-06-03'
-                })
-            ]);
+    beforeEach(async () => {
+        positions = await Promise.all(([
+            app.service('positions').create({
+                title: 'position1',
+                barcode: 'barcode1',
+                unit: 'cm'
+            }),
+            app.service('positions').create({
+                title: 'position2',
+                barcode: 'barcode2',
+                unit: 'cm'
+            }),
+        ]));
+    });
 
-            const {result, error} = await app.service('rpc').create({
-                method: 'OpexAggregateMeta',
+    describe('CreateProductsWithTags', function () {
+        it('should create products with tags', async () => {
+            const rpc = app.service('rpc');
+            const {result, error} = await rpc.create({
+                method: 'CreateProductsWithTags',
                 params: {
-                    from: '2024-03-01',
-                    to: '2024-06-04'
+                    positionId: positions[0].id,
+                    tags: ['tag1', 'tag2']
                 }
             });
-            assert.strictEqual(error, undefined, 'Error is not undefined');
-            assert.strictEqual(result.planned, 10000, 'Planned expenses are not equal to 10000');
-            assert.strictEqual(result.actual, 40000, 'Actual expenses are not equal to 40000');
-            assert.strictEqual(result.difference, 300, 'The difference between actual and planned expenses is not equal to 300');
+            const products = await app.service('products').find({
+                query: {
+                    positionId: positions[0].id
+                },
+                paginate: false
+            });
+            assert.strictEqual(error, undefined);
+            assert.strictEqual(result.createdProducts, 2);
+            assert.strictEqual(products.length, 2);
+        });
+    });
+
+    describe('GetInventory', function () {
+        it('should return inventory', async () => {
+            await Promise.all([
+                app.service('products').create({
+                    positionId: positions[0].id,
+                    status: 'in_stock',
+                    rfid: 'rfid1'
+                }),
+                app.service('products').create({
+                    positionId: positions[0].id,
+                    status: 'in_stock',
+                    rfid: 'rfid2'
+                }),
+            ]);
+            const rpc = app.service('rpc');
+            const {result, error} = await rpc.create({
+                method: 'GetInventory',
+                params: {}
+            });
+            assert.strictEqual(error, undefined);
+            assert.strictEqual(result.inventory.length, 1);
+            assert.strictEqual(result.inventory[0].products.length, 2);
+        });
+    });
+
+    describe('CompleteInventoryCheck', function () {
+        it('should complete inventory check', async () => {
+            await Promise.all([
+                app.service('products').create({
+                    positionId: positions[0].id,
+                    status: 'in_stock',
+                    rfid: 'rfid1'
+                }),
+                app.service('products').create({
+                    positionId: positions[0].id,
+                    status: 'in_stock',
+                    rfid: 'rfid2'
+                }),
+            ]);
+            const rpc = app.service('rpc');
+            const {result, error} = await rpc.create({
+                method: 'CompleteInventoryCheck',
+                params: {
+                    positions: [
+                        {
+                            positionId: positions[0].id,
+                            found: 2
+                        }
+                    ]
+                }
+            });
+            const results = await app.service('inventory-results').find({
+                query: {
+                    inventoryId: result.id
+                },
+                paginate: false
+            });
+            assert.strictEqual(error, undefined);
+            assert.strictEqual(results.length, 1);
+            assert.strictEqual(results[0].expected, 2);
+            assert.strictEqual(results[0].found, 2);
         });
     });
 });
