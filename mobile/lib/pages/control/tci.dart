@@ -17,10 +17,10 @@ class TciPage extends StatefulWidget {
 
 class _TciPageState extends State<TciPage> {
   int? positionId;
-
   final List<TagEpc> _data = [];
   List<Position> _positions = [];
   bool _isLoading = false;
+  bool _isScanning = false;
   RfidWrapper rfid = RfidWrapper();
 
   @override
@@ -70,7 +70,10 @@ class _TciPageState extends State<TciPage> {
       isExpanded: true,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
-        hintText: FlutterI18n.translate(context, "rfid.selectPosition"),
+        hintText: FlutterI18n.translate(
+          context,
+          "tci.selectPosition.placeholder",
+        ),
       ),
       items: _positions.map((value) {
         return DropdownMenuItem<int>(
@@ -107,15 +110,16 @@ class _TciPageState extends State<TciPage> {
   void onCreatePressed() {
     if (positionId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Выберите наименование'),
+        SnackBar(
+          content: Text(
+              FlutterI18n.translate(context, "tci.errors.positionIdEmpty")),
         ),
       );
     }
     if (_data.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Сначала отсканируйте метки'),
+        SnackBar(
+          content: Text(FlutterI18n.translate(context, "tci.errors.tagsEmpty")),
         ),
       );
     }
@@ -128,8 +132,8 @@ class _TciPageState extends State<TciPage> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Продукция внесена в базу'),
+          SnackBar(
+            content: Text(FlutterI18n.translate(context, "tci.success")),
           ),
         );
         setState(() {
@@ -139,7 +143,8 @@ class _TciPageState extends State<TciPage> {
     }).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Ошибка при создании продукции. ${e.toString()}',
+          content: Text(
+              '${FlutterI18n.translate(context, "tci.errors.products.create")}: ${e.toString()}',
               style: const TextStyle(color: Colors.red)),
         ),
       );
@@ -157,7 +162,8 @@ class _TciPageState extends State<TciPage> {
         const SizedBox(height: 20),
         Row(
           children: [
-            Text('Отсканировано: ${_data.length}'),
+            Text(
+                '${FlutterI18n.translate(context, "tci.scanned")}: ${_data.length}'),
             const Spacer(),
             IconButton(
               onPressed: () {
@@ -177,17 +183,51 @@ class _TciPageState extends State<TciPage> {
 
   void onScanPressed() async {
     if (await rfid.isStarted) {
+      _isScanning = false;
       rfid.stop();
     } else {
+      _isScanning = true;
       rfid.readContinuous();
     }
+  }
+
+  Widget styleButton(BuildContext context) {
+    var style = const TextStyle(
+      fontSize: 18,
+      color: Colors.black,
+    );
+
+    var stopText = Text(
+      FlutterI18n.translate(context, "tci.footer.stop"),
+      style: style,
+    );
+
+    var startText = Text(
+      FlutterI18n.translate(context, "tci.footer.start"),
+      style: style,
+    );
+
+    return ElevatedButton(
+      onPressed: onScanPressed,
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        backgroundColor: Colors.white,
+        minimumSize: const Size.fromHeight(36),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.grey.shade400),
+          borderRadius: BorderRadius.circular(80),
+        ),
+        elevation: 0,
+      ),
+      child: _isScanning ? stopText : startText,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Отсканируйте метки'),
+        title: Text(FlutterI18n.translate(context, "tci.title")),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -203,38 +243,7 @@ class _TciPageState extends State<TciPage> {
           padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
           child: Column(
             children: [
-              ElevatedButton(
-                onPressed: onScanPressed,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  backgroundColor: Colors.white,
-                  minimumSize: const Size.fromHeight(36),
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Colors.grey.shade400),
-                    borderRadius: BorderRadius.circular(80),
-                  ),
-                  elevation: 0,
-                ),
-                child: FutureBuilder(
-                  future: rfid.isStarted,
-                  builder: (context, snapshot) {
-                    var style = const TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                    );
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Text('...', style: style);
-                    }
-                    if (snapshot.data == true) {
-                      return Text('Остановить', style: style);
-                    }
-                    return Text(
-                      'Сканировать',
-                      style: style,
-                    );
-                  },
-                ),
-              ),
+              styleButton(context),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: onCreatePressed,
@@ -247,9 +256,9 @@ class _TciPageState extends State<TciPage> {
                   ),
                   elevation: 0,
                 ),
-                child: const Text(
-                  'Создать',
-                  style: TextStyle(fontSize: 18),
+                child: Text(
+                  FlutterI18n.translate(context, "tci.footer.create"),
+                  style: const TextStyle(fontSize: 18),
                 ),
               )
             ],

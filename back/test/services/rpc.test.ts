@@ -65,7 +65,7 @@ describe('\'rpc\' service', function () {
             });
             assert.strictEqual(error, undefined);
             assert.strictEqual(result.inventory.length, 1);
-            assert.strictEqual(result.inventory[0].products.length, 2);
+            assert.strictEqual(result.inventory[0].tags.length, 2);
         });
     });
 

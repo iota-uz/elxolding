@@ -38,7 +38,7 @@ class _RfidPageState extends State<RfidPage> {
                 ),
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {
-                  context.pushNamed("control-tci");
+                  context.pushNamed("control-polygraphy");
                 },
               )
             ],

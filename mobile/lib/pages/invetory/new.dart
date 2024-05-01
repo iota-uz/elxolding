@@ -147,17 +147,17 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: inventoryPreview.length,
-      prototypeItem: const ListTile(
+      prototypeItem: ListTile(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "Наименование",
-              style: TextStyle(color: Colors.blue),
+              FlutterI18n.translate(context, "inventory.list.position.title"),
+              style: const TextStyle(color: Colors.blue),
             ),
             Text(
-              "Найдено",
-              style: TextStyle(color: Colors.blue),
+              FlutterI18n.translate(context, "inventory.list.position.matches"),
+              style: const TextStyle(color: Colors.blue),
             ),
           ],
         ),
@@ -222,13 +222,13 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
           padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "Всего меток: ${tags.length}",
+                "${FlutterI18n.translate(context, "inventory.header.total")}: ${tags.length}",
               ),
               Text(
-                "Найдено: $totalFound/${inventoryTags.length}",
+                "${FlutterI18n.translate(context, "inventory.header.found")}: $totalFound/${inventoryTags.length}",
                 style: const TextStyle(fontSize: 14),
               ),
               const SizedBox(height: 20),
@@ -263,9 +263,9 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                   borderRadius: BorderRadius.circular(80),
                 ),
                 elevation: 0),
-            child: const Text(
-              "Завершить",
-              style: TextStyle(
+            child: Text(
+              FlutterI18n.translate(context, "inventory.complete"),
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 18,
                 fontWeight: FontWeight.w500,

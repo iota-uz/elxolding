@@ -16,6 +16,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Column buildList(BuildContext context, {List<Order> orders = const []}) {
+    if (orders.isEmpty) {
+      return Column(
+        children: [
+          emptyWidget(context),
+        ],
+      );
+    }
     return Column(
       children: [
         for (var order in orders)
@@ -54,93 +61,83 @@ class _HomePageState extends State<HomePage> {
     return data.map<Order>((e) => Order.fromJson(e)).toList();
   }
 
+  Widget emptyWidget(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Image.asset(
+          "assets/images/empty.png",
+          width: 120,
+        ),
+        const SizedBox(height: 10),
+        Text(FlutterI18n.translate(context, "home.noOrders")),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Заявки'),
-          bottom: const TabBar(
+          title: Text(FlutterI18n.translate(context, "home.title")),
+          bottom: TabBar(
             tabs: [
               Tab(
-                icon: Icon(Icons.arrow_downward),
-                text: "Поступление",
+                icon: const Icon(Icons.arrow_downward),
+                text: FlutterI18n.translate(context, "home.orderType.in"),
               ),
               Tab(
-                icon: Icon(Icons.arrow_upward),
-                text: "Отгрузка",
+                icon: const Icon(Icons.arrow_upward),
+                text: FlutterI18n.translate(context, "home.orderType.out"),
               ),
             ],
           ),
         ),
         body: TabBarView(
           children: [
-            Center(
-              child: Container(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
-                child: SingleChildScrollView(
-                  child: FutureBuilder(
-                    future: fetchOrders("in"),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      }
-                      if (snapshot.hasError) {
-                        return Text(snapshot.error.toString());
-                      }
-                      var orders = snapshot.data!;
-                      if (orders.isEmpty) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/images/empty.png",
-                              width: 120,
-                            ),
-                            const SizedBox(height: 10),
-                            const Text("Нет данных"),
-                          ],
-                        );
-                      }
-                      return buildList(context, orders: orders);
-                    },
+            FutureBuilder(
+              future: fetchOrders("in"),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text(snapshot.error.toString()),
+                  );
+                }
+                return Container(
+                  padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+                  child: SingleChildScrollView(
+                    child: buildList(context, orders: snapshot.data!),
                   ),
-                ),
-              ),
+                );
+              },
             ),
-            Center(
-              child: Container(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
-                child: SingleChildScrollView(
-                  child: FutureBuilder(
-                    future: fetchOrders("out"),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      }
-                      if (snapshot.hasError) {
-                        return Text(snapshot.error.toString());
-                      }
-                      var orders = snapshot.data!;
-                      if (orders.isEmpty) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/images/empty.png",
-                              width: 120,
-                            ),
-                            const SizedBox(height: 10),
-                            const Text("Нет данных"),
-                          ],
-                        );
-                      }
-                      return buildList(context, orders: orders);
-                    },
+            FutureBuilder(
+              future: fetchOrders("out"),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text(snapshot.error.toString()),
+                  );
+                }
+                return Container(
+                  padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
+                  child: SingleChildScrollView(
+                    child: buildList(context, orders: snapshot.data!),
                   ),
-                ),
-              ),
+                );
+              },
             )
           ],
         ),

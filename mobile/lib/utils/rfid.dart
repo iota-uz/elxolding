@@ -31,7 +31,7 @@ class RfidWrapper {
 
   Future<bool> get isStarted async {
     if (_platformVersion == "IOS") {
-      return true;
+      return false;
     }
     var started = await RfidC72Plugin.isStarted;
     return started ?? false;

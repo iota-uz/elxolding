@@ -1,40 +1,80 @@
 {
   "login": {
     "title": "Kirish",
-    "subtitle": "Boshqaruv tizimiga kirish",
+    "chooseUser": {
+      "title": "Tizimga kirish",
+      "subtitle": "O'z hisobingiz orqali tizimga kiring"
+    },
+    "enterPassword": {
+      "title": "Parolni kiriting",
+      "subtitle": "{username} foydalanuvchisi uchun parol"
+    },
     "username": "Foydalanuvchi nomi",
     "password": "Parol",
     "button": "Kirish",
-    "error": "Noto'g'ri foydalanuvchi nomi yoki parol"
+    "errors": {
+      "401": "Noto'g'ri foydalanuvchi nomi yoki parol",
+      "500": "Server xatosi",
+      "default": "Server xatosi"
+    },
+    "buttons": {
+      "retry": "Qayta urinish"
+    }
   },
   "nav": {
     "home": "Buyurtmalar",
     "inventory": "Inventarizatsiya",
-    "rfid": "RFID",
+    "control": "Nazorat",
     "settings": "Sozlamalar"
   },
   "home": {
+    "title": "Buyurtmalar",
     "order": "Buyurtma",
-    "productsCount-0": "{productsCount} ta mahsulot",
-    "productsCount-1": "{productsCount} ta mahsulot",
-    "productsCount-2": "{productsCount} ta mahsulot",
-    "productsCount-5": "{productsCount} ta mahsulot",
+    "noOrders": "Buyurtmalar yo'q",
+    "positionsCount-0": "{positionsCount} mahsulotlar",
+    "positionsCount-1": "{positionsCount} mahsulot",
+    "positionsCount-2": "{positionsCount} mahsulot",
+    "positionsCount-5": "{positionsCount} mahsulotlar",
     "orderType": {
-      "delivery": "Kirim",
-      "pickup": "Chiqim"
+      "in": "Kirish",
+      "out": "Chiqish"
     }
+  },
+  "control": {
+    "title": "Nazorat",
+    "tci": "Sifat nazorati",
+    "polygraphy": "Poligrafiya",
+    "selectPosition": "Nomi tanlang"
+  },
+  "order": {
+    "title": "Buyurtma #",
+    "in": "Qabul qilish",
+    "out": "Yuklash"
   },
   "inventory": {
     "title": "Inventarizatsiya",
-    "new": "Inventarizatsiya o'tkazish"
+    "new": "Boshlash",
+    "complete": "Tugatish",
+    "header": {
+      "total": "Jami",
+      "found": "Topildi"
+    },
+    "list": {
+      "position": {
+        "title": "Nomi",
+        "matches": "Topildi"
+      }
+    }
   },
   "languageSelect": {
-    "title": "Interfeys tili",
+    "title": "Interfeys tilini tanlash",
     "ru": "Rus tili",
     "uz": "O'zbek tili"
   },
   "settings": {
     "title": "Sozlamalar",
-    "language": "Interfeys tili"
+    "profile": "Profil",
+    "language": "Interfeys tili",
+    "logout": "Chiqish"
   }
 }

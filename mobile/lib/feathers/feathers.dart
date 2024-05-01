@@ -129,8 +129,10 @@ class Service {
 
   Future<Map<String, dynamic>> remove(int id) async {
     var headers = await _getHeaders();
-    var response =
-        await _client.delete("/$path/$id", options: Options(headers: headers));
+    var response = await _client.delete(
+      "/$path/$id",
+      options: Options(headers: headers),
+    );
     if (response.statusCode == 401) {
       throw NotAuthenticatedException(response.data);
     }

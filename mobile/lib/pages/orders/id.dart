@@ -143,11 +143,8 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   Future<void> completeOrder() async {
-    await constants.feathersApp.service("rpc").create({
-      "method": "CompleteOrder",
-      "params": {
-        "orderId": orderId,
-      },
+    await constants.feathersApp.rpc("CompleteOrder", {
+      "orderId": orderId,
     });
   }
 

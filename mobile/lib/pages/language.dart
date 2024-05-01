@@ -18,7 +18,7 @@ class _LanguageSelectPageState extends State<LanguageSelectPage> {
     return ListTile(
       onTap: () {
         FlutterI18n.refresh(context, Locale(lang));
-        context.goNamed("login");
+        context.goNamed("settings");
       },
       title: Row(
         children: [

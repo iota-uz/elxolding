@@ -28,7 +28,9 @@
     "settings": "Настройки"
   },
   "home": {
+    "title": "Заявки",
     "order": "Заявка",
+    "noOrders": "Нет заявок",
     "positionsCount-0": "{positionsCount} продуктов",
     "positionsCount-1": "{positionsCount} продукт",
     "positionsCount-2": "{positionsCount} продукта",
@@ -41,7 +43,7 @@
   "control": {
     "title": "Контроль",
     "tci": "ОТК",
-    "polygraphy": "Полиграфии",
+    "polygraphy": "Полиграфия",
     "selectPosition": "Выберите наименование"
   },
   "order": {
@@ -51,7 +53,18 @@
   },
   "inventory": {
     "title": "Инвентаризация",
-    "new": "Начать"
+    "new": "Начать",
+    "complete": "Завершить",
+    "header": {
+      "total": "Всего",
+      "found": "Найдено"
+    },
+    "list": {
+      "position": {
+        "title": "Наименование",
+        "matches": "Найдено"
+      }
+    }
   },
   "languageSelect": {
     "title": "Язык интерфейса",
@@ -63,5 +76,45 @@
     "profile": "Профиль",
     "language": "Язык интерфейса",
     "logout": "Выйти"
+  },
+  "tci": {
+    "title": "Отсканируйте метки",
+    "scanned": "Отсканировано",
+    "selectPosition": {
+      "placeholder": "Выберите наименование"
+    },
+    "success": "Продукция внесена в базу",
+    "errors": {
+      "products": {
+        "create": "Ошибка при создании продукции"
+      },
+      "positionIdEmpty": "Выберите наименование",
+      "tagsEmpty": "Сначала отсканируйте метки"
+    },
+    "footer": {
+      "start": "Сканировать",
+      "stop": "Остановить",
+      "create": "Создать"
+    }
+  },
+  "polygraphy": {
+    "title": "Отсканируйте метки",
+    "scanned": "Отсканировано",
+    "selectPosition": {
+      "placeholder": "Выберите наименование"
+    },
+    "success": "Продукция внесена в базу",
+    "errors": {
+      "products": {
+        "create": "Ошибка при создании продукции"
+      },
+      "positionIdEmpty": "Выберите наименование",
+      "tagsEmpty": "Сначала отсканируйте метки"
+    },
+    "footer": {
+      "start": "Сканировать",
+      "stop": "Остановить",
+      "validate": "Одобрить"
+    }
   }
 }

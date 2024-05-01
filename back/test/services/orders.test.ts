@@ -63,4 +63,37 @@ describe('\'orders\' service', () => {
 
         assert.strictEqual(order.products.length, 3);
     });
+
+    it('test create order with not enough products', async () => {
+        const service = app.service('orders');
+        const position1 = await app.service('positions').create({
+            title: 'position1',
+            barcode: 'barcode1',
+            unit: 'cm'
+        });
+
+        await app.service('products').create({
+            positionId: position1.id,
+            status: 'in_stock',
+            rfid: 'rfid1'
+        });
+        try {
+            await service.create({
+                type: 'in',
+                positions: [
+                    {
+                        positionId: position1.id,
+                        quantity: 2
+                    }
+                ]
+            });
+            assert.fail('Expected error');
+        } catch (e) {
+            const orders = await service.find({paginate: false});
+
+            assert.strictEqual(orders.length, 0);
+            assert.strictEqual(e.name, 'BadRequest');
+            assert.strictEqual(e.message, 'Недостаточно продуктов');
+        }
+    });
 });

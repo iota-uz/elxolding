@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:mobile/constants.dart' as constants;
+import 'package:mobile/feathers/types.dart';
 import 'package:mobile/models/position.dart';
 import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
@@ -20,6 +21,7 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
   final List<TagEpc> _data = [];
   List<Position> _positions = [];
   bool _isLoading = false;
+  bool _isScanning = false;
   RfidWrapper rfid = RfidWrapper();
 
   @override
@@ -34,17 +36,24 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
     rfid.closeAll();
   }
 
+  bool isScanned(TagEpc tag) {
+    for (var item in _data) {
+      if (item.epc == tag.epc) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Future<void> initPlatformState() async {
     rfid.onConnected = (bool connected) {};
     rfid.onTagsUpdate = (List<TagEpc> tags) {
       setState(() {
         for (var tag in tags) {
-          for (var item in _data) {
-            if (item.epc == tag.epc) {
-              return;
-            }
+          if (!isScanned(tag)) {
+            rfid.beep();
+            _data.add(tag);
           }
-          _data.add(tag);
         }
       });
     };
@@ -57,64 +66,62 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
     });
   }
 
-  Widget dropdownList(BuildContext context) {
-    return DropdownButtonFormField<int>(
-      isExpanded: true,
-      decoration: InputDecoration(
-        border: const OutlineInputBorder(),
-        hintText: FlutterI18n.translate(context, "rfid.selectPosition"),
-      ),
-      items: _positions.map((value) {
-        return DropdownMenuItem<int>(
-          value: value.id,
-          child: Text(value.title),
-        );
-      }).toList(),
-      onChanged: (v) {
-        if (v == null) {
-          return;
-        }
-        setState(() {
-          positionId = v;
-        });
-      },
-      value: positionId,
-    );
-  }
-
   Future<List<Position>> fetchPositions() async {
     var res = await constants.feathersApp.service("positions").find({});
     List<dynamic> data = res["data"];
     return data.map<Position>((e) => Position.fromJson(e)).toList();
   }
 
-  Widget tagsList(BuildContext context) {
-    if (_data.isEmpty) {
-      return const Text('Начните сканирование меток');
-    }
-    return Column(
-      children: _data
-          .map(
-            (TagEpc tag) => Card(
-              color: Colors.blue.shade50,
-              child: Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  tag.epc,
-                  style: const TextStyle(color: Colors.blue),
-                ),
-              ),
-            ),
-          )
-          .toList(),
-    );
-  }
-
-  Future<void> createProducts() async {
+  Future<RpcResponse> createProducts() async {
     var res = await constants.feathersApp.rpc("CreateProductsWithTags", {
       "positionId": positionId,
       "tags": _data.map((e) => e.epc).toList(),
+    });
+    return res;
+  }
+
+  void onCreatePressed() {
+    if (positionId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(FlutterI18n.translate(
+              context, "polygraphy.errors.positionIdEmpty")),
+        ),
+      );
+    }
+    if (_data.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+              FlutterI18n.translate(context, "polygraphy.errors.tagsEmpty")),
+        ),
+      );
+    }
+    createProducts().then((value) {
+      if (value.hasError()) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(value.error["message"]),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(FlutterI18n.translate(context, "polygraphy.success")),
+          ),
+        );
+        setState(() {
+          _data.clear();
+        });
+      }
+    }).catchError((e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+              '${FlutterI18n.translate(context, "polygraphy.errors.products.create")}: ${e.toString()}',
+              style: const TextStyle(color: Colors.red)),
+        ),
+      );
     });
   }
 
@@ -125,11 +132,12 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        dropdownList(context),
         const SizedBox(height: 20),
         Row(
           children: [
-            Text('Всего отсканировано: ${_data.length}'),
+            Text(
+              '${FlutterI18n.translate(context, "polygraphy.scanned")}: ${_data.length}',
+            ),
             const Spacer(),
             IconButton(
               onPressed: () {
@@ -142,9 +150,47 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
             ),
           ],
         ),
-        tagsList(context),
         const SizedBox(height: 20),
       ],
+    );
+  }
+
+  void onScanPressed() async {
+    if (await rfid.isStarted) {
+      _isScanning = false;
+      rfid.stop();
+    } else {
+      _isScanning = true;
+      rfid.readContinuous();
+    }
+  }
+
+  Widget scanButton(BuildContext context) {
+    var style = const TextStyle(
+      fontSize: 18,
+      color: Colors.black,
+    );
+    var stopText = Text(
+      FlutterI18n.translate(context, "polygraphy.footer.stop"),
+      style: style,
+    );
+    var startText = Text(
+      FlutterI18n.translate(context, "polygraphy.footer.start"),
+      style: style,
+    );
+    return ElevatedButton(
+      onPressed: onScanPressed,
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        backgroundColor: Colors.white,
+        minimumSize: const Size.fromHeight(36),
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.grey.shade400),
+          borderRadius: BorderRadius.circular(80),
+        ),
+        elevation: 0,
+      ),
+      child: _isScanning ? stopText : startText,
     );
   }
 
@@ -152,7 +198,7 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Отсканируйте метки'),
+        title: Text(FlutterI18n.translate(context, "polygraphy.title")),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -168,64 +214,10 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
           padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
           child: Column(
             children: [
-              ElevatedButton(
-                onPressed: () async {
-                  try {
-                    await rfid.readSingleTag();
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(e.toString()),
-                      ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  backgroundColor: Colors.white,
-                  minimumSize: const Size.fromHeight(36),
-                  shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Colors.grey.shade400),
-                    borderRadius: BorderRadius.circular(80),
-                  ),
-                  elevation: 0,
-                ),
-                child: const Text(
-                  'Сканировать',
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
+              scanButton(context),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  if (positionId == null) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Выберите наименование'),
-                      ),
-                    );
-                  }
-                  if (_data.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Сначала отсканируйте метки'),
-                      ),
-                    );
-                  }
-                  createProducts().then((value) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Продукция внесена в базу'),
-                      ),
-                    );
-                    setState(() {
-                      _data.clear();
-                    });
-                  });
-                },
+                onPressed: onCreatePressed,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   backgroundColor: Theme.of(context).primaryColor,
@@ -235,9 +227,9 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
                   ),
                   elevation: 0,
                 ),
-                child: const Text(
-                  'Создать',
-                  style: TextStyle(fontSize: 18),
+                child: Text(
+                  FlutterI18n.translate(context, "polygraphy.footer.validate"),
+                  style: const TextStyle(fontSize: 18),
                 ),
               )
             ],
