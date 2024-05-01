@@ -1,0 +1,19 @@
+name: Lint, test and build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: [self-hosted, production]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Build
+        run: docker compose up --build -d
+
+      - name: Cleanup
+        run: docker system prune -f
