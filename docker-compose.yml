@@ -6,6 +6,8 @@ services:
     build:
       context: ./app
       target: prod
+    volumes:
+      - ~/volumes/elxolding/uploads:/www/media
     ports:
       - "80:80"
 
