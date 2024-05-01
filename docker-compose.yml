@@ -5,6 +5,8 @@ services:
     build:
       context: ./app
       target: prod
+    ports:
+      - "80:80"
 
   back:
     build:
@@ -12,6 +14,8 @@ services:
       target: prod
     environment:
       NODE_ENV: production
+    ports:
+      - "3030:3030"
     volumes:
       - ~/volumes/elxolding/postgres:/app/uploads
     depends_on:
