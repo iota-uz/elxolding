@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   front:
+    restart: always
     build:
       context: ./app
       target: prod
@@ -9,6 +10,7 @@ services:
       - "80:80"
 
   back:
+    restart: always
     build:
       context: ./back
       target: prod
@@ -22,6 +24,7 @@ services:
       - db
 
   db:
+    restart: always
     image: postgres:15.1
     environment:
       POSTGRES_USER: postgres
