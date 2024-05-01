@@ -2,7 +2,7 @@
     <div class="flex flex-col gap-8">
         <div>
             <h1 class="text-xl">
-                Завки
+                Заявки
             </h1>
             <h2 class="text-sm text-gray-500">
                 Список заявок
