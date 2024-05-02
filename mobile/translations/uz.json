@@ -3,7 +3,7 @@
     "title": "Kirish",
     "chooseUser": {
       "title": "Tizimga kirish",
-      "subtitle": "O'z hisobingiz orqali tizimga kiring"
+      "subtitle": "O'zingizning hisobingiz bilan tizimga kirishni amalga oshiring"
     },
     "enterPassword": {
       "title": "Parolni kiriting",
@@ -33,23 +33,23 @@
     "noOrders": "Buyurtmalar yo'q",
     "positionsCount-0": "{positionsCount} mahsulotlar",
     "positionsCount-1": "{positionsCount} mahsulot",
-    "positionsCount-2": "{positionsCount} mahsulot",
+    "positionsCount-2": "{positionsCount} mahsulotlar",
     "positionsCount-5": "{positionsCount} mahsulotlar",
     "orderType": {
-      "in": "Kirish",
-      "out": "Chiqish"
+      "in": "Kirim",
+      "out": "Chiqim"
     }
   },
   "control": {
     "title": "Nazorat",
-    "tci": "Sifat nazorati",
+    "tci": "OTK",
     "polygraphy": "Poligrafiya",
     "selectPosition": "Nomi tanlang"
   },
   "order": {
     "title": "Buyurtma #",
-    "in": "Qabul qilish",
-    "out": "Yuklash"
+    "in": "Hisobga olmoq",
+    "out": "Yuborish"
   },
   "inventory": {
     "title": "Inventarizatsiya",
@@ -67,7 +67,7 @@
     }
   },
   "languageSelect": {
-    "title": "Interfeys tilini tanlash",
+    "title": "Interfeys tili",
     "ru": "Rus tili",
     "uz": "O'zbek tili"
   },
@@ -76,5 +76,45 @@
     "profile": "Profil",
     "language": "Interfeys tili",
     "logout": "Chiqish"
+  },
+  "tci": {
+    "title": "Metkalarni skanerlang",
+    "scanned": "Skanerlangan",
+    "selectPosition": {
+      "placeholder": "Nomi tanlang"
+    },
+    "success": "Mahsulotlar bazaga kiritildi",
+    "errors": {
+      "products": {
+        "create": "Mahsulot yaratishda xato"
+      },
+      "positionIdEmpty": "Nomi tanlang",
+      "tagsEmpty": "Avval metkalarni skanerlang"
+    },
+    "footer": {
+      "start": "Skanerlash",
+      "stop": "To'xtatish",
+      "create": "Yaratish"
+    }
+  },
+  "polygraphy": {
+    "title": "Metkalarni skanerlang",
+    "scanned": "Skanerlangan",
+    "selectPosition": {
+      "placeholder": "Nomi tanlang"
+    },
+    "success": "Mahsulotlar bazaga kiritildi",
+    "errors": {
+      "products": {
+        "create": "Mahsulot yaratishda xato"
+      },
+      "positionIdEmpty": "Nomi tanlang",
+      "tagsEmpty": "Avval metkalarni skanerlang"
+    },
+    "footer": {
+      "start": "Skanerlash",
+      "stop": "To'xtatish",
+      "validate": "Tasdiqlash"
+    }
   }
 }

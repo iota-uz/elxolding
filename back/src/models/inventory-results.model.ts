@@ -39,6 +39,8 @@ export default function (app: Application): typeof Model {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     (inventory_results as any).associate = function (models: any): void {
+        inventory_results.belongsTo(models.inventory, {as: 'inventory'});
+        inventory_results.belongsTo(models.positions, {as: 'position'});
         // Define associations here
         // See https://sequelize.org/master/manual/assocs.html
     };

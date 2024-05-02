@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:mobile/constants.dart' as constants;
 import 'package:mobile/feathers/types.dart';
-import 'package:mobile/models/position.dart';
+import 'package:mobile/models/product.dart';
 import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
-class PolygraphyPage extends StatefulWidget {
-  const PolygraphyPage({Key? key}) : super(key: key);
+class PolygraphyScanPage extends StatefulWidget {
+  final String pk;
+
+  const PolygraphyScanPage({Key? key, required this.pk}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _PolygraphyPageState();
+    return _PolygraphyScanPageState();
   }
 }
 
-class _PolygraphyPageState extends State<PolygraphyPage> {
-  int? positionId;
-
+class _PolygraphyScanPageState extends State<PolygraphyScanPage> {
   final List<TagEpc> _data = [];
-  List<Position> _positions = [];
+  List<Product> _products = [];
   bool _isLoading = false;
   bool _isScanning = false;
   RfidWrapper rfid = RfidWrapper();
@@ -58,37 +58,30 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
       });
     };
     await rfid.connect();
-    var positions = await fetchPositions();
+    var products = await fetchProducts();
 
     setState(() {
       _isLoading = false;
-      _positions = positions;
+      _products = products;
     });
   }
 
-  Future<List<Position>> fetchPositions() async {
-    var res = await constants.feathersApp.service("positions").find({});
-    List<dynamic> data = res["data"];
-    return data.map<Position>((e) => Position.fromJson(e)).toList();
+  Future<List<Product>> fetchProducts() async {
+    final response = await constants.feathersApp.service("products").find({
+      "query": {"positionId": widget.pk},
+    });
+    var result = response["data"] as List<dynamic>;
+    return result.map<Product>((e) => Product.fromJson(e)).toList();
   }
 
   Future<RpcResponse> createProducts() async {
-    var res = await constants.feathersApp.rpc("CreateProductsWithTags", {
-      "positionId": positionId,
+    var res = await constants.feathersApp.rpc("ValidateProducts", {
       "tags": _data.map((e) => e.epc).toList(),
     });
     return res;
   }
 
   void onCreatePressed() {
-    if (positionId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(FlutterI18n.translate(
-              context, "polygraphy.errors.positionIdEmpty")),
-        ),
-      );
-    }
     if (_data.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -118,8 +111,9 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-              '${FlutterI18n.translate(context, "polygraphy.errors.products.create")}: ${e.toString()}',
-              style: const TextStyle(color: Colors.red)),
+            '${FlutterI18n.translate(context, "polygraphy.errors.products.create")}: ${e.toString()}',
+            style: const TextStyle(color: Colors.red),
+          ),
         ),
       );
     });
@@ -132,7 +126,9 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 20),
+        Text(
+          '${FlutterI18n.translate(context, "polygraphy.awaiting")}: ${_products.length}',
+        ),
         Row(
           children: [
             Text(
@@ -150,7 +146,6 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
             ),
           ],
         ),
-        const SizedBox(height: 20),
       ],
     );
   }

@@ -6,7 +6,8 @@ import 'package:mobile/pages/invetory/new.dart';
 import 'package:mobile/pages/language.dart';
 import 'package:mobile/pages/login.dart';
 import 'package:mobile/pages/orders/id.dart';
-import 'package:mobile/pages/control/polygraphy.dart';
+import 'package:mobile/pages/control/polygraphy/index.dart';
+import 'package:mobile/pages/control/polygraphy/scan.dart';
 import 'package:mobile/pages/control/tci.dart';
 import 'package:mobile/pages/control.dart';
 import 'package:mobile/pages/settings.dart';
@@ -113,6 +114,14 @@ final _router = GoRouter(
               pageBuilder: (context, state) => const NoTransitionPage(
                 child: PolygraphyPage(),
               ),
+            ),
+            GoRoute(
+              path: "/control/polygraphy-scan/:id",
+              name: "control-polygraphy-scan",
+              pageBuilder: (context, state) {
+                final id = state.pathParameters["id"]!;
+                return NoTransitionPage(child: PolygraphyScanPage(pk: id));
+              },
             ),
           ],
         ),

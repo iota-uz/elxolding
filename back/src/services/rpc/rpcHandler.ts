@@ -1,5 +1,5 @@
 import {BadRequest} from '@feathersjs/errors';
-import {ModelStatic} from 'sequelize';
+import {ModelStatic, Op, Sequelize} from 'sequelize';
 
 import {Application} from '../../declarations';
 
@@ -54,9 +54,40 @@ export class RpcHandler {
         return {success: true};
     }
 
-    public async GetInventory(): Promise<{ inventory: any[] }> {
+    public async ValidateProducts(data: { tags: string[] }): Promise<{ valid: string[], invalid: string[] }> {
+        if (!data.tags || !Array.isArray(data.tags)) {
+            throw new BadRequest('Invalid data');
+        }
+        const {models} = this.app.get('sequelizeClient');
+        const productsModel: ModelStatic<any> = models.products;
+
+        const products = await productsModel.findAll({
+            where: {
+                rfid: {
+                    [Op.in]: data.tags
+                },
+                status: 'in_development'
+            },
+            attributes: ['rfid']
+        });
+        await productsModel.update({status: 'approved'}, {
+            where: {
+                rfid: {
+                    [Op.in]: data.tags
+                }
+            }
+        });
+        const valid = products.map((product) => product.rfid);
+        const invalid = data.tags.filter((tag) => !valid.includes(tag));
+        return {valid, invalid};
+    }
+
+    public async GetInventory(data: { status?: string }): Promise<{ inventory: any[] }> {
         const positionsModel = this.app.service('positions').Model;
-        const sequelizeClient = this.app.get('sequelizeClient');
+        const sequelizeClient = this.app.get('sequelizeClient') as Sequelize;
+
+        const status = data.status ? data.status : 'in_stock';
+
         const positions = <any[]>await positionsModel.findAll({
             raw: false,
             include: [
@@ -64,7 +95,7 @@ export class RpcHandler {
                     model: this.app.service('products').Model,
                     attributes: ['rfid'],
                     where: {
-                        status: 'in_stock'
+                        status: status
                     },
                     as: 'products'
                 }
@@ -76,7 +107,7 @@ export class RpcHandler {
                         FROM products
                         WHERE
                             products.position_id = positions.id AND
-                            products.status = 'in_stock'
+                            products.status = '${status}'
                     )`)
                 ],
                 exclude: ['barcode', 'unit', 'createdAt', 'updatedAt']

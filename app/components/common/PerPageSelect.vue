@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps<{ modelValue: string }>();
+const props = defineProps<{ modelValue: number }>();
 const emit = defineEmits(['update:modelValue']);
 const options = [10, 25, 50, 100];
 </script>

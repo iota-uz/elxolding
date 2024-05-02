@@ -7,20 +7,10 @@ import 'package:mobile/constants.dart' as constants;
 
 import 'package:mobile/models/product.dart';
 
+import '../../models/inventory.dart';
+
 class CustomProduct extends Product {
   CustomProduct.fromJson(Map<String, dynamic> json) : super.fromJson(json);
-}
-
-class InventoryPosition {
-  final int id;
-  final String title;
-  int matches = 0;
-  final List<String> tags;
-
-  InventoryPosition.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        title = json["title"],
-        tags = List<String>.from(json["tags"]);
 }
 
 class NewInventoryPage extends StatefulWidget {
