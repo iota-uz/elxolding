@@ -100,15 +100,11 @@
   "polygraphy": {
     "title": "Отсканируйте метки",
     "scanned": "Отсканировано",
-    "selectPosition": {
-      "placeholder": "Выберите наименование"
-    },
     "success": "Продукция внесена в базу",
     "errors": {
       "products": {
         "create": "Ошибка при создании продукции"
       },
-      "positionIdEmpty": "Выберите наименование",
       "tagsEmpty": "Сначала отсканируйте метки"
     },
     "footer": {
@@ -118,6 +114,10 @@
     }
   },
   "polygraphy-scan": {
-
+    "footer": {
+      "start": "Сканировать",
+      "stop": "Остановить",
+      "validate": "Одобрить"
+    }
   }
 }

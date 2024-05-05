@@ -45,6 +45,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   rfid_c72_plugin: ^0.0.2
   flutter_beep: ^1.0.0
+  lan_scanner: ^4.0.0+1
+  sqflite: ^2.3.3
 
 flutter_native_splash:
   color: "#04a8ce"
