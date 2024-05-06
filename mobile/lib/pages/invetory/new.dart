@@ -3,11 +3,11 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
-import 'package:mobile/constants.dart' as constants;
+import 'package:mobile/constants.dart';
 
-import 'package:mobile/models/product.dart';
+import 'package:mobile/feathers/models/product.dart';
 
-import '../../models/inventory.dart';
+import 'package:mobile/feathers/models/inventory.dart';
 
 class CustomProduct extends Product {
   CustomProduct.fromJson(Map<String, dynamic> json) : super.fromJson(json);
@@ -111,15 +111,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   }
 
   Future<List<InventoryPosition>> fetchInventory() async {
-    final response = await constants.feathersApp.rpc('GetInventory', {});
-    if (response.hasError()) {
-      throw Exception(response.error);
-    }
-    var result = response.result as Map<String, dynamic>;
-    var positions = result["inventory"] as List<dynamic>;
-    return positions
-        .map<InventoryPosition>((e) => InventoryPosition.fromJson(e))
-        .toList();
+    return rpcService.getInventory({});
   }
 
   List<InventoryPosition> _preview() {
@@ -184,12 +176,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     if (positions.isEmpty) {
       return;
     }
-    await constants.feathersApp.service('rpc').create({
-      'method': 'CompleteInventoryCheck',
-      'params': {
-        'positions': positions,
-      },
-    });
+    await rpcService.completeInventoryCheck(positions);
   }
 
   Widget body(BuildContext context) {

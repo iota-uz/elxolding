@@ -10,7 +10,7 @@ export class RpcHandler {
         this.app = app;
     }
 
-    public async CreateProductsWithTags(data: { positionId?: number, tags?: string[] }): Promise<{
+    public async CreateProductsFromTags(data: { positionId?: number, tags?: string[] }): Promise<{
         createdProducts: number
     }> {
         if (!data.positionId || !data.tags || !Array.isArray(data.tags)) {

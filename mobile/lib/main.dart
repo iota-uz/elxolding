@@ -11,14 +11,11 @@ import 'package:mobile/pages/control/polygraphy/scan.dart';
 import 'package:mobile/pages/control/tci.dart';
 import 'package:mobile/pages/control.dart';
 import 'package:mobile/pages/settings.dart';
-import 'package:mobile/constants.dart' as constants;
 import 'layouts/navigation.dart';
 import 'pages/home.dart';
 import 'pages/invetory/index.dart';
 
 void main() {
-  constants.feathersApp.registerService("orders");
-  constants.feathersApp.registerService("positions");
   runApp(const MyApp());
 }
 

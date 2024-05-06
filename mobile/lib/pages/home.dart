@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:mobile/constants.dart' as constants;
+import 'package:mobile/constants.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:mobile/models/order.dart';
+import 'package:mobile/feathers/models/order.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -54,11 +54,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<List<Order>> fetchOrders(String t) async {
-    var res = await constants.feathersApp.service("orders").find({
-      "type": t,
-    });
-    List<dynamic> data = res["data"];
-    return data.map<Order>((e) => Order.fromJson(e)).toList();
+    return ordersService.find({"type": t}).then((res) => res.data);
   }
 
   Widget emptyWidget(BuildContext context) {

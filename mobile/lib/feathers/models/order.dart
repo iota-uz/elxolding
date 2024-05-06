@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:mobile/models/product.dart';
+import 'package:mobile/feathers/models/product.dart';
 
 class OrderPosition {
   final int id;

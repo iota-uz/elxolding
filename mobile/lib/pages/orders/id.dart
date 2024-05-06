@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile/constants.dart' as constants;
-import 'package:mobile/models/order.dart';
+import 'package:mobile/constants.dart';
+import 'package:mobile/feathers/models/order.dart';
 import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
@@ -31,10 +31,12 @@ class _OrderPageState extends State<OrderPage> {
   void initState() {
     super.initState();
     orderId = int.parse(widget.pk);
-    fetchOrder(orderId).then((value) {
+    ordersService.get(orderId).then((value) {
       setState(() {
         order = value;
-        inventoryTags = value.positions.expand((e) => e.products.map((e) => "EPC:${e.rfid}")).toList();
+        inventoryTags = value.positions
+            .expand((e) => e.products.map((e) => "EPC:${e.rfid}"))
+            .toList();
         isLoading = false;
       });
     });
@@ -66,11 +68,6 @@ class _OrderPageState extends State<OrderPage> {
   void dispose() {
     super.dispose();
     rfid.closeAll();
-  }
-
-  Future<Order> fetchOrder(int id) async {
-    var res = await constants.feathersApp.service("orders").get(id);
-    return Order.fromJson(res);
   }
 
   bool buttonDisabled() {
@@ -142,17 +139,11 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 
-  Future<void> completeOrder() async {
-    await constants.feathersApp.rpc("CompleteOrder", {
-      "orderId": orderId,
-    });
-  }
-
   void _onPressed() {
     if (buttonDisabled()) {
       return;
     }
-    completeOrder();
+    rpcService.completeOrder(orderId);
     GoRouter.of(context).goNamed("home");
   }
 
@@ -173,21 +164,21 @@ class _OrderPageState extends State<OrderPage> {
         child: Container(
           padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
           child: ElevatedButton(
-              onPressed: _onPressed,
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                minimumSize: const Size.fromHeight(36),
-                backgroundColor: disabled ? Colors.grey : Colors.green,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(80),
-                ),
-                elevation: 0,
+            onPressed: _onPressed,
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              minimumSize: const Size.fromHeight(36),
+              backgroundColor: disabled ? Colors.grey : Colors.green,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(80),
               ),
-              child: Text(
-                order?.type == "in"
-                    ? FlutterI18n.translate(context, "order.in")
-                    : FlutterI18n.translate(context, "order.out"),
-              ),
+              elevation: 0,
+            ),
+            child: Text(
+              order?.type == "in"
+                  ? FlutterI18n.translate(context, "order.in")
+                  : FlutterI18n.translate(context, "order.out"),
+            ),
           ),
         ),
       ),

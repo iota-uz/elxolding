@@ -22,11 +22,11 @@ describe('\'rpc\' service', function () {
         ]));
     });
 
-    describe('CreateProductsWithTags', function () {
+    describe('CreateProductsFromTags', function () {
         it('should create products with tags', async () => {
             const rpc = app.service('rpc');
             const {result, error} = await rpc.create({
-                method: 'CreateProductsWithTags',
+                method: 'CreateProductsFromTags',
                 params: {
                     positionId: positions[0].id,
                     tags: ['tag1', 'tag2']

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:mobile/constants.dart' as constants;
+import 'package:mobile/constants.dart';
 import 'package:mobile/feathers/types.dart';
-import 'package:mobile/models/position.dart';
+import 'package:mobile/feathers/models/position.dart';
 import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
@@ -94,17 +94,12 @@ class _TciPageState extends State<TciPage> {
   }
 
   Future<List<Position>> fetchPositions() async {
-    var res = await constants.feathersApp.service("positions").find({});
-    List<dynamic> data = res["data"];
-    return data.map<Position>((e) => Position.fromJson(e)).toList();
+    var res = await positionsService.find({});
+    return res.data;
   }
 
-  Future<RpcResponse> createProducts() async {
-    var res = await constants.feathersApp.rpc("CreateProductsWithTags", {
-      "positionId": positionId,
-      "tags": _data.map((e) => e.epc).toList(),
-    });
-    return res;
+  Future<RpcResponse> createProducts() {
+    return rpcService.createProductsFromTags(positionId!, _data.map((e) => e.epc).toList());
   }
 
   void onCreatePressed() {

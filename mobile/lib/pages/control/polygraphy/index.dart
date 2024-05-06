@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mobile/constants.dart' as constants;
-import 'package:mobile/models/inventory.dart';
+import 'package:mobile/constants.dart';
+import 'package:mobile/feathers/models/inventory.dart';
 
 class PolygraphyPage extends StatefulWidget {
   const PolygraphyPage({Key? key}) : super(key: key);
@@ -33,17 +33,9 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
   }
 
   Future<List<InventoryPosition>> fetchInventory() async {
-    final response = await constants.feathersApp.rpc('GetInventory', {
+    return rpcService.getInventory({
       "status": "in_development",
     });
-    if (response.hasError()) {
-      throw Exception(response.error);
-    }
-    var result = response.result as Map<String, dynamic>;
-    var positions = result["inventory"] as List<dynamic>;
-    return positions
-        .map<InventoryPosition>((e) => InventoryPosition.fromJson(e))
-        .toList();
   }
 
   Widget mainUI(BuildContext context) {
@@ -57,7 +49,8 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
           title: Text(e.title),
           subtitle: Text("Ожидают одобрения: ${e.tags.length}"),
           onTap: () {
-            context.pushNamed("control-polygraphy-scan", pathParameters: {"id": e.id.toString()});
+            context.pushNamed("control-polygraphy-scan",
+                pathParameters: {"id": e.id.toString()});
           },
         );
       }).toList(),

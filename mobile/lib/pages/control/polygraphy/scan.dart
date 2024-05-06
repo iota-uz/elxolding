@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:mobile/constants.dart' as constants;
+import 'package:mobile/constants.dart';
 import 'package:mobile/feathers/types.dart';
-import 'package:mobile/models/product.dart';
+import 'package:mobile/feathers/models/product.dart';
 import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
@@ -67,15 +67,13 @@ class _PolygraphyScanPageState extends State<PolygraphyScanPage> {
   }
 
   Future<List<Product>> fetchProducts() async {
-    final response = await constants.feathersApp.service("products").find({
-      "query": {"positionId": widget.pk},
-    });
-    var result = response["data"] as List<dynamic>;
-    return result.map<Product>((e) => Product.fromJson(e)).toList();
+    return productsService.find({
+      "positionId": widget.pk,
+    }).then((resp) => resp.data);
   }
 
   Future<RpcResponse> createProducts() async {
-    var res = await constants.feathersApp.rpc("ValidateProducts", {
+    var res = await rpcService.rpc("ValidateProducts", {
       "tags": _data.map((e) => e.epc).toList(),
     });
     return res;

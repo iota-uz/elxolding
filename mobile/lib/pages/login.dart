@@ -5,9 +5,9 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:mobile/constants.dart' as constants;
+import 'package:mobile/constants.dart';
 
-import 'package:mobile/models/user.dart';
+import 'package:mobile/feathers/models/user.dart';
 
 class ErrorWidget extends StatelessWidget {
   final String message;
@@ -67,12 +67,6 @@ class LoginPageState extends State<LoginPage> {
     return token != null && !JwtDecoder.isExpired(token);
   }
 
-  Future<List<User>> fetchUsers() async {
-    var res = await constants.feathersApp.service("users").find({});
-    List<dynamic> data = res["data"];
-    return data.map<User>((e) => User.fromJson(e)).toList();
-  }
-
   @override
   void initState() {
     super.initState();
@@ -90,7 +84,7 @@ class LoginPageState extends State<LoginPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           FutureBuilder(
-            future: fetchUsers(),
+            future: usersService.find({}).then((res) => res.data),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
@@ -206,13 +200,6 @@ class _EnterPasswordState extends State<EnterPassword> {
     super.initState();
   }
 
-  Future<User> getUserById() async {
-    var res = await constants.feathersApp
-        .service("users")
-        .get(int.parse(widget.userId));
-    return User.fromJson(res);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -222,7 +209,7 @@ class _EnterPasswordState extends State<EnterPassword> {
       body: Container(
         padding: const EdgeInsets.only(left: 30, right: 30),
         child: FutureBuilder(
-          future: getUserById(),
+          future: usersService.get(int.parse(widget.userId)),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -292,12 +279,9 @@ class _EnterPasswordState extends State<EnterPassword> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    constants.feathersApp.authenticate({
-                      "strategy": "local",
-                      "id": user.id,
-                      "password": password,
-                    }).then((res) {
-                      constants.isLoggedIn = true;
+                    authenticationService
+                        .authenticate(user.id, password)
+                        .then((res) {
                       GoRouter.of(context).goNamed("home");
                     }).catchError((e) {
                       ScaffoldMessenger.of(context).showSnackBar(
