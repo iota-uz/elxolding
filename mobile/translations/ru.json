@@ -54,10 +54,14 @@
   "inventory": {
     "title": "Инвентаризация",
     "new": "Начать",
-    "complete": "Завершить",
     "header": {
       "total": "Всего",
       "matches": "Совпадений"
+    },
+    "footer": {
+      "start": "Сканировать",
+      "stop": "Остановить",
+      "complete": "Завершить"
     },
     "list": {
       "position": {

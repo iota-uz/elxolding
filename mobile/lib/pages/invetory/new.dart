@@ -9,6 +9,8 @@ import 'package:mobile/feathers/models/product.dart';
 
 import 'package:mobile/feathers/models/inventory.dart';
 
+import 'package:mobile/components/footer_button.dart';
+
 class CustomProduct extends Product {
   CustomProduct.fromJson(Map<String, dynamic> json) : super.fromJson(json);
 }
@@ -27,6 +29,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
   List<InventoryPosition> _inventory = [];
   List<InventoryPosition> inventoryPreview = [];
   Set<String> inventoryTags = {};
+  bool _isScanning = false;
   bool _isLoading = true;
   bool _isConnected = false;
   RfidWrapper rfid = RfidWrapper();
@@ -39,7 +42,6 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       if (connected) {
         // rfid.setPower(30);
       }
-      rfid.readContinuous();
       setState(() {
         _isConnected = connected;
       });
@@ -221,6 +223,17 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     );
   }
 
+  void onScanPressed() async {
+    if (_isScanning) {
+      rfid.stop();
+    } else {
+      rfid.readContinuous();
+    }
+    setState(() {
+      _isScanning = !_isScanning;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -229,24 +242,27 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       ),
       body: body(context),
       bottomNavigationBar: BottomAppBar(
+        height: 155,
         child: Container(
           padding: const EdgeInsets.only(left: 20, right: 20),
-          child: ElevatedButton(
-            onPressed: () {
-              onPressed();
-              context.pop();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).primaryColor,
-            ),
-            child: Text(
-              FlutterI18n.translate(context, "inventory.complete"),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
+          child: Column(
+            children: [
+              FooterButton(
+                onPressed: onScanPressed,
+                secondary: true,
+                text: _isScanning
+                    ? FlutterI18n.translate(context, "inventory.footer.stop")
+                    : FlutterI18n.translate(context, "inventory.footer.start"),
               ),
-            ),
+              const SizedBox(height: 15),
+              FooterButton(
+                text: FlutterI18n.translate(context, "inventory.footer.complete"),
+                onPressed: () {
+                  onPressed();
+                  context.pop();
+                },
+              ),
+            ],
           ),
         ),
       ),
