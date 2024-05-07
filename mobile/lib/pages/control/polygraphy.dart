@@ -110,15 +110,16 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
     if (positionId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-              FlutterI18n.translate(context, "polygraphy.errors.positionIdEmpty")),
+          content: Text(FlutterI18n.translate(
+              context, "polygraphy.errors.positionIdEmpty")),
         ),
       );
     }
     if (_data.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(FlutterI18n.translate(context, "polygraphy.errors.tagsEmpty")),
+          content: Text(
+              FlutterI18n.translate(context, "polygraphy.errors.tagsEmpty")),
         ),
       );
     }
@@ -182,13 +183,12 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
   }
 
   void onScanPressed() async {
-    if (await rfid.isStarted) {
-      _isScanning = false;
+    if (_isScanning) {
       rfid.stop();
     } else {
-      _isScanning = true;
       rfid.readContinuous();
     }
+    _isScanning = !_isScanning;
   }
 
   @override
@@ -221,7 +221,8 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
               const SizedBox(height: 15),
               FooterButton(
                 onPressed: onCreatePressed,
-                text: FlutterI18n.translate(context, "polygraphy.footer.create"),
+                text:
+                    FlutterI18n.translate(context, "polygraphy.footer.create"),
               ),
             ],
           ),

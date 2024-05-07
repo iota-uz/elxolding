@@ -79,6 +79,11 @@ class _SetupPageState extends State<SetupPage> {
                 onChanged: (v) {
                   ipAddr = v;
                 },
+                onSubmitted: (v) {
+                  setState(() {
+                    ipAddr = v;
+                  });
+                },
               ),
             ],
           ),

@@ -150,13 +150,12 @@ class _TCIScanPageState extends State<TCIScanPage> {
   }
 
   void onScanPressed() async {
-    if (await rfid.isStarted) {
-      _isScanning = false;
+    if (_isScanning) {
       rfid.stop();
     } else {
-      _isScanning = true;
       rfid.readContinuous();
     }
+    _isScanning = !_isScanning;
   }
 
   @override
