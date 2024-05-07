@@ -36,7 +36,7 @@ app.use(express.urlencoded({limit: '5mb', extended: true}));
 app.use(favicon(path.join(app.get('public'), 'favicon.ico')));
 
 app.use('/', express.static(app.get('public')));
-app.use('/uploads', express.static(app.get('uploads')));
+app.use('/media', express.static(app.get('uploads')));
 
 // Set up Plugins and providers
 app.configure(express.rest());

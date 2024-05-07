@@ -1,7 +1,7 @@
 {
   "host": "main-helios.apollos.studio",
   "port": 3030,
-  "images_url": "https://api-staging-helios.apollos.studio/uploads/",
+  "images_url": "https://api-staging-helios.apollos.studio/media/",
   "embeddings": {
     "url": "http://embeddings:8000"
   },
