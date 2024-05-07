@@ -26,25 +26,47 @@ describe('\'rpc\' service', function () {
 
     describe('CompeteOrder', function () {
         it('should complete order', async () => {
+            await Promise.all([
+                app.service('products').create({
+                    positionId: positions[0].id,
+                    status: 'in_stock'
+                }),
+                app.service('products').create({
+                    positionId: positions[1].id,
+                    status: 'in_stock'
+                }),
+            ]);
             const order = await app.service('orders').create({
                 status: 'out',
                 positions: [
                     {
-                        productId: 1,
+                        positionId: positions[0].id,
+                        quantity: 1
+                    },
+                    {
+                        positionId: positions[1].id,
                         quantity: 1
                     }
                 ]
             });
 
             const rpc = app.service('rpc');
-            const {result, error} = await rpc.create({
+            const {error} = await rpc.create({
                 method: 'CompeteOrder',
                 params: {
                     orderId: order.id
                 }
             });
             assert.strictEqual(error, undefined);
-            assert.strictEqual(result.status, 'successful');
+
+            const productsCount = await app.service('products').find({
+                query: {
+                    status: 'in_stock'
+                },
+                paginate: false
+            }).then(products => products.length);
+            assert.strictEqual(productsCount, 0);
+
         });
     });
 

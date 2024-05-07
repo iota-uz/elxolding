@@ -49,7 +49,8 @@ export class RpcHandler {
         const records = await orderProductsModel.findAll({
             where: {
                 orderId
-            }
+            },
+            raw: true
         });
         const where = {
             where: {
