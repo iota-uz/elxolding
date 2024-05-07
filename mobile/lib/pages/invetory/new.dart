@@ -80,8 +80,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       item.matches = 0;
       for (var productTag in item.tags) {
         for (var tag in tags) {
-          var rfid = "EPC:$productTag";
-          if (rfid == tag.epc) {
+          if (productTag == tag.epc) {
             item.matches++;
           }
         }
@@ -106,9 +105,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
     setState(() {
       _inventory = inventory;
       inventoryPreview = _preview();
-      inventoryTags = inventory
-          .expand((element) => element.tags.map((e) => "EPC:$e"))
-          .toSet();
+      inventoryTags = inventory.expand((element) => element.tags).toSet();
       _isLoading = false;
     });
   }

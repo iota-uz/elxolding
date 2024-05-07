@@ -31,13 +31,13 @@
     "title": "Заявки",
     "order": "Заявка",
     "noOrders": "Нет заявок",
-    "positionsCount-0": "{positionsCount} продуктов",
-    "positionsCount-1": "{positionsCount} продукт",
-    "positionsCount-2": "{positionsCount} продукта",
-    "positionsCount-5": "{positionsCount} продуктов",
+    "positionsCount-0": "{positionsCount} наименований",
+    "positionsCount-1": "{positionsCount} наименование",
+    "positionsCount-2": "{positionsCount} наименования",
+    "positionsCount-5": "{positionsCount} наименований",
     "orderType": {
       "in": "Приход",
-      "out": "Расход"
+      "out": "Отгрузка"
     }
   },
   "control": {

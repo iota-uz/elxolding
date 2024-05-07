@@ -6,6 +6,8 @@ import 'package:mobile/feathers/models/order.dart';
 import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
+import 'package:mobile/components/footer_button.dart';
+
 class OrderPage extends StatefulWidget {
   final String pk;
 
@@ -22,6 +24,7 @@ class _OrderPageState extends State<OrderPage> {
   Order? order;
   bool isLoading = true;
   bool isConnected = false;
+  bool _isScanning = true;
   RfidWrapper rfid = RfidWrapper();
   List<TagEpc> tags = [];
   Set<String> scanned = {};
@@ -35,7 +38,7 @@ class _OrderPageState extends State<OrderPage> {
       setState(() {
         order = value;
         inventoryTags = value.positions
-            .expand((e) => e.products.map((e) => "EPC:${e.rfid}"))
+            .expand((e) => e.products.map((e) => e.rfid))
             .toList();
         isLoading = false;
       });
@@ -45,7 +48,6 @@ class _OrderPageState extends State<OrderPage> {
       setState(() {
         isConnected = connected;
       });
-      rfid.readContinuous();
     };
     rfid.onTagsUpdate = (List<TagEpc> tags) {
       for (var tag in tags) {
@@ -78,7 +80,7 @@ class _OrderPageState extends State<OrderPage> {
       var quantity = position.products.length;
       for (var tag in tags) {
         for (var product in position.products) {
-          if (tag.epc == "EPC:${product.rfid}") {
+          if (tag.epc == product.rfid) {
             found++;
           }
         }
@@ -97,7 +99,7 @@ class _OrderPageState extends State<OrderPage> {
       var found = 0;
       for (var tag in tags) {
         for (var product in position.products) {
-          if (tag.epc == "EPC:${product.rfid}") {
+          if (tag.epc == product.rfid) {
             found++;
           }
         }
@@ -160,9 +162,19 @@ class _OrderPageState extends State<OrderPage> {
     GoRouter.of(context).goNamed("home");
   }
 
+  void onScanPressed() async {
+    if (_isScanning) {
+      rfid.stop();
+    } else {
+      rfid.readContinuous();
+    }
+    setState(() {
+      _isScanning = !_isScanning;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    var disabled = buttonDisabled();
     return Scaffold(
       appBar: AppBar(
         title: Text("${FlutterI18n.translate(context, "order.title")}$orderId"),
@@ -174,23 +186,27 @@ class _OrderPageState extends State<OrderPage> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
+        height: 155,
         child: Container(
           padding: const EdgeInsets.only(left: 20, right: 20),
-          child: ElevatedButton(
-            onPressed: _onPressed,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: disabled ? Colors.grey : Colors.green,
-            ),
-            child: Text(
-              order?.type == "in"
-                  ? FlutterI18n.translate(context, "order.in")
-                  : FlutterI18n.translate(context, "order.out"),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
+          child: Column(
+            children: [
+              FooterButton(
+                onPressed: onScanPressed,
+                secondary: true,
+                text: _isScanning
+                    ? FlutterI18n.translate(context, "inventory.footer.stop")
+                    : FlutterI18n.translate(context, "inventory.footer.start"),
               ),
-            ),
+              const SizedBox(height: 15),
+              FooterButton(
+                text: order?.type == "in"
+                    ? FlutterI18n.translate(context, "order.in")
+                    : FlutterI18n.translate(context, "order.out"),
+                onPressed: _onPressed,
+                disabled: buttonDisabled(),
+              ),
+            ],
           ),
         ),
       ),

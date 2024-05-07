@@ -15,42 +15,42 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Column buildList(BuildContext context, {List<Order> orders = const []}) {
+  Widget buildList(BuildContext context, {List<Order> orders = const []}) {
     if (orders.isEmpty) {
-      return Column(
-        children: [
-          emptyWidget(context),
-        ],
+      return Center(
+        child: emptyWidget(context),
       );
     }
-    return Column(
-      children: [
-        for (var order in orders)
-          Column(
-            children: [
-              ListTile(
-                onTap: () {
-                  context.pushNamed(
-                    "order-id",
-                    pathParameters: {"id": order.id.toString()},
-                  );
-                },
-                shape: RoundedRectangleBorder(
-                  side: const BorderSide(color: Colors.grey, width: 1),
-                  borderRadius: BorderRadius.circular(5),
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          for (var order in orders)
+            Column(
+              children: [
+                ListTile(
+                  onTap: () {
+                    context.pushNamed(
+                      "order-id",
+                      pathParameters: {"id": order.id.toString()},
+                    );
+                  },
+                  shape: RoundedRectangleBorder(
+                    side: const BorderSide(color: Colors.grey, width: 1),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(order.title(context)),
+                      Text(order.positionsCountText(context)),
+                    ],
+                  ),
                 ),
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(order.title(context)),
-                    Text(order.positionsCountText(context)),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 10),
-            ],
-          ),
-      ],
+                const SizedBox(height: 10),
+              ],
+            ),
+        ],
+      ),
     );
   }
 
@@ -109,9 +109,7 @@ class _HomePageState extends State<HomePage> {
                 }
                 return Container(
                   padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
-                  child: SingleChildScrollView(
-                    child: buildList(context, orders: snapshot.data!),
-                  ),
+                  child: buildList(context, orders: snapshot.data!),
                 );
               },
             ),
@@ -130,9 +128,7 @@ class _HomePageState extends State<HomePage> {
                 }
                 return Container(
                   padding: const EdgeInsets.only(left: 10, right: 10, top: 20),
-                  child: SingleChildScrollView(
-                    child: buildList(context, orders: snapshot.data!),
-                  ),
+                  child: buildList(context, orders: snapshot.data!),
                 );
               },
             )
