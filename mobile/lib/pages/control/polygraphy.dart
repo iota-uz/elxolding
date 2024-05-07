@@ -188,7 +188,9 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
     } else {
       rfid.readContinuous();
     }
-    _isScanning = !_isScanning;
+    setState(() {
+      _isScanning = !_isScanning;
+    });
   }
 
   @override

@@ -39,12 +39,13 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       if (connected) {
         // rfid.setPower(30);
       }
-      _isConnected = connected;
+      rfid.readContinuous();
+      setState(() {
+        _isConnected = connected;
+      });
     };
     rfid.connect();
-    fetchData().then((_) {
-      rfid.readContinuous();
-    });
+    fetchData();
   }
 
   @override

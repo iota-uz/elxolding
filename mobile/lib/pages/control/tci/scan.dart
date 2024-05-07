@@ -155,7 +155,9 @@ class _TCIScanPageState extends State<TCIScanPage> {
     } else {
       rfid.readContinuous();
     }
-    _isScanning = !_isScanning;
+    setState(() {
+      _isScanning = !_isScanning;
+    });
   }
 
   @override
