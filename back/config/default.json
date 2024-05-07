@@ -31,7 +31,4 @@
     }
   },
   "postgres": "postgres://postgres:postgres@localhost:5432/elxolding",
-  "embeddings": {
-    "url": "http://localhost:8000"
-  }
 }

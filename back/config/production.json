@@ -1,5 +1,5 @@
 {
-  "host": "api.helios.ru",
+  "host": "localhost",
   "port": 3030,
   "images_url": "http://localhost/uploads/media/",
   "postgres": "postgres://postgres:V970qmYVvui1@db/elxolding"

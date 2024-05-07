@@ -66,8 +66,8 @@ app.configure(swagger({
     openApiVersion: 3,
     specs: {
         info: {
-            title: 'helios API docs',
-            description: 'helios API docs',
+            title: 'Elxolding API docs',
+            description: 'Elxolding API docs',
             version: '1.0.0',
         },
         schemes: ['http', 'https'], // Optionally set the protocol schema used (sometimes required when host on https)
