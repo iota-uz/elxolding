@@ -130,6 +130,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: inventoryPreview.length,
       prototypeItem: ListTile(
+        contentPadding: const EdgeInsets.all(0),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -147,6 +148,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       itemBuilder: (context, index) {
         var item = inventoryPreview[index];
         return ListTile(
+          contentPadding: const EdgeInsets.all(0),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -206,7 +208,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
                 style: const TextStyle(fontSize: 18),
               ),
               Text(
-                "${FlutterI18n.translate(context, "inventory.header.found")}: $totalFound/${inventoryTags.length}",
+                "${FlutterI18n.translate(context, "inventory.header.matches")}: $totalFound/${inventoryTags.length}",
                 style: const TextStyle(fontSize: 14),
               ),
               const SizedBox(height: 20),

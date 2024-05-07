@@ -57,12 +57,12 @@
     "complete": "Завершить",
     "header": {
       "total": "Всего",
-      "found": "Найдено"
+      "matches": "Совпадений"
     },
     "list": {
       "position": {
         "title": "Наименование",
-        "matches": "Найдено"
+        "matches": "Совпадений"
       }
     }
   },

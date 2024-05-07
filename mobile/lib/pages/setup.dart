@@ -77,9 +77,7 @@ class _SetupPageState extends State<SetupPage> {
                   labelText: FlutterI18n.translate(context, "setup.ipAddr"),
                 ),
                 onChanged: (v) {
-                  setState(() {
-                    ipAddr = v;
-                  });
+                  ipAddr = v;
                 },
               ),
             ],
@@ -93,7 +91,11 @@ class _SetupPageState extends State<SetupPage> {
               return;
             }
             _storage.write(key: "ipAddr", value: ipAddr);
-            init("http://$ipAddr:3030");
+            if (ipAddr.startsWith("https://")) {
+              init(ipAddr);
+            } else {
+              init("http://$ipAddr:3030");
+            }
             context.goNamed("login");
           },
           style: ButtonStyle(

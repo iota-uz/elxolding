@@ -24,7 +24,7 @@ class _OrderPageState extends State<OrderPage> {
   bool isConnected = false;
   RfidWrapper rfid = RfidWrapper();
   List<TagEpc> tags = [];
-  List<String> scanned = [];
+  Set<String> scanned = {};
   List<String> inventoryTags = [];
 
   @override
@@ -40,13 +40,12 @@ class _OrderPageState extends State<OrderPage> {
         isLoading = false;
       });
     });
-    rfid.connect().then((value) {
-      rfid.readContinuous();
-    });
+    rfid.connect();
     rfid.onConnected = (bool connected) {
       setState(() {
         isConnected = connected;
       });
+      rfid.readContinuous();
     };
     rfid.onTagsUpdate = (List<TagEpc> tags) {
       for (var tag in tags) {
