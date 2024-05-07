@@ -1,3 +1,5 @@
+import {describe} from 'node:test';
+
 import * as assert from 'assert';
 
 import app from '../../src/app';
@@ -20,6 +22,30 @@ describe('\'rpc\' service', function () {
                 unit: 'cm'
             }),
         ]));
+    });
+
+    describe('CompeteOrder', function () {
+        it('should complete order', async () => {
+            const order = await app.service('orders').create({
+                status: 'out',
+                positions: [
+                    {
+                        productId: 1,
+                        quantity: 1
+                    }
+                ]
+            });
+
+            const rpc = app.service('rpc');
+            const {result, error} = await rpc.create({
+                method: 'CompeteOrder',
+                params: {
+                    orderId: order.id
+                }
+            });
+            assert.strictEqual(error, undefined);
+            assert.strictEqual(result.status, 'successful');
+        });
     });
 
     describe('CreateProductsFromTags', function () {

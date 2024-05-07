@@ -40,15 +40,28 @@ export class RpcHandler {
         const {models} = this.app.get('sequelizeClient');
         const orderModel: ModelStatic<any> = models.orders;
         const productsModel: ModelStatic<any> = models.products;
+        const orderProductsModel: ModelStatic<any> = models.order_products;
 
         const order = await orderModel.findByPk(orderId);
         if (!order) {
             throw new BadRequest('Order not found');
         }
+        const records = await orderProductsModel.findAll({
+            where: {
+                orderId
+            }
+        });
+        const where = {
+            where: {
+                id: {
+                    [Op.in]: records.map((record) => record.productId)
+                }
+            }
+        };
         if (order.type === 'in') {
-            await productsModel.update({status: 'in_stock'}, {where: {orderId}});
+            await productsModel.update({status: 'in_stock'}, {where});
         } else {
-            await productsModel.destroy({where: {orderId}});
+            await productsModel.destroy({where});
         }
         await order.remove();
         return {success: true};

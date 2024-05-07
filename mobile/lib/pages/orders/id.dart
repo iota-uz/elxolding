@@ -24,7 +24,7 @@ class _OrderPageState extends State<OrderPage> {
   Order? order;
   bool isLoading = true;
   bool isConnected = false;
-  bool _isScanning = true;
+  bool _isScanning = false;
   RfidWrapper rfid = RfidWrapper();
   List<TagEpc> tags = [];
   Set<String> scanned = {};
