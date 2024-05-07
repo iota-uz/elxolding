@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -169,8 +167,10 @@ class _LoginFormState extends State<LoginForm> {
               title: Text("${e.firstName} ${e.lastName}"),
               subtitle: Text(e.role),
               onTap: () {
-                context.pushNamed("enter",
-                    pathParameters: {"userId": e.id.toString()});
+                context.pushNamed(
+                  "enter",
+                  pathParameters: {"userId": e.id.toString()},
+                );
               },
             );
           }).toList(),

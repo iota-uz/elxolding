@@ -136,15 +136,9 @@ const columns = ref<Column[]>([
 
 const fields = ref([
     {
-        label: 'Имя',
-        key: 'firstName'
-    },{
-        label: 'Фамилия',
-        key: 'lastName'
-    },{
-        label: 'Email',
-        key: 'email'
-    },
+        label: 'Название',
+        key: 'title'
+    }
 ]);
 
 watch([currentPage, sortBy, perPage, searchQ, dateFilter], fetch);

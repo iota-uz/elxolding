@@ -4,16 +4,16 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile/constants.dart';
 import 'package:mobile/feathers/models/inventory.dart';
 
-class PolygraphyPage extends StatefulWidget {
-  const PolygraphyPage({Key? key}) : super(key: key);
+class TCIPage extends StatefulWidget {
+  const TCIPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _PolygraphyPageState();
+    return _TCIPageState();
   }
 }
 
-class _PolygraphyPageState extends State<PolygraphyPage> {
+class _TCIPageState extends State<TCIPage> {
   bool _isLoading = true;
   List<InventoryPosition> _inventory = [];
 
@@ -47,10 +47,18 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
       children: _inventory.map((e) {
         return ListTile(
           title: Text(e.title),
-          subtitle: Text("Ожидают одобрения: ${e.tags.length}"),
+          subtitle: Text(
+            FlutterI18n.plural(
+              context,
+              "tci.awaitingApproval",
+              e.tags.length,
+            ),
+          ),
           onTap: () {
-            context.pushNamed("control-polygraphy-scan",
-                pathParameters: {"id": e.id.toString()});
+            context.pushNamed(
+              "control-tci-scan",
+              pathParameters: {"id": e.id.toString()},
+            );
           },
         );
       }).toList(),
@@ -61,7 +69,7 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(FlutterI18n.translate(context, "polygraphy.title")),
+        title: Text(FlutterI18n.translate(context, "tci.title")),
       ),
       body: SingleChildScrollView(
         child: Center(

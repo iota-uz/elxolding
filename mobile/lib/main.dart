@@ -6,16 +6,19 @@ import 'package:mobile/pages/invetory/new.dart';
 import 'package:mobile/pages/language.dart';
 import 'package:mobile/pages/login.dart';
 import 'package:mobile/pages/orders/id.dart';
-import 'package:mobile/pages/control/polygraphy/index.dart';
-import 'package:mobile/pages/control/polygraphy/scan.dart';
-import 'package:mobile/pages/control/tci.dart';
+import 'package:mobile/pages/control/tci/index.dart';
+import 'package:mobile/pages/control/tci/scan.dart';
+import 'package:mobile/pages/control/polygraphy.dart';
 import 'package:mobile/pages/control.dart';
 import 'package:mobile/pages/settings.dart';
+import 'package:mobile/pages/setup.dart';
 import 'layouts/navigation.dart';
 import 'pages/home.dart';
 import 'pages/invetory/index.dart';
+import 'package:dart_ping_ios/dart_ping_ios.dart';
 
 void main() {
+  DartPingIOS.register();
   runApp(const MyApp());
 }
 
@@ -35,7 +38,7 @@ Map<int, Color> primaryColors = {
 final _rootKey = GlobalKey<NavigatorState>();
 
 final _router = GoRouter(
-  initialLocation: "/login",
+  initialLocation: "/setup",
   navigatorKey: _rootKey,
   routes: [
     StatefulShellRoute(
@@ -102,7 +105,7 @@ final _router = GoRouter(
               path: "/control/tci",
               name: "control-tci",
               pageBuilder: (context, state) => const NoTransitionPage(
-                child: TciPage(),
+                child: TCIPage(),
               ),
             ),
             GoRoute(
@@ -113,11 +116,11 @@ final _router = GoRouter(
               ),
             ),
             GoRoute(
-              path: "/control/polygraphy-scan/:id",
-              name: "control-polygraphy-scan",
+              path: "/control/tci-scan/:id",
+              name: "control-tci-scan",
               pageBuilder: (context, state) {
                 final id = state.pathParameters["id"]!;
-                return NoTransitionPage(child: PolygraphyScanPage(pk: id));
+                return NoTransitionPage(child: TCIScanPage(pk: id));
               },
             ),
           ],
@@ -135,6 +138,13 @@ final _router = GoRouter(
           ],
         ),
       ],
+    ),
+    GoRoute(
+      path: "/setup",
+      name: "setup",
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: SetupPage(),
+      ),
     ),
     GoRoute(
       path: "/order/:id",
@@ -177,8 +187,13 @@ class MyApp extends StatelessWidget {
       routerConfig: _router,
       title: 'Elxolding',
       theme: ThemeData(
+        useMaterial3: true,
         primarySwatch: MaterialColor(0xff075b84, primaryColors),
         scaffoldBackgroundColor: Colors.white,
+        colorScheme: const ColorScheme.light(
+          primary: Color(0xff075b84),
+          secondary: Color(0x075B84FF),
+        ),
         iconTheme: const IconThemeData(
           color: Colors.black,
           fill: 0,

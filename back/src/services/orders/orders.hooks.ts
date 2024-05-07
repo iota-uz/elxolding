@@ -2,6 +2,7 @@ import * as authentication from '@feathersjs/authentication';
 import {HookContext} from '@feathersjs/feathers';
 import {fastJoin, ResolverMap} from 'feathers-hooks-common';
 import {hooks} from 'feathers-sequelize';
+import {ModelStatic} from 'sequelize';
 import dehydrate = hooks.dehydrate;
 // Don't remove this comment. It's needed to format import lines nicely.
 
@@ -32,7 +33,7 @@ function groupProductsByPosition() {
         joins: {
             products: () => async (order: any, context: HookContext) => {
                 const {app} = context;
-                const {models} = app.get('sequelizeClient');
+                const models = app.get('sequelizeClient').models as Record<string, ModelStatic<any>>;
                 const groupedProducts = order.products.reduce((acc: any, product: any) => {
                     if (!acc[product.positionId]) {
                         acc[product.positionId] = [];
@@ -41,7 +42,18 @@ function groupProductsByPosition() {
                     return acc;
                 }, {});
                 order.positions = await Promise.all(Object.entries(groupedProducts).map(async ([positionId, products]) => {
-                    const position = await models.positions.findByPk(positionId);
+                    const position = await models.positions.findByPk(positionId, {
+                        include: [
+                            {
+                                model: models.uploads,
+                                as: 'photo',
+                                attributes: ['filename']
+                            }
+                        ],
+                        raw: true,
+                        nest: true
+                    });
+                    position.photo = position.photo.filename ? (app.get('images_url') + position.photo.filename) : null;
                     return {
                         position,
                         products

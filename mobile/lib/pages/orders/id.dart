@@ -103,11 +103,25 @@ class _OrderPageState extends State<OrderPage> {
           }
         }
       }
+      Widget image = Image.asset(
+        "assets/images/placeholder.png",
+        width: 80,
+        height: 80,
+      );
+      if (position.photo != null) {
+        image = Image.network(
+          position.photo!,
+          width: 80,
+          height: 80,
+        );
+      }
       list.add(
         ListTile(
           contentPadding: const EdgeInsets.all(0),
           title: Row(
             children: [
+              image,
+              const SizedBox(width: 10),
               Text(position.title),
               const Spacer(),
               Text("$found/$quantity"),
@@ -162,22 +176,21 @@ class _OrderPageState extends State<OrderPage> {
       ),
       bottomNavigationBar: BottomAppBar(
         child: Container(
-          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+          padding: const EdgeInsets.only(left: 20, right: 20),
           child: ElevatedButton(
             onPressed: _onPressed,
             style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              minimumSize: const Size.fromHeight(36),
               backgroundColor: disabled ? Colors.grey : Colors.green,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(80),
-              ),
-              elevation: 0,
             ),
             child: Text(
               order?.type == "in"
                   ? FlutterI18n.translate(context, "order.in")
                   : FlutterI18n.translate(context, "order.out"),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ),

@@ -31,19 +31,13 @@ class _InventoryPageState extends State<InventoryPage> {
       ),
       bottomNavigationBar: BottomAppBar(
         child: Container(
-          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+          padding: const EdgeInsets.only(left: 20, right: 20),
           child: ElevatedButton(
             onPressed: () {
               context.pushNamed("inventory-new");
             },
             style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 20),
               backgroundColor: Theme.of(context).primaryColor,
-              minimumSize: const Size.fromHeight(40),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(80),
-              ),
-              elevation: 0,
             ),
             child: Text(
               FlutterI18n.translate(context, "inventory.new"),

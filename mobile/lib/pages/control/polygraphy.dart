@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:mobile/components/footer_button.dart';
 import 'package:mobile/constants.dart';
 import 'package:mobile/feathers/types.dart';
-import 'package:mobile/feathers/models/product.dart';
+import 'package:mobile/feathers/models/position.dart';
 import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
-class PolygraphyScanPage extends StatefulWidget {
-  final String pk;
-
-  const PolygraphyScanPage({Key? key, required this.pk}) : super(key: key);
+class PolygraphyPage extends StatefulWidget {
+  const PolygraphyPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _PolygraphyScanPageState();
+    return _PolygraphyPageState();
   }
 }
 
-class _PolygraphyScanPageState extends State<PolygraphyScanPage> {
+class _PolygraphyPageState extends State<PolygraphyPage> {
+  int? positionId;
   final List<TagEpc> _data = [];
-  List<Product> _products = [];
+  List<Position> _positions = [];
   bool _isLoading = false;
   bool _isScanning = false;
   RfidWrapper rfid = RfidWrapper();
@@ -58,33 +58,67 @@ class _PolygraphyScanPageState extends State<PolygraphyScanPage> {
       });
     };
     await rfid.connect();
-    var products = await fetchProducts();
+    var positions = await fetchPositions();
 
     setState(() {
       _isLoading = false;
-      _products = products;
+      _positions = positions;
     });
   }
 
-  Future<List<Product>> fetchProducts() async {
-    return productsService.find({
-      "positionId": widget.pk,
-    }).then((resp) => resp.data);
+  Widget dropdownList(BuildContext context) {
+    return DropdownButtonFormField<int>(
+      isExpanded: true,
+      decoration: InputDecoration(
+        border: const OutlineInputBorder(),
+        hintText: FlutterI18n.translate(
+          context,
+          "polygraphy.selectPosition.placeholder",
+        ),
+      ),
+      items: _positions.map((value) {
+        return DropdownMenuItem<int>(
+          value: value.id,
+          child: Text(value.title),
+        );
+      }).toList(),
+      onChanged: (v) {
+        if (v == null) {
+          return;
+        }
+        setState(() {
+          positionId = v;
+        });
+      },
+      value: positionId,
+    );
   }
 
-  Future<RpcResponse> createProducts() async {
-    var res = await rpcService.rpc("ValidateProducts", {
-      "tags": _data.map((e) => e.epc).toList(),
-    });
-    return res;
+  Future<List<Position>> fetchPositions() async {
+    var res = await positionsService.find({});
+    return res.data;
+  }
+
+  Future<RpcResponse> createProducts() {
+    return rpcService.createProductsFromTags(
+      positionId!,
+      _data.map((e) => e.epc).toList(),
+    );
   }
 
   void onCreatePressed() {
-    if (_data.isEmpty) {
+    if (positionId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-              FlutterI18n.translate(context, "polygraphy.errors.tagsEmpty")),
+              FlutterI18n.translate(context, "polygraphy.errors.positionIdEmpty")),
+        ),
+      );
+    }
+    if (_data.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(FlutterI18n.translate(context, "polygraphy.errors.tagsEmpty")),
         ),
       );
     }
@@ -109,9 +143,8 @@ class _PolygraphyScanPageState extends State<PolygraphyScanPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            '${FlutterI18n.translate(context, "polygraphy.errors.products.create")}: ${e.toString()}',
-            style: const TextStyle(color: Colors.red),
-          ),
+              '${FlutterI18n.translate(context, "polygraphy.errors.products.create")}: ${e.toString()}',
+              style: const TextStyle(color: Colors.red)),
         ),
       );
     });
@@ -124,9 +157,8 @@ class _PolygraphyScanPageState extends State<PolygraphyScanPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '${FlutterI18n.translate(context, "polygraphy.awaiting")}: ${_products.length}',
-        ),
+        dropdownList(context),
+        const SizedBox(height: 20),
         Row(
           children: [
             Text(
@@ -144,6 +176,7 @@ class _PolygraphyScanPageState extends State<PolygraphyScanPage> {
             ),
           ],
         ),
+        const SizedBox(height: 20),
       ],
     );
   }
@@ -156,35 +189,6 @@ class _PolygraphyScanPageState extends State<PolygraphyScanPage> {
       _isScanning = true;
       rfid.readContinuous();
     }
-  }
-
-  Widget scanButton(BuildContext context) {
-    var style = const TextStyle(
-      fontSize: 18,
-      color: Colors.black,
-    );
-    var stopText = Text(
-      FlutterI18n.translate(context, "polygraphy.footer.stop"),
-      style: style,
-    );
-    var startText = Text(
-      FlutterI18n.translate(context, "polygraphy.footer.start"),
-      style: style,
-    );
-    return ElevatedButton(
-      onPressed: onScanPressed,
-      style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        backgroundColor: Colors.white,
-        minimumSize: const Size.fromHeight(36),
-        shape: RoundedRectangleBorder(
-          side: BorderSide(color: Colors.grey.shade400),
-          borderRadius: BorderRadius.circular(80),
-        ),
-        elevation: 0,
-      ),
-      child: _isScanning ? stopText : startText,
-    );
   }
 
   @override
@@ -202,29 +206,23 @@ class _PolygraphyScanPageState extends State<PolygraphyScanPage> {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        height: 165,
+        height: 155,
         child: Container(
-          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+          padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
             children: [
-              scanButton(context),
-              const SizedBox(height: 20),
-              ElevatedButton(
+              FooterButton(
+                onPressed: onScanPressed,
+                secondary: true,
+                text: _isScanning
+                    ? FlutterI18n.translate(context, "polygraphy.footer.stop")
+                    : FlutterI18n.translate(context, "polygraphy.footer.start"),
+              ),
+              const SizedBox(height: 15),
+              FooterButton(
                 onPressed: onCreatePressed,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  backgroundColor: Theme.of(context).primaryColor,
-                  minimumSize: const Size.fromHeight(36),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(80),
-                  ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  FlutterI18n.translate(context, "polygraphy.footer.validate"),
-                  style: const TextStyle(fontSize: 18),
-                ),
-              )
+                text: FlutterI18n.translate(context, "polygraphy.footer.create"),
+              ),
             ],
           ),
         ),

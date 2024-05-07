@@ -7,15 +7,24 @@ class OrderPosition {
   final String title;
   final String barcode;
   final String unit;
+  final String? photo;
   final List<Product> products;
 
-  OrderPosition(this.id, this.title, this.barcode, this.unit, this.products);
+  OrderPosition(this.id, this.title, this.barcode, this.unit, this.photo, this.products);
 
   static fromJson(Map<String, dynamic> json) {
     Map<String, dynamic> positionJson = json["position"];
     List<dynamic> productsJson = json["products"];
-    var products = productsJson.map<Product>((e) => Product.fromJson(e)).toList();
-    return OrderPosition(positionJson["id"], positionJson["title"], positionJson["barcode"], positionJson["unit"], products);
+    var products =
+        productsJson.map<Product>((e) => Product.fromJson(e)).toList();
+    return OrderPosition(
+      positionJson["id"],
+      positionJson["title"],
+      positionJson["barcode"],
+      positionJson["unit"],
+      positionJson["photo"],
+      products,
+    );
   }
 }
 
@@ -46,8 +55,11 @@ class Order {
   static fromJson(Map<String, dynamic> json) {
     List<dynamic> productsJson = json["products"];
     List<dynamic> positionsJson = json["positions"];
-    var products = productsJson.map<Product>((e) => Product.fromJson(e)).toList();
-    var positions = positionsJson.map<OrderPosition>((e) => OrderPosition.fromJson(e)).toList();
+    var products =
+        productsJson.map<Product>((e) => Product.fromJson(e)).toList();
+    var positions = positionsJson
+        .map<OrderPosition>((e) => OrderPosition.fromJson(e))
+        .toList();
     return Order(json["id"], json["type"], products, positions);
   }
 }

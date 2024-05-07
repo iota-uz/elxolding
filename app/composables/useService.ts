@@ -1,6 +1,6 @@
-import {type Ref, type UnwrapRef} from 'vue';
+import type {Ref, UnwrapRef} from 'vue';
 
-import {type Query} from '~/types/generics';
+import type {Query} from '~/types/generics';
 import {parseJwt} from '~/utils/login';
 
 export function useLoggedIn(): boolean {
@@ -126,30 +126,30 @@ function serviceResponse<T extends object>(promise: Promise<T>): ServiceResponse
 }
 
 export const useService = (service: string, meta?: { auth?: boolean }) => {
-    const headers: Record<string, string> = (meta || {}).auth ? {'Authorization': `Bearer ${useToken()}`} : {};
+    const headers: Record<string, string> = (meta || {}).auth ? {'Authorization': useToken()} : {};
     const _url = useApiUrl() + (service[0] === '/' ? service : '/' + service);
     return {
-        get<T extends object = any>(id: string): ServiceResponse<T> {
+        get<T extends object = any>(id: number | string): ServiceResponse<T> {
             const fullUrl = _url + `/${id}`;
             return serviceResponse($fetch<T>(fullUrl, {method: 'GET', headers}));
         },
         find<T extends object = any, V = any>(query?: Query<V>): ServiceResponse<T> {
             let fullUrl = _url;
             if (query) {
-                fullUrl += '?' + queryToString(query);
+                fullUrl += '?' + encodeURI(queryToString(query));
             }
             return serviceResponse($fetch<T>(fullUrl, {method: 'GET', headers}));
         },
         create<T extends object = any>(data: any): ServiceResponse<T> {
             return serviceResponse($fetch<T>(_url, {method: 'POST', body: data, headers}));
         },
-        patch<T extends object = any>(id: string, data: any): ServiceResponse<T> {
+        patch<T extends object = any>(id: string | number, data: any): ServiceResponse<T> {
             return serviceResponse($fetch<T>(
                 _url + `/${id}`,
                 {method: 'PATCH', body: data, headers}
             ));
         },
-        remove<T extends object = any>(id: string): ServiceResponse<T> {
+        remove<T extends object = any>(id: string | number): ServiceResponse<T> {
             return serviceResponse($fetch<T>(
                 _url + `/${id}`,
                 {method: 'DELETE', headers})

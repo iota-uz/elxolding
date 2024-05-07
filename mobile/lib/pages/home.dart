@@ -30,8 +30,10 @@ class _HomePageState extends State<HomePage> {
             children: [
               ListTile(
                 onTap: () {
-                  context.pushNamed("order-id",
-                      pathParameters: {"id": order.id.toString()});
+                  context.pushNamed(
+                    "order-id",
+                    pathParameters: {"id": order.id.toString()},
+                  );
                 },
                 shape: RoundedRectangleBorder(
                   side: const BorderSide(color: Colors.grey, width: 1),
@@ -41,7 +43,6 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(order.title(context)),
-                    Text(order.typeText(context)),
                     Text(order.positionsCountText(context)),
                   ],
                 ),

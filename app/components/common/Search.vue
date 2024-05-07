@@ -25,12 +25,11 @@ import {debounce as deb} from '~/utils/search';
 
 interface Props {
     modelValue: Record<string, any>;
-    reOptions?: string;
     debounce?: number;
     fields: { key: string, label: string }[];
 }
 
-const props = withDefaults(defineProps<Props>(), {reOptions: 'i', debounce: 300});
+const props = withDefaults(defineProps<Props>(), {debounce: 300});
 const emit = defineEmits(['update:modelValue']);
 
 const searchQ = ref('');

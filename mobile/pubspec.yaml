@@ -46,7 +46,10 @@ dependencies:
   rfid_c72_plugin: ^0.0.2
   flutter_beep: ^1.0.0
   lan_scanner: ^4.0.0+1
+  device_info_plus: ^10.1.0
   sqflite: ^2.3.3
+  network_info_plus: ^5.0.3
+  dart_ping_ios: ^4.0.2
 
 flutter_native_splash:
   color: "#04a8ce"

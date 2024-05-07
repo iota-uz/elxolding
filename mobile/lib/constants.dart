@@ -9,12 +9,21 @@ import 'package:mobile/feathers/services/users.dart';
 
 var isLoggedIn = false;
 // const baseUrl = "https://api-staging-elxolding.apollos.studio";
-const baseUrl = "http://localhost:3030";
+// const baseUrl = "http://localhost:3030";
 
-Dio client = Dio(BaseOptions(baseUrl: baseUrl));
 OrdersService ordersService = OrdersService();
 ProductsService productsService = ProductsService();
 PositionsService positionsService = PositionsService();
 RPCService rpcService = RPCService();
 AuthenticationService authenticationService = AuthenticationService();
 UsersService usersService = UsersService();
+
+void init(String baseUrl) {
+  Dio client = Dio(BaseOptions(baseUrl: baseUrl));
+  authenticationService.setClient(client);
+  ordersService.setClient(client);
+  productsService.setClient(client);
+  positionsService.setClient(client);
+  rpcService.setClient(client);
+  usersService.setClient(client);
+}

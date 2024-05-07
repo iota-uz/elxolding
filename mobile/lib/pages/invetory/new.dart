@@ -203,6 +203,7 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
             children: [
               Text(
                 "${FlutterI18n.translate(context, "inventory.header.total")}: ${tags.length}",
+                style: const TextStyle(fontSize: 18),
               ),
               Text(
                 "${FlutterI18n.translate(context, "inventory.header.found")}: $totalFound/${inventoryTags.length}",
@@ -226,20 +227,15 @@ class _NewInventoryPageState extends State<NewInventoryPage> {
       body: body(context),
       bottomNavigationBar: BottomAppBar(
         child: Container(
-          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+          padding: const EdgeInsets.only(left: 20, right: 20),
           child: ElevatedButton(
             onPressed: () {
               onPressed();
               context.pop();
             },
             style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                backgroundColor: Theme.of(context).primaryColor,
-                minimumSize: const Size.fromHeight(40),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(80),
-                ),
-                elevation: 0),
+              backgroundColor: Theme.of(context).primaryColor,
+            ),
             child: Text(
               FlutterI18n.translate(context, "inventory.complete"),
               style: const TextStyle(
