@@ -109,6 +109,9 @@
     "awaitingApproval-1": "Ожидает одобрения: {count}",
     "awaitingApproval-2": "Ожидает одобрения: {count}",
     "awaitingApproval-5": "Ожидают одобрения: {count}",
+    "all": {
+      "title": "Все"
+    },
     "errors": {
       "products": {
         "create": "Ошибка при создании продукции"

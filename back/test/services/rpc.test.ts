@@ -5,8 +5,6 @@ import * as assert from 'assert';
 import app from '../../src/app';
 
 describe('\'rpc\' service', function () {
-    this.timeout(30000);
-
     let positions;
 
     beforeEach(async () => {
@@ -24,20 +22,22 @@ describe('\'rpc\' service', function () {
         ]));
     });
 
-    describe('CompeteOrder', function () {
-        it('should complete order', async () => {
+    describe('CompleteOrder', function () {
+        it('should complete "out" order', async () => {
             await Promise.all([
                 app.service('products').create({
                     positionId: positions[0].id,
-                    status: 'in_stock'
+                    status: 'in_stock',
+                    rfid: 'rfid1'
                 }),
                 app.service('products').create({
                     positionId: positions[1].id,
-                    status: 'in_stock'
+                    status: 'in_stock',
+                    rfid: 'rfid2'
                 }),
             ]);
             const order = await app.service('orders').create({
-                status: 'out',
+                type: 'out',
                 positions: [
                     {
                         positionId: positions[0].id,
@@ -52,22 +52,70 @@ describe('\'rpc\' service', function () {
 
             const rpc = app.service('rpc');
             const {error} = await rpc.create({
-                method: 'CompeteOrder',
+                method: 'CompleteOrder',
                 params: {
                     orderId: order.id
                 }
             });
             assert.strictEqual(error, undefined);
 
-            const productsCount = await app.service('products').find({
+            const {data: products} = await app.service('products').find({
                 query: {
                     status: 'in_stock'
-                },
-                paginate: false
-            }).then(products => products.length);
-            assert.strictEqual(productsCount, 0);
+                }
+            });
+            assert.strictEqual(products.length, 0);
 
+            const {data: orders} = await app.service('orders').find({});
+            assert.strictEqual(orders.length, 0);
         });
+    });
+
+    it('should complete "in" order', async () => {
+        await Promise.all([
+            app.service('products').create({
+                positionId: positions[0].id,
+                status: 'approved',
+                rfid: 'rfid1'
+            }),
+            app.service('products').create({
+                positionId: positions[1].id,
+                status: 'approved',
+                rfid: 'rfid2'
+            }),
+        ]);
+        const order = await app.service('orders').create({
+            type: 'in',
+            positions: [
+                {
+                    positionId: positions[0].id,
+                    quantity: 1
+                },
+                {
+                    positionId: positions[1].id,
+                    quantity: 1
+                }
+            ]
+        });
+
+        const rpc = app.service('rpc');
+        const {error} = await rpc.create({
+            method: 'CompleteOrder',
+            params: {
+                orderId: order.id
+            }
+        });
+        assert.strictEqual(error, undefined);
+
+        const {data: products} = await app.service('products').find({
+            query: {
+                status: 'in_stock'
+            }
+        });
+        assert.strictEqual(products.length, 2);
+
+        const {data: orders} = await app.service('orders').find({});
+        assert.strictEqual(orders.length, 0);
     });
 
     describe('CreateProductsFromTags', function () {

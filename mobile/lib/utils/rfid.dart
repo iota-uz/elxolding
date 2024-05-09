@@ -67,7 +67,6 @@ class RfidWrapper {
         onTagsUpdate!(TagEpc.parseTags(event));
       });
       await RfidC72Plugin.connect;
-      RfidC72Plugin.isEmptyTags
     } else {
       onConnected!(true);
     }

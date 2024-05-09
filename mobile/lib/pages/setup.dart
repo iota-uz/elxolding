@@ -7,6 +7,7 @@ import 'package:mobile/constants.dart';
 
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:lan_scanner/lan_scanner.dart';
+import 'package:dart_ping/dart_ping.dart';
 
 class SetupPage extends StatefulWidget {
   const SetupPage({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class SetupPage extends StatefulWidget {
 
 class _SetupPageState extends State<SetupPage> {
   FlutterSecureStorage _storage = FlutterSecureStorage();
+  bool _isLoading = true;
   String ipAddr = "";
 
   Future<void> setupHosts() async {
@@ -49,12 +51,28 @@ class _SetupPageState extends State<SetupPage> {
     return Future.value();
   }
 
+  Future<(String, bool)> checkIpAddress() async {
+    var ip = await _storage.read(key: "ip-address");
+    if (ip == null) {
+      return ("", false);
+    }
+    final ping = Ping('google.com', count: 1);
+    final result = await ping.stream.first;
+    return (ip, result.error == null);
+  }
+
   @override
   void initState() {
     super.initState();
-    _storage.read(key: "ipAddr").then((value) {
-      if (value != null) {
-        ipAddr = value;
+    checkIpAddress().then((value) {
+      var (ip, connected) = value;
+      if (connected) {
+        context.goNamed("login");
+        init(ip);
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
       }
     });
     // setupHosts();
@@ -71,20 +89,23 @@ class _SetupPageState extends State<SetupPage> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              TextField(
-                controller: TextEditingController()..text = ipAddr,
-                decoration: InputDecoration(
-                  labelText: FlutterI18n.translate(context, "setup.ipAddr"),
-                ),
-                onChanged: (v) {
-                  ipAddr = v;
-                },
-                onSubmitted: (v) {
-                  setState(() {
+              if (_isLoading)
+                const CircularProgressIndicator()
+              else
+                TextField(
+                  controller: TextEditingController()..text = ipAddr,
+                  decoration: InputDecoration(
+                    labelText: FlutterI18n.translate(context, "setup.ipAddr"),
+                  ),
+                  onChanged: (v) {
                     ipAddr = v;
-                  });
-                },
-              ),
+                  },
+                  onSubmitted: (v) {
+                    setState(() {
+                      ipAddr = v;
+                    });
+                  },
+                ),
             ],
           ),
         ),
@@ -95,7 +116,7 @@ class _SetupPageState extends State<SetupPage> {
             if (ipAddr.isEmpty) {
               return;
             }
-            _storage.write(key: "ipAddr", value: ipAddr);
+            _storage.write(key: "ip-address", value: ipAddr);
             if (ipAddr.startsWith("https://")) {
               init(ipAddr);
             } else {

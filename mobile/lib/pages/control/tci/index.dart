@@ -42,26 +42,64 @@ class _TCIPageState extends State<TCIPage> {
     if (_isLoading) {
       return const CircularProgressIndicator();
     }
+    List<Widget> children = _inventory.map((e) {
+      return ListTile(
+        contentPadding: const EdgeInsets.all(0),
+        title: Text(
+          e.title,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        subtitle: Text(
+          FlutterI18n.plural(
+            context,
+            "tci.awaitingApproval",
+            e.tags.length,
+          ),
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios),
+        onTap: () {
+          context.pushNamed(
+            "control-tci-scan",
+            pathParameters: {"id": e.id.toString()},
+          );
+        },
+      );
+    }).toList();
+
+    var total = _inventory.fold<int>(0, (previousValue, element) => previousValue + element.tags.length);
+    children.insert(
+      0,
+      ListTile(
+        contentPadding: const EdgeInsets.all(0),
+        title: Text(
+          FlutterI18n.translate(context, "tci.all.title"),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        subtitle: Text(
+          FlutterI18n.plural(
+            context,
+            "tci.awaitingApproval",
+            total,
+          ),
+        ),
+        trailing: const Icon(Icons.arrow_forward_ios),
+        onTap: () {
+          context.pushNamed(
+            "control-tci-scan",
+            pathParameters: {"id": "all"},
+          );
+        },
+      ),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: _inventory.map((e) {
-        return ListTile(
-          title: Text(e.title),
-          subtitle: Text(
-            FlutterI18n.plural(
-              context,
-              "tci.awaitingApproval",
-              e.tags.length,
-            ),
-          ),
-          onTap: () {
-            context.pushNamed(
-              "control-tci-scan",
-              pathParameters: {"id": e.id.toString()},
-            );
-          },
-        );
-      }).toList(),
+      children: children,
     );
   }
 

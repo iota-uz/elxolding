@@ -52,19 +52,13 @@ export class RpcHandler {
             },
             raw: true
         });
-        const where = {
-            where: {
-                id: {
-                    [Op.in]: records.map((record) => record.productId)
-                }
-            }
-        };
+        const where = {id: {[Op.in]: records.map((record) => record.productId)}};
         if (order.type === 'in') {
             await productsModel.update({status: 'in_stock'}, {where});
         } else {
             await productsModel.destroy({where});
         }
-        await order.remove();
+        await order.destroy();
         return {success: true};
     }
 
