@@ -1,7 +1,14 @@
 import {BadRequest} from '@feathersjs/errors';
-import {ModelStatic, Op, Sequelize} from 'sequelize';
+import {Model, ModelStatic, Op, Sequelize} from 'sequelize';
 
 import {Application} from '../../declarations';
+
+type DashboardStats = {
+    products: number
+    positions: number
+    depth: number
+    orders: number
+};
 
 export class RpcHandler {
     app: Application;
@@ -91,12 +98,18 @@ export class RpcHandler {
     }
 
     public async GetInventory(data: { status?: string }): Promise<{ inventory: any[] }> {
+        interface Position {
+            id: number;
+            title: string;
+            products: { rfid: string }[];
+        }
+
         const positionsModel = this.app.service('positions').Model;
         const sequelizeClient = this.app.get('sequelizeClient') as Sequelize;
 
         const status = data.status ? data.status : 'in_stock';
 
-        const positions = <any[]>await positionsModel.findAll({
+        const positions = <Model<Position>[]>await positionsModel.findAll({
             raw: false,
             include: [
                 {
@@ -121,20 +134,18 @@ export class RpcHandler {
                 exclude: ['barcode', 'unit', 'createdAt', 'updatedAt']
             },
         });
-        const inventory = positions.map((el: any) => {
-            const position = el.toJSON();
-            const products = position.products as any[];
+        const inventory = positions.map(el => el.toJSON()).map((el) => {
             return {
-                id: position.id,
-                title: position.title,
-                tags: products.map((product) => product.rfid),
+                id: el.id,
+                title: el.title,
+                tags: el.products.map((product) => product.rfid),
             };
         });
         return {inventory};
     }
 
     public async CompleteInventoryCheck(data: {
-        positions: { positionId: number, found: number }[]
+        positions?: { positionId: number, found: number }[]
     }): Promise<Record<string, any>> {
         if (!data.positions || !Array.isArray(data.positions)) {
             throw new BadRequest('Invalid data');
@@ -149,7 +160,7 @@ export class RpcHandler {
             status: 'successful',
         });
 
-        await Promise.all(data.positions.map(async (position: any) => {
+        await Promise.all(data.positions.map(async (position) => {
             const {positionId, found} = position;
             const positionModel = await positionsModel.findByPk(positionId);
             if (!positionModel) {
@@ -173,24 +184,14 @@ export class RpcHandler {
         return result;
     }
 
-    public async DashboardStats(): Promise<{ products: number, positions: number, depth: number, orders: number }> {
-        const {models} = this.app.get('sequelizeClient');
-        const productsModel: ModelStatic<any> = models.products;
-        const positionsModel: ModelStatic<any> = models.positions;
-        const ordersModel: ModelStatic<any> = models.orders;
+    public async DashboardStats(): Promise<DashboardStats> {
+        const models = this.app.get('sequelizeClient').models as Record<string, ModelStatic<any>>;
+        const {products: productsModel, positions: positionsModel, orders: ordersModel} = models;
 
         const [products, positions, orders] = await Promise.all([
-            productsModel.count({
-                where: {
-                    status: 'in_stock'
-                }
-            }),
+            productsModel.count({where: {status: 'in_stock'}}),
             positionsModel.count({}),
-            ordersModel.count({
-                where: {
-                    status: 'pending'
-                }
-            })
+            ordersModel.count({where: {status: 'pending'}})
         ]);
         return {products, positions, depth: products / positions, orders};
     }
