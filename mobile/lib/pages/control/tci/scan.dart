@@ -7,6 +7,8 @@ import 'package:mobile/feathers/models/product.dart';
 import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
+import 'package:mobile/feathers/services/products.dart';
+
 class TCIScanPage extends StatefulWidget {
   final String pk;
 
@@ -68,9 +70,18 @@ class _TCIScanPageState extends State<TCIScanPage> {
   }
 
   Future<List<Product>> fetchProducts() async {
-    return productsService.find({
-      "positionId": widget.pk,
-    }).then((resp) => resp.data);
+    Future response;
+    if (widget.pk == "all") {
+      response = productsService.find({
+        "status": ProductStatus.inDevelopment.status,
+      });
+    } else {
+      response = productsService.find({
+        "status": ProductStatus.inDevelopment.status,
+        "positionId": widget.pk,
+      });
+    }
+    return response.then((resp) => resp.data);
   }
 
   Future<RpcResponse> createProducts() async {
@@ -84,8 +95,7 @@ class _TCIScanPageState extends State<TCIScanPage> {
     if (_data.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-              FlutterI18n.translate(context, "tci.errors.tagsEmpty")),
+          content: Text(FlutterI18n.translate(context, "tci.errors.tagsEmpty")),
         ),
       );
     }
@@ -189,8 +199,7 @@ class _TCIScanPageState extends State<TCIScanPage> {
               ),
               const SizedBox(height: 15),
               FooterButton(
-                text:
-                    FlutterI18n.translate(context, "tci.footer.validate"),
+                text: FlutterI18n.translate(context, "tci.footer.validate"),
                 onPressed: onCreatePressed,
               ),
             ],

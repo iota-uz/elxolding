@@ -14,8 +14,8 @@
             class="slimscroll relative w-full grow overflow-y-auto py-6"
         >
             <!--Menu-->
-            <div class="flex items-center gap-3 mb-4">
-                <CompanyLogo class="text-white dark:text-muted-400/80 h-14" />
+            <div class="flex items-center gap-3 mb-4 ml-3">
+                <CompanyLogo class="text-white dark:text-muted-400/80 w-24" />
             </div>
             <ul
                 id="sidebar-menu"

@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:go_router/go_router.dart';
@@ -92,15 +94,30 @@ class _OrderPageState extends State<OrderPage> {
     return false;
   }
 
+  Widget signalStrengthIcon(double rssi) {
+    if (rssi < -70) {
+      return const Icon(Icons.signal_cellular_alt_1_bar);
+    }
+    if (rssi < -50) {
+      return const Icon(Icons.signal_cellular_alt_2_bar);
+    }
+    return const Icon(Icons.signal_cellular_alt);
+  }
+
   List<Widget> buildProductsList(BuildContext context) {
     var list = <Widget>[];
     for (var position in order!.positions) {
       var quantity = position.products.length;
       var found = 0;
+      double minRssi = 0;
       for (var tag in tags) {
         for (var product in position.products) {
           if (tag.epc == product.rfid) {
             found++;
+            var rssi = double.parse(tag.rssi);
+            if (rssi < minRssi) {
+              minRssi = rssi;
+            }
           }
         }
       }
@@ -125,6 +142,8 @@ class _OrderPageState extends State<OrderPage> {
               const SizedBox(width: 10),
               Text(position.title),
               const Spacer(),
+              signalStrengthIcon(minRssi),
+              const SizedBox(width: 10),
               Text("$found/$quantity"),
             ],
           ),

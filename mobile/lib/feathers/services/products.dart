@@ -3,6 +3,21 @@ import 'package:mobile/feathers/types.dart';
 
 import 'package:mobile/feathers/models/product.dart';
 
+enum ProductStatus implements Comparable<ProductStatus> {
+  inStock(status: "in_stock"),
+  inDevelopment(status: "in_development"),
+  approved(status: "approved");
+
+  const ProductStatus({
+    required this.status,
+  });
+
+  final String status;
+
+  @override
+  int compareTo(ProductStatus other) => status.compareTo(other.status);
+}
+
 class ProductsService extends Service {
   ProductsService() : super("products");
 
