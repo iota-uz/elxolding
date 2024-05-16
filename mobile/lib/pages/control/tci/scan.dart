@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:mobile/components/footer_button.dart';
 import 'package:mobile/constants.dart';
-import 'package:mobile/feathers/types.dart';
 import 'package:mobile/feathers/models/product.dart';
 import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
@@ -84,14 +83,7 @@ class _TCIScanPageState extends State<TCIScanPage> {
     return response.then((resp) => resp.data);
   }
 
-  Future<RpcResponse> createProducts() async {
-    var res = await rpcService.rpc("ValidateProducts", {
-      "tags": _data.map((e) => e.epc).toList(),
-    });
-    return res;
-  }
-
-  void onCreatePressed() {
+  void onPresses() {
     if (_data.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -99,7 +91,7 @@ class _TCIScanPageState extends State<TCIScanPage> {
         ),
       );
     }
-    createProducts().then((value) {
+    rpcService.validateProducts(_data.map((e) => e.epc).toList()).then((value) {
       if (value.hasError()) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -200,7 +192,7 @@ class _TCIScanPageState extends State<TCIScanPage> {
               const SizedBox(height: 15),
               FooterButton(
                 text: FlutterI18n.translate(context, "tci.footer.validate"),
-                onPressed: onCreatePressed,
+                onPressed: onPresses,
               ),
             ],
           ),
