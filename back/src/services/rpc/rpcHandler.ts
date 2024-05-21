@@ -1,5 +1,6 @@
 import {BadRequest} from '@feathersjs/errors';
 import {Model, ModelStatic, Op, Sequelize} from 'sequelize';
+import XLSX from 'xlsx';
 
 import {Application} from '../../declarations';
 
@@ -9,6 +10,24 @@ type DashboardStats = {
     depth: number
     orders: number
 };
+
+type XLSXPosition = {
+    name: string
+    barcode: string
+};
+
+function loadPositionsFromXLSX(fileName: string): XLSXPosition[] {
+    const workbook = XLSX.readFile(fileName);
+    const sheet_name_list = workbook.SheetNames;
+    const positions: XLSXPosition[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]], {
+        header: ['name', 'barcode'],
+        range: 4,
+    });
+    return positions.filter(el => el.barcode && el.name).map((el) => ({
+        barcode: el.barcode.toString(),
+        name: el.name.trim(),
+    }));
+}
 
 export class RpcHandler {
     app: Application;
@@ -67,6 +86,52 @@ export class RpcHandler {
         }
         await order.destroy();
         return {success: true};
+    }
+
+    public async UploadPositionsFromExcel(data: { fileId?: number }): Promise<any> {
+        if (!data.fileId) {
+            throw new BadRequest('fileId is required');
+        }
+        const models = this.app.get('sequelizeClient').models as Record<string, ModelStatic<any>>;
+        const positionsModel = models.positions;
+        const file = await this.app.service('uploads').get(data.fileId);
+        const positions = loadPositionsFromXLSX(this.app.get('uploads') + '/' + file.filename);
+        const existingPositions = await positionsModel.findAll({
+            where: {
+                barcode: {
+                    [Op.in]: positions.map((el) => el.barcode)
+                }
+            }
+        });
+        let updated = 0;
+        let created = 0;
+        const promises: Promise<any>[] = [];
+        for (const el of positions) {
+            if (existingPositions.find((position) => position.barcode === el.barcode)) {
+                updated++;
+                promises.push(
+                    positionsModel.update(
+                        {title: el.name},
+                        {
+                            where: {
+                                barcode: el.barcode
+                            }
+                        }
+                    )
+                );
+            } else {
+                created++;
+                promises.push(
+                    positionsModel.create({
+                        title: el.name,
+                        barcode: el.barcode,
+                        unit: 'cm'
+                    })
+                );
+            }
+        }
+        await Promise.all(promises);
+        return {updated, created};
     }
 
     public async ValidateProducts(data: { tags: string[] }): Promise<{ valid: string[], invalid: string[] }> {

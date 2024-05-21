@@ -21,7 +21,8 @@ class OrderPage extends StatefulWidget {
   }
 }
 
-class _OrderPageState extends State<OrderPage> {
+class _OrderPageState extends State<OrderPage>
+    with SingleTickerProviderStateMixin {
   int orderId = 0;
   Order? order;
   bool isLoading = true;
@@ -31,10 +32,20 @@ class _OrderPageState extends State<OrderPage> {
   List<TagEpc> tags = [];
   Set<String> scanned = {};
   List<String> inventoryTags = [];
+  late final AnimationController _controller;
+  late final Animation<double> _scaleAnimation;
+  late final Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    )..repeat();
+    _scaleAnimation = Tween<double>(begin: 0.6, end: 1.2).animate(_controller);
+    _fadeAnimation = Tween<double>(begin: 1, end: 0.2).animate(_controller);
+
     orderId = int.parse(widget.pk);
     ordersService.get(orderId).then((value) {
       setState(() {
@@ -70,6 +81,7 @@ class _OrderPageState extends State<OrderPage> {
   @override
   void dispose() {
     super.dispose();
+    _controller.dispose();
     rfid.closeAll();
   }
 
@@ -95,13 +107,40 @@ class _OrderPageState extends State<OrderPage> {
   }
 
   Widget signalStrengthIcon(double rssi) {
+    // return a circle with color based on rssi and the transparency based on the value
+    var color = Colors.green;
     if (rssi < -70) {
-      return const Icon(Icons.signal_cellular_alt_1_bar);
+      color = Colors.red;
+    } else if (rssi < -60) {
+      color = Colors.orange;
     }
-    if (rssi < -50) {
-      return const Icon(Icons.signal_cellular_alt_2_bar);
-    }
-    return const Icon(Icons.signal_cellular_alt);
+    return Stack(
+      alignment: AlignmentDirectional.center,
+      children: [
+        FadeTransition(
+          opacity: _fadeAnimation,
+          child: ScaleTransition(
+            scale: _scaleAnimation,
+            child: Container(
+              width: 50 * 1.5,
+              height: 50 * 1.5,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: color,
+              ),
+            ),
+          ),
+        ),
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: color.withOpacity(1 - (rssi / -100)),
+            shape: BoxShape.circle,
+          ),
+        ),
+      ],
+    );
   }
 
   List<Widget> buildProductsList(BuildContext context) {
@@ -121,30 +160,33 @@ class _OrderPageState extends State<OrderPage> {
           }
         }
       }
-      Widget image = Image.asset(
-        "assets/images/placeholder.png",
-        width: 80,
-        height: 80,
-      );
-      if (position.photo != null) {
-        image = Image.network(
-          position.photo!,
-          width: 80,
-          height: 80,
-        );
-      }
+      Widget image = position.photo == null
+          ? Image.asset("assets/images/placeholder.png")
+          : Image.network(position.photo!);
       list.add(
         ListTile(
           contentPadding: const EdgeInsets.all(0),
-          title: Row(
+          title: Column(
             children: [
               image,
-              const SizedBox(width: 10),
-              Text(position.title),
-              const Spacer(),
-              signalStrengthIcon(minRssi),
-              const SizedBox(width: 10),
-              Text("$found/$quantity"),
+              Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        position.title,
+                        style: const TextStyle(
+                          fontSize: 18
+                        )
+                      ),
+                      Text("$found/$quantity"),
+                    ],
+                  ),
+                  const Spacer(),
+                  signalStrengthIcon(minRssi),
+                ],
+              )
             ],
           ),
         ),

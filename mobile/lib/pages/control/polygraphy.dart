@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:mobile/components/footer_button.dart';
@@ -17,7 +18,7 @@ class PolygraphyPage extends StatefulWidget {
 }
 
 class _PolygraphyPageState extends State<PolygraphyPage> {
-  int? positionId;
+  Position? position;
   final List<TagEpc> _data = [];
   List<Position> _positions = [];
   bool _isLoading = false;
@@ -66,31 +67,21 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
     });
   }
 
-  Widget dropdownList(BuildContext context) {
-    return DropdownButtonFormField<int>(
-      isExpanded: true,
-      decoration: InputDecoration(
-        border: const OutlineInputBorder(),
-        hintText: FlutterI18n.translate(
-          context,
-          "polygraphy.selectPosition.placeholder",
-        ),
-      ),
-      items: _positions.map((value) {
-        return DropdownMenuItem<int>(
-          value: value.id,
-          child: Text(value.title),
+  Widget positionsList(BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: _positions.length,
+      itemBuilder: (context, index) {
+        return ListTile(
+          title: Text(_positions[index].title),
+          trailing: const Icon(Icons.arrow_forward_ios),
+          onTap: () {
+            setState(() {
+              position = _positions[index];
+            });
+          },
         );
-      }).toList(),
-      onChanged: (v) {
-        if (v == null) {
-          return;
-        }
-        setState(() {
-          positionId = v;
-        });
       },
-      value: positionId,
     );
   }
 
@@ -101,13 +92,13 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
 
   Future<RpcResponse> createProducts() {
     return rpcService.createProductsFromTags(
-      positionId!,
+      position!.id,
       _data.map((e) => e.epc).toList(),
     );
   }
 
   void onCreatePressed() {
-    if (positionId == null) {
+    if (position == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(FlutterI18n.translate(
@@ -151,6 +142,39 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
     });
   }
 
+  Widget scannedTags(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            position!.title,
+            style: const TextStyle(fontSize: 20),
+          ),
+          Row(
+            children: [
+              Text(
+                '${FlutterI18n.translate(context, "polygraphy.scanned")}: ${_data.length}',
+                style: const TextStyle(fontSize: 18),
+              ),
+              const Spacer(),
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    _data.clear();
+                    rfid.clear();
+                  });
+                },
+                icon: const Icon(Icons.close),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
   Widget mainUI(BuildContext context) {
     if (_isLoading) {
       return const CircularProgressIndicator();
@@ -158,26 +182,7 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        dropdownList(context),
-        const SizedBox(height: 20),
-        Row(
-          children: [
-            Text(
-              '${FlutterI18n.translate(context, "polygraphy.scanned")}: ${_data.length}',
-            ),
-            const Spacer(),
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  _data.clear();
-                  rfid.clear();
-                });
-              },
-              icon: const Icon(Icons.close),
-            ),
-          ],
-        ),
-        const SizedBox(height: 20),
+        position == null ? positionsList(context) : scannedTags(context),
       ],
     );
   }
@@ -197,7 +202,7 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(FlutterI18n.translate(context, "polygraphy.title")),
+        title: Text(FlutterI18n.translate(context, position == null ? "polygraphy.title1" : "polygraphy.title2")),
       ),
       body: SingleChildScrollView(
         child: Center(

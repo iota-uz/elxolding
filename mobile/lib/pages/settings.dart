@@ -51,11 +51,22 @@ class _SettingsPageState extends State<SettingsPage> {
             children: [
               CircleAvatar(
                 radius: 70,
-                backgroundImage: const AssetImage("assets/images/user-profile.png"),
+                backgroundImage:
+                    const AssetImage("assets/images/user-profile.png"),
                 backgroundColor: Colors.grey.shade300,
               ),
               const SizedBox(height: 40),
               // avatar
+              ListTile(
+                leading: const Icon(Icons.settings),
+                title: Text(
+                  FlutterI18n.translate(context, "settings.config"),
+                ),
+                trailing: const Icon(Icons.arrow_forward_ios),
+                onTap: () {
+                  context.pushNamed("server-host");
+                },
+              ),
               ListTile(
                 leading: const Icon(Icons.language),
                 title:
@@ -76,10 +87,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   context.pushNamed("login");
                 },
               ),
-              // Text(
-              //   _batteryLevel,
-              //   style: const TextStyle(color: Colors.blue),
-              // )
             ],
           ),
         ),

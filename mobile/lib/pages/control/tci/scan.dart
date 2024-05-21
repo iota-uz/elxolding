@@ -22,7 +22,7 @@ class TCIScanPage extends StatefulWidget {
 class _TCIScanPageState extends State<TCIScanPage> {
   final List<TagEpc> _data = [];
   List<Product> _products = [];
-  bool _isLoading = false;
+  bool _isLoading = true;
   bool _isScanning = false;
   RfidWrapper rfid = RfidWrapper();
 

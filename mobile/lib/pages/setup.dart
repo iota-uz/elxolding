@@ -17,9 +17,9 @@ class SetupPage extends StatefulWidget {
 }
 
 class _SetupPageState extends State<SetupPage> {
-  FlutterSecureStorage _storage = FlutterSecureStorage();
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
   bool _isLoading = true;
-  String ipAddr = "";
+  String uri = "";
 
   Future<void> setupHosts() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -52,7 +52,7 @@ class _SetupPageState extends State<SetupPage> {
   }
 
   Future<(String, bool)> checkIpAddress() async {
-    var ip = await _storage.read(key: "ip-address");
+    var ip = await _storage.read(key: "server-uri");
     if (ip == null) {
       return ("", false);
     }
@@ -93,16 +93,16 @@ class _SetupPageState extends State<SetupPage> {
                 const CircularProgressIndicator()
               else
                 TextField(
-                  controller: TextEditingController()..text = ipAddr,
+                  controller: TextEditingController()..text = uri,
                   decoration: InputDecoration(
-                    labelText: FlutterI18n.translate(context, "setup.ipAddr"),
+                    labelText: FlutterI18n.translate(context, "setup.address"),
                   ),
                   onChanged: (v) {
-                    ipAddr = v;
+                    uri = v;
                   },
                   onSubmitted: (v) {
                     setState(() {
-                      ipAddr = v;
+                      uri = v;
                     });
                   },
                 ),
@@ -113,19 +113,15 @@ class _SetupPageState extends State<SetupPage> {
       bottomNavigationBar: BottomAppBar(
         child: ElevatedButton(
           onPressed: () {
-            if (ipAddr.isEmpty) {
+            if (uri.isEmpty) {
               return;
             }
-            _storage.write(key: "ip-address", value: ipAddr);
-            if (ipAddr.startsWith("https://")) {
-              init(ipAddr);
-            } else {
-              init("http://$ipAddr:3030");
-            }
+            _storage.write(key: "server-uri", value: uri);
+            init(uri);
             context.goNamed("login");
           },
           style: ButtonStyle(
-            backgroundColor: ipAddr.isEmpty
+            backgroundColor: uri.isEmpty
                 ? MaterialStateProperty.all(Colors.grey)
                 : MaterialStateProperty.all(Theme.of(context).primaryColor),
           ),

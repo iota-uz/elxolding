@@ -12,6 +12,7 @@ import 'package:mobile/pages/control/polygraphy.dart';
 import 'package:mobile/pages/control.dart';
 import 'package:mobile/pages/settings.dart';
 import 'package:mobile/pages/setup.dart';
+import 'package:mobile/pages/server_host.dart';
 import 'layouts/navigation.dart';
 import 'pages/home.dart';
 import 'pages/invetory/index.dart';
@@ -144,6 +145,13 @@ final _router = GoRouter(
       name: "setup",
       pageBuilder: (context, state) => const NoTransitionPage(
         child: SetupPage(),
+      ),
+    ),
+    GoRoute(
+      path: "/server-host",
+      name: "server-host",
+      pageBuilder: (context, state) => const NoTransitionPage(
+        child: ServerHostPage(),
       ),
     ),
     GoRoute(
