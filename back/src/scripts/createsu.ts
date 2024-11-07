@@ -15,7 +15,7 @@ async function main() {
         firstName: firstName,
         lastName: lastName,
         password: password,
-        role: 'admin'
+        role: 'superuser'
     });
     process.exit(0);
 }
