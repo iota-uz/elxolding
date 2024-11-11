@@ -14,18 +14,25 @@ type DashboardStats = {
 type XLSXPosition = {
     name: string
     barcode: string
+    unit: string
+    quantity: number
 };
 
 function loadPositionsFromXLSX(fileName: string): XLSXPosition[] {
     const workbook = XLSX.readFile(fileName);
     const sheet_name_list = workbook.SheetNames;
     const positions: XLSXPosition[] = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]], {
-        header: ['name', 'barcode'],
+        header: ['name', 'barcode', 'unit', 'quantity'],
         range: 4,
     });
-    return positions.filter(el => el.barcode && el.name).map((el) => ({
+    const nonEmptyPositions = positions.filter((el) => {
+        return el.barcode && el.name && el.unit && el.quantity && el.quantity > 0;
+    });
+    return nonEmptyPositions.map((el) => ({
         barcode: el.barcode.toString(),
         name: el.name.trim(),
+        unit: el.unit.trim(),
+        quantity: el.quantity
     }));
 }
 
@@ -125,7 +132,7 @@ export class RpcHandler {
                     positionsModel.create({
                         title: el.name,
                         barcode: el.barcode,
-                        unit: 'cm'
+                        unit: el.unit
                     })
                 );
             }

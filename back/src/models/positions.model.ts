@@ -22,7 +22,7 @@ export default function (app: Application): typeof Model {
             unique: true
         },
         unit: {
-            type: DataTypes.ENUM('cm', 'dm', 'l', 'm3'),
+            type: DataTypes.STRING,
             allowNull: false
         },
     }, {
