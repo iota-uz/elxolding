@@ -13,17 +13,6 @@ async function main() {
         password: 'admin1234',
         role: 'superuser'
     });
-
-    const positions = await Promise.all(Array.from({length: 50_000}).map((_, i) => app.service('positions').create({
-        title: `Позиция ${i + 1}`,
-        barcode: `000000000000${i + 1}`,
-        unit: 'm3'
-    })));
-    await Promise.all(Array.from({length: 50_000}).map((_, i) => app.service('products').create({
-        positionId: positions[i].id,
-        status: 'in_stock',
-        rfid: `000000000000${i + 1}`
-    })));
     process.exit(0);
 }
 
