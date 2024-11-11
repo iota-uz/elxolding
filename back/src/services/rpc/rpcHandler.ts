@@ -95,6 +95,24 @@ export class RpcHandler {
         return {success: true};
     }
 
+    private async createPositionFromXLSX(position: XLSXPosition): Promise<void> {
+        const {models} = this.app.get('sequelizeClient');
+        const positionsModel: ModelStatic<any> = models.positions;
+        const productsModel: ModelStatic<any> = models.products;
+        const positionModel = await positionsModel.create({
+            title: position.name,
+            barcode: position.barcode,
+            unit: position.unit
+        });
+        await productsModel.bulkCreate(
+            Array.from({length: position.quantity}).map(() => ({
+                positionId: positionModel.id,
+                rfid: `${position.barcode}-${Math.random().toString(36).substring(7)}`,
+                status: 'in_stock'
+            }))
+        );
+    }
+
     public async UploadPositionsFromExcel(data: { fileId?: number }): Promise<any> {
         if (!data.fileId) {
             throw new BadRequest('fileId is required');
@@ -114,7 +132,8 @@ export class RpcHandler {
         let created = 0;
         const promises: Promise<any>[] = [];
         for (const el of positions) {
-            if (existingPositions.find((position) => position.barcode === el.barcode)) {
+            const existingPosition = existingPositions.find((position) => position.barcode === el.barcode);
+            if (existingPosition) {
                 updated++;
                 promises.push(
                     positionsModel.update(
@@ -128,13 +147,7 @@ export class RpcHandler {
                 );
             } else {
                 created++;
-                promises.push(
-                    positionsModel.create({
-                        title: el.name,
-                        barcode: el.barcode,
-                        unit: el.unit
-                    })
-                );
+                promises.push(this.createPositionFromXLSX(el));
             }
         }
         await Promise.all(promises);

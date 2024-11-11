@@ -117,8 +117,18 @@ module.exports = {
                 unique: true
             },
             unit: {
-                type: DataTypes.ENUM('cm', 'dm', 'l', 'm3'),
+                type: DataTypes.STRING,
                 allowNull: false
+            },
+            photo_id: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+                references: {
+                    model: 'uploads',
+                    key: 'id'
+                },
+                onUpdate: 'CASCADE',
+                onDelete: 'SET NULL'
             },
             created_at: {
                 type: DataTypes.DATE,
