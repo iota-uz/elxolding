@@ -7,6 +7,8 @@ RUN pnpm i --frozen-lockfile
 COPY . .
 
 FROM build-stage as prod
+ARG NUXT_APP_API_URL
+ENV NUXT_APP_API_URL=$NUXT_APP_API_URL
 RUN pnpm build
 CMD pnpm start:prod
 

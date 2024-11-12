@@ -6,6 +6,8 @@ services:
     build:
       context: ./app
       target: prod
+      args:
+        - NUXT_APP_API_URL=https://api-elxolding.ci.iota.uz
     environment:
       - NUXT_APP_API_URL=https://api-elxolding.ci.iota.uz
     labels:
