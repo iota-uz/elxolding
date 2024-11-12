@@ -7,9 +7,9 @@ services:
       context: ./app
       target: prod
       args:
-        - NUXT_APP_API_URL=https://api-elxolding.ci.iota.uz
+        - NUXT_PUBLIC_API_URL=https://api-elxolding.ci.iota.uz
     environment:
-      - NUXT_APP_API_URL=https://api-elxolding.ci.iota.uz
+      - NUXT_PUBLIC_API_URL=https://api-elxolding.ci.iota.uz
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=app"
