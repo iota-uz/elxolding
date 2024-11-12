@@ -16,10 +16,9 @@ services:
       - "traefik.http.routers.${COMMIT_SHA}-front.tls.certresolver=letsencrypt"
       - "traefik.http.routers.${COMMIT_SHA}-front.tls.domains[0].main=iota.uz"
       - "traefik.http.routers.${COMMIT_SHA}-front.tls.domains[0].sans=*.ci.iota.uz"
+      - "traefik.http.services.${COMMIT_SHA}-front.loadbalancer.server.port=80"
     volumes:
       - ~/volumes/elxolding/uploads:/www/media
-    ports:
-      - "80:80"
     networks:
       - app
 
@@ -30,8 +29,6 @@ services:
       target: prod
     environment:
       NODE_ENV: staging
-    ports:
-      - "3030:3030"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=app"
@@ -40,6 +37,7 @@ services:
       - "traefik.http.routers.${COMMIT_SHA}-back.tls.certresolver=letsencrypt"
       - "traefik.http.routers.${COMMIT_SHA}-back.tls.domains[0].main=iota.uz"
       - "traefik.http.routers.${COMMIT_SHA}-back.tls.domains[0].sans=*.ci.iota.uz"
+      - "traefik.http.services.${COMMIT_SHA}-back.loadbalancer.server.port=3030"
     volumes:
       - ~/volumes/elxolding/postgres:/app/uploads
     depends_on:
