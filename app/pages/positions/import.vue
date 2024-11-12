@@ -74,7 +74,8 @@ async function upload() {
     loading.value = true;
     try {
         const {error} = await rpcService.create({
-            method: 'UploadPositionsFromExcel', params: {
+            method: 'UploadPositionsFromExcel',
+            params: {
                 fileId: fileId.value
             }
         }).exec();

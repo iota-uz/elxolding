@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  front:
+    restart: always
+    build:
+      context: ./app
+      target: prod
+    environment:
+      - NUXT_APP_API_URL=https://api-elxolding.ci.iota.uz
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=app"
+      - "traefik.http.routers.${COMMIT_SHA}-front.rule=Host(`elxolding.ci.iota.uz`)"
+      - "traefik.http.routers.${COMMIT_SHA}-front.tls=true"
+      - "traefik.http.routers.${COMMIT_SHA}-front.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.${COMMIT_SHA}-front.tls.domains[0].main=iota.uz"
+      - "traefik.http.routers.${COMMIT_SHA}-front.tls.domains[0].sans=*.ci.iota.uz"
+    volumes:
+      - ~/volumes/elxolding/uploads:/www/media
+    ports:
+      - "80:80"
+    networks:
+      - app
+
+  back:
+    restart: always
+    build:
+      context: ./back
+      target: prod
+    environment:
+      NODE_ENV: staging
+    ports:
+      - "3030:3030"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=app"
+      - "traefik.http.routers.${COMMIT_SHA}-back.rule=Host(`api-elxolding.ci.iota.uz`)"
+      - "traefik.http.routers.${COMMIT_SHA}-back.tls=true"
+      - "traefik.http.routers.${COMMIT_SHA}-back.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.${COMMIT_SHA}-back.tls.domains[0].main=iota.uz"
+      - "traefik.http.routers.${COMMIT_SHA}-back.tls.domains[0].sans=*.ci.iota.uz"
+    volumes:
+      - ~/volumes/elxolding/postgres:/app/uploads
+    depends_on:
+      - db
+    networks:
+      - app
+
+  db:
+    restart: always
+    image: postgres:15.1
+    hostname: elxolding_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: elxolding
+    ports:
+      - "5432:5432"
+    volumes:
+      - ~/volumes/elxolding/postgres:/var/lib/postgresql/data
+    networks:
+      - app
+
+networks:
+  app:
+    external: true

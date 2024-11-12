@@ -1,0 +1,6 @@
+{
+  "host": "api-elxolding.ci.iota.uz",
+  "port": 3030,
+  "images_url": "https://api-elxolding.ci.iota.uz/media/",
+  "postgres": "postgres://postgres:postgres@elxolding_db/elxolding"
+}
