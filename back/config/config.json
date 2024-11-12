@@ -6,7 +6,7 @@
     "password": "postgres",
     "username": "postgres"
   },
-  "gcidp": {
+  "staging": {
     "database": "elxolding",
     "dialect": "postgres",
     "host": "elxolding_db",
