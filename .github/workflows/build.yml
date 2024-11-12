@@ -17,6 +17,7 @@ jobs:
       - name: Build
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          COMMIT_SHA: ${{ github.sha }}
         run: docker compose -f docker-compose.${{ env.DEPLOYMENT_ENV }}.yml up -d --build
 
       - name: Cleanup
