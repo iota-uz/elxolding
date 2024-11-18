@@ -1,4 +1,4 @@
-FROM node:20-alpine as build-stage
+FROM node:20-alpine AS build-stage
 
 WORKDIR /app
 RUN npm install -g pnpm@8.15.2
@@ -6,14 +6,9 @@ COPY package.json pnpm-lock.yaml .npmrc ./
 RUN pnpm i --frozen-lockfile
 COPY . .
 
-FROM build-stage as prod
+FROM build-stage AS prod
 ARG NUXT_PUBLIC_API_URL
 ENV NUXT_PUBLIC_API_URL=$NUXT_PUBLIC_API_URL
 RUN pnpm build
 CMD pnpm start:prod
 
-FROM nginx:1.21.6 as nginx
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY nginx/nginx.conf /etc/nginx/nginx.conf
-COPY --from=node /app/.output/public /usr/share/nginx/html
-CMD ["nginx", "-g", "daemon off;"]
