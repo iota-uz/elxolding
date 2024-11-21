@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/benbjohnson/hashfs"
+	"embed"
 	"github.com/go-faster/errors"
 	"github.com/gorilla/mux"
 	"github.com/iota-agency/iota-erp/elxolding"
@@ -31,7 +31,7 @@ func NewServer(conf *configuration.Configuration) (*server.HttpServer, error) {
 	moduleRegistry := modules.Load()
 	app := registry.ConstructApp(db)
 
-	assetsFs := append([]*hashfs.FS{assets.FS}, moduleRegistry.Assets()...)
+	assetsFs := append([]*embed.FS{&assets.FS}, moduleRegistry.Assets()...)
 	controllerInstances := []shared.Controller{
 		controllers.NewAccountController(app),
 		controllers.NewEmployeeController(app),

@@ -3,7 +3,7 @@ package seed
 import (
 	"context"
 	"fmt"
-	"github.com/iota-agency/iota-sdk/modules/warehouse/domain/entities/position"
+	"github.com/iota-agency/iota-sdk/modules/warehouse/domain/aggregates/position"
 	"github.com/iota-agency/iota-sdk/modules/warehouse/domain/entities/unit"
 	"github.com/iota-agency/iota-sdk/modules/warehouse/persistence"
 	"github.com/iota-agency/iota-sdk/pkg/application"

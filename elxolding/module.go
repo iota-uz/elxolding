@@ -3,7 +3,6 @@ package elxolding
 import (
 	"context"
 	"embed"
-	"github.com/benbjohnson/hashfs"
 	"github.com/iota-agency/iota-erp/internal/assets"
 	"github.com/iota-agency/iota-erp/internal/controllers"
 	"github.com/iota-agency/iota-erp/internal/seed"
@@ -26,6 +25,10 @@ func NewModule() shared.Module {
 type Module struct {
 }
 
+func (m *Module) Templates() *embed.FS {
+	return nil
+}
+
 func (m *Module) Register(app *application.Application) error {
 	dashboardService := services.NewDashboardService(
 		persistence.NewPositionRepository(),
@@ -40,8 +43,8 @@ func (m *Module) MigrationDirs() *embed.FS {
 	return nil
 }
 
-func (m *Module) Assets() *hashfs.FS {
-	return assets.FS
+func (m *Module) Assets() *embed.FS {
+	return &assets.FS
 }
 
 func (m *Module) Seed(ctx context.Context, app *application.Application) error {
