@@ -7,9 +7,9 @@ import (
 	"github.com/iota-agency/iota-sdk/pkg/application"
 	"github.com/iota-agency/iota-sdk/pkg/composables"
 	"github.com/iota-agency/iota-sdk/pkg/domain/aggregates/user"
-	"github.com/iota-agency/iota-sdk/pkg/modules/shared"
-	"github.com/iota-agency/iota-sdk/pkg/modules/shared/middleware"
 	"github.com/iota-agency/iota-sdk/pkg/services"
+	"github.com/iota-agency/iota-sdk/pkg/shared"
+	"github.com/iota-agency/iota-sdk/pkg/shared/middleware"
 	"github.com/iota-agency/iota-sdk/pkg/types"
 	"net/http"
 )

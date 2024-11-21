@@ -8,10 +8,10 @@ import (
 	"github.com/iota-agency/iota-erp/internal/controllers"
 	"github.com/iota-agency/iota-erp/internal/seed"
 	"github.com/iota-agency/iota-erp/internal/services"
+	"github.com/iota-agency/iota-sdk/modules/warehouse/persistence"
 	"github.com/iota-agency/iota-sdk/pkg/application"
-	"github.com/iota-agency/iota-sdk/pkg/modules/shared"
-	"github.com/iota-agency/iota-sdk/pkg/modules/warehouse/persistence"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/templates/icons"
+	"github.com/iota-agency/iota-sdk/pkg/shared"
 	"github.com/iota-agency/iota-sdk/pkg/types"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
