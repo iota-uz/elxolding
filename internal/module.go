@@ -3,7 +3,6 @@ package internal
 import (
 	"context"
 	"embed"
-	"github.com/iota-agency/iota-erp/internal/assets"
 	"github.com/iota-agency/iota-erp/internal/controllers"
 	"github.com/iota-agency/iota-erp/internal/seed"
 	"github.com/iota-agency/iota-erp/internal/services"
@@ -39,14 +38,6 @@ func (m *Module) Register(app application.Application) error {
 	)
 	app.RegisterLocaleFiles(&localeFiles)
 	return nil
-}
-
-func (m *Module) MigrationDirs() *embed.FS {
-	return nil
-}
-
-func (m *Module) Assets() *embed.FS {
-	return &assets.FS
 }
 
 func (m *Module) Seed(ctx context.Context, app application.Application) error {
