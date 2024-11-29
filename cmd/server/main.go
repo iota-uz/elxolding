@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/benbjohnson/hashfs"
-	"github.com/iota-agency/iota-erp/elxolding"
+	"github.com/iota-agency/iota-erp/internal"
 	internalassets "github.com/iota-agency/iota-erp/internal/assets"
 	"github.com/iota-agency/iota-erp/internal/templates/layouts"
 	"github.com/iota-agency/iota-sdk/modules"
@@ -61,7 +61,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to connect to db: %v", err)
 	}
-	loadedModules := modules.Load(elxolding.NewModule())
+	loadedModules := modules.Load(internal.NewModule())
 	app := server.ConstructApp(db)
 	assetsFs := append([]*hashfs.FS{internalassets.HashFS, assets.HashFS}, app.HashFsAssets()...)
 	for _, module := range loadedModules {

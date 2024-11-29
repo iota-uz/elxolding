@@ -2,7 +2,7 @@ package main
 
 import (
 	"embed"
-	"github.com/iota-agency/iota-erp/elxolding"
+	"github.com/iota-agency/iota-erp/internal"
 	"github.com/iota-agency/iota-sdk/components"
 	"github.com/iota-agency/iota-sdk/modules"
 	"github.com/iota-agency/iota-sdk/pkg/application/dbutils"
@@ -34,7 +34,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to connect to db: %v", err)
 	}
-	loadedModules := modules.Load(elxolding.NewModule())
+	loadedModules := modules.Load(internal.NewModule())
 	app := server.ConstructApp(db)
 	for _, module := range loadedModules {
 		if err := module.Register(app); err != nil {

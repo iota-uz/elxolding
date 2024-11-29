@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/iota-agency/iota-erp/elxolding"
+	"github.com/iota-agency/iota-erp/internal"
 	"github.com/iota-agency/iota-sdk/modules"
 	"github.com/iota-agency/iota-sdk/pkg/application"
 	"github.com/iota-agency/iota-sdk/pkg/composables"
@@ -23,7 +23,7 @@ func main() {
 	var seedFuncs []shared.SeedFunc
 	registry := modules.Load()
 	// TODO: proper solution
-	registry.RegisterModules(elxolding.NewModule())
+	registry.RegisterModules(internal.NewModule())
 	for _, module := range registry.Modules() {
 		seedFuncs = append(seedFuncs, module.Seed)
 	}

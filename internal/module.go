@@ -1,4 +1,4 @@
-package elxolding
+package internal
 
 import (
 	"context"
