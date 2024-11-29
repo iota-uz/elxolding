@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/benbjohnson/hashfs"
-	"github.com/go-faster/errors"
 	"github.com/iota-agency/iota-erp/elxolding"
 	internalassets "github.com/iota-agency/iota-erp/internal/assets"
 	"github.com/iota-agency/iota-erp/internal/templates/layouts"
@@ -31,13 +30,6 @@ func ElxoldingServer(options *server.DefaultOptions) (*server.HttpServer, error)
 
 	if err := dbutils.CheckModels(db, server.RegisteredModels); err != nil {
 		return nil, err
-	}
-	for _, module := range options.LoadedModules {
-		if err := module.Register(app); err != nil {
-			return nil, errors.Wrapf(err, "failed to register \"%s\" module", module.Name())
-		} else {
-			log.Printf("\"%s\" module registered", module.Name())
-		}
 	}
 	authService := app.Service(services.AuthService{}).(*services.AuthService)
 	bundle, err := app.Bundle()
@@ -72,8 +64,14 @@ func main() {
 	loadedModules := modules.Load(elxolding.NewModule())
 	app := server.ConstructApp(db)
 	assetsFs := append([]*hashfs.FS{internalassets.HashFS, assets.HashFS}, app.HashFsAssets()...)
+	for _, module := range loadedModules {
+		if err := module.Register(app); err != nil {
+			log.Fatalf("failed to register \"%s\" module: %v", module.Name(), err)
+		} else {
+			log.Printf("\"%s\" module registered", module.Name())
+		}
+	}
 	app.RegisterControllers(
-		controllers.NewEmployeeController(app),
 		controllers.NewGraphQLController(app),
 		controllers.NewLogoutController(app),
 		controllers.NewStaticFilesController(assetsFs),

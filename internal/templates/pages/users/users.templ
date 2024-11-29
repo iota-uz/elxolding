@@ -2,10 +2,10 @@ package users
 
 import (
 	"fmt"
-	"github.com/iota-agency/iota-sdk/pkg/domain/aggregates/user"
 	"github.com/iota-agency/iota-sdk/components/base"
 	"github.com/iota-agency/iota-sdk/components/base/button"
 	"github.com/iota-agency/iota-sdk/components/base/input"
+	"github.com/iota-agency/iota-sdk/pkg/domain/aggregates/user"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/templates/icons"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/templates/layouts"
 	"github.com/iota-agency/iota-sdk/pkg/types"
@@ -20,12 +20,11 @@ type IndexPageProps struct {
 templ UsersTable(props *IndexPageProps) {
 	@base.Table(&base.TableProps{
 		Columns: []*base.TableColumn{
-			{Label: "Users.List.FullName", Key: "fullName"},
-			{Label: "Users.List.LastAction", Key: "lastAction"},
-			{Label: "UpdatedAt", Key: "updatedAt"},
-			{Label: "Actions", Class: "w-16"},
+			{Label: props.T("Users.List.FullName"), Key: "fullName"},
+			{Label: props.T("Users.List.LastAction"), Key: "lastAction"},
+			{Label: props.T("UpdatedAt"), Key: "updatedAt"},
+			{Label: props.T("Actions"), Class: "w-16"},
 		},
-		Localizer: props.Localizer,
 	}) {
 		for _, user := range props.Users {
 			@base.TableRow() {

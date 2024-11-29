@@ -4,6 +4,7 @@ import (
 	"context"
 	"embed"
 	"github.com/iota-agency/iota-erp/internal/assets"
+	"github.com/iota-agency/iota-erp/internal/controllers"
 	"github.com/iota-agency/iota-erp/internal/seed"
 	"github.com/iota-agency/iota-erp/internal/services"
 	"github.com/iota-agency/iota-sdk/modules/warehouse/persistence"
@@ -30,6 +31,9 @@ func (m *Module) Register(app application.Application) error {
 		persistence.NewOrderRepository(),
 	)
 	app.RegisterService(dashboardService)
+	app.RegisterControllers(
+		controllers.NewDashboardController(app),
+	)
 	app.RegisterLocaleFiles(&localeFiles)
 	return nil
 }
