@@ -4,13 +4,11 @@ import (
 	"context"
 	"embed"
 	"github.com/iota-agency/iota-erp/internal/assets"
-	"github.com/iota-agency/iota-erp/internal/controllers"
 	"github.com/iota-agency/iota-erp/internal/seed"
 	"github.com/iota-agency/iota-erp/internal/services"
 	"github.com/iota-agency/iota-sdk/modules/warehouse/persistence"
 	"github.com/iota-agency/iota-sdk/pkg/application"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/templates/icons"
-	"github.com/iota-agency/iota-sdk/pkg/shared"
 	"github.com/iota-agency/iota-sdk/pkg/types"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
@@ -18,24 +16,21 @@ import (
 //go:embed locales/*.json
 var localeFiles embed.FS
 
-func NewModule() shared.Module {
+func NewModule() application.Module {
 	return &Module{}
 }
 
 type Module struct {
 }
 
-func (m *Module) Templates() *embed.FS {
-	return nil
-}
-
-func (m *Module) Register(app *application.Application) error {
+func (m *Module) Register(app application.Application) error {
 	dashboardService := services.NewDashboardService(
 		persistence.NewPositionRepository(),
 		persistence.NewProductRepository(),
 		persistence.NewOrderRepository(),
 	)
 	app.RegisterService(dashboardService)
+	app.RegisterLocaleFiles(&localeFiles)
 	return nil
 }
 
@@ -47,8 +42,8 @@ func (m *Module) Assets() *embed.FS {
 	return &assets.FS
 }
 
-func (m *Module) Seed(ctx context.Context, app *application.Application) error {
-	seedFuncs := []shared.SeedFunc{
+func (m *Module) Seed(ctx context.Context, app application.Application) error {
+	seedFuncs := []application.SeedFunc{
 		seed.SeedUser,
 		seed.SeedPositions,
 		seed.SeedProducts,
@@ -74,17 +69,4 @@ func (m *Module) NavigationItems(localizer *i18n.Localizer) []types.NavigationIt
 			Href:     "/users",
 		},
 	}
-}
-
-func (m *Module) Controllers() []shared.ControllerConstructor {
-	return []shared.ControllerConstructor{
-		controllers.NewUsersController,
-		controllers.NewLoginController,
-		controllers.NewAccountController,
-		controllers.NewDashboardController,
-	}
-}
-
-func (m *Module) LocaleFiles() *embed.FS {
-	return &localeFiles
 }

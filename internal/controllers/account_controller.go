@@ -16,12 +16,12 @@ import (
 )
 
 type AccountController struct {
-	app         *application.Application
+	app         application.Application
 	userService *services.UserService
 	basePath    string
 }
 
-func NewAccountController(app *application.Application) shared.Controller {
+func NewAccountController(app application.Application) application.Controller {
 	return &AccountController{
 		app:         app,
 		userService: app.Service(services.UserService{}).(*services.UserService),

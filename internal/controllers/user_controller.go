@@ -15,13 +15,13 @@ import (
 )
 
 type UsersController struct {
-	app         *application.Application
+	app         application.Application
 	userService *services.UserService
 	roleService *services.RoleService
 	basePath    string
 }
 
-func NewUsersController(app *application.Application) shared.Controller {
+func NewUsersController(app application.Application) application.Controller {
 	return &UsersController{
 		app:         app,
 		userService: app.Service(services.UserService{}).(*services.UserService),

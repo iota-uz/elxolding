@@ -9,7 +9,7 @@ import (
 	"github.com/iota-agency/iota-sdk/pkg/infrastructure/persistence"
 )
 
-func SeedUser(ctx context.Context, app *application.Application) error {
+func SeedUser(ctx context.Context, app application.Application) error {
 	roleRepository := persistence.NewRoleRepository()
 
 	for _, r := range constants.Roles {

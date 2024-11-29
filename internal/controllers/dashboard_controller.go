@@ -4,7 +4,6 @@ import (
 	"github.com/iota-agency/iota-erp/internal/services"
 	"github.com/iota-agency/iota-erp/internal/templates/pages/dashboard"
 	"github.com/iota-agency/iota-sdk/pkg/application"
-	"github.com/iota-agency/iota-sdk/pkg/shared"
 	"github.com/iota-agency/iota-sdk/pkg/shared/middleware"
 	"github.com/iota-agency/iota-sdk/pkg/types"
 	"net/http"
@@ -14,7 +13,7 @@ import (
 	"github.com/iota-agency/iota-sdk/pkg/composables"
 )
 
-func NewDashboardController(app *application.Application) shared.Controller {
+func NewDashboardController(app application.Application) application.Controller {
 	return &DashboardController{
 		app:              app,
 		dashboardService: app.Service(services.DashboardService{}).(*services.DashboardService),
@@ -22,7 +21,7 @@ func NewDashboardController(app *application.Application) shared.Controller {
 }
 
 type DashboardController struct {
-	app              *application.Application
+	app              application.Application
 	dashboardService *services.DashboardService
 }
 

@@ -6,7 +6,6 @@ import (
 	"github.com/iota-agency/iota-erp/internal/viewmodels"
 	"github.com/iota-agency/iota-sdk/pkg/application"
 	"github.com/iota-agency/iota-sdk/pkg/services"
-	"github.com/iota-agency/iota-sdk/pkg/shared"
 	"github.com/iota-agency/iota-sdk/pkg/types"
 	"net/http"
 	"strconv"
@@ -15,7 +14,7 @@ import (
 	"github.com/iota-agency/iota-sdk/pkg/composables"
 )
 
-func NewLoginController(app *application.Application) shared.Controller {
+func NewLoginController(app application.Application) application.Controller {
 	return &LoginController{
 		app:         app,
 		userService: app.Service(services.UserService{}).(*services.UserService),
@@ -24,7 +23,7 @@ func NewLoginController(app *application.Application) shared.Controller {
 }
 
 type LoginController struct {
-	app         *application.Application
+	app         application.Application
 	userService *services.UserService
 	authService *services.AuthService
 }

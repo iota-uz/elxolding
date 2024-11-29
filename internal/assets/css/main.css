@@ -44,11 +44,11 @@
     --transparent: 0 0 0 / 0;
 
     /* Primary */
-    --primary-400: 62.51% 0.172 283.89; /* #8f87ff */
-    --primary-500: 58.73% 0.23 279.66; /* #695EFF */
-    --primary-600: 50% 0.192 279.97; /* #544BCC */
+    --primary-400: 59.87% 0.1389 240.78; /* #8f87ff */
+    --primary-500: 44.79% 0.0972 238.38; /* #075B84 */
+    --primary-600: 34.43% 0.0677 235.17; /* #093e57 */
     --primary-650: 52.52% 0.272 280.57; /* #5C33FF */
-    --primary-700: 45.57% 0.171 280.34; /* #4A42B2 */
+    --primary-700: 44.79% 0.0972 238.38; /* #4A42B2 */
 
     /* Gray */
     --gray-100: 98.03% 0.005 286.3; /* #F8F8FC */
@@ -121,6 +121,7 @@
     --clr-primary-outline-btn-text-hover: var(--primary-500);
     --clr-primary-outline-btn-border: var(--primary-500);
     --clr-primary-outline-btn-border-hover: var(--primary-500);
+    --clr-primary-outline-btn-bg-hover: var(--primary-500) / 5%;
 
     /* Sidebar btn */
     --clr-sidebar-btn-bg: var(--transparent);
@@ -180,7 +181,7 @@
     --ease-elastic-in-out-3: cubic-bezier(.5, -.5, .1, 1.5);
     --ease-squish-2: var(--ease-elastic-in-out-2);
     --ease-squish-3: var(--ease-elastic-in-out-3);
-    
+
     /* Animation */
     --animation-slide-in-up: slide-in-up 500ms var(--ease-3);
     --animation-scale-down: scale-down 500ms var(--ease-3);
@@ -268,6 +269,8 @@
     --opacity: 0.7;
   }
 }
+
+[x-cloak] { display: none !important; }
 
 @layer components {
   .form-control {
@@ -400,6 +403,7 @@
     --border-color: var(--clr-primary-outline-btn-border);
     --text-hover: var(--clr-primary-outline-btn-text-hover);
     --border-hover: var(--clr-primary-outline-btn-border-hover);
+    --bg-hover: var(--clr-primary-outline-btn-bg-hover);
   }
 
   .btn-sidebar {
@@ -421,6 +425,11 @@
   .btn-sm {
     --size-x: 0.75rem;
     --size-y: calc(0.75rem - 3.5px);
+  }
+
+  .btn-xs {
+    --size-x: 0.25rem;
+    --size-y: 0.1rem;
   }
 
   .btn-fixed {
@@ -493,7 +502,7 @@
     animation-delay: 1s;
   }
 
-  .btn-loading .btn-loading-indicator, 
+  .btn-loading .btn-loading-indicator,
   .htmx-request .btn-loading-indicator,
   .htmx-request.btn-loading-indicator {
     --display: block;

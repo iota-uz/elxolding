@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func SeedProducts(ctx context.Context, app *application.Application) error {
+func SeedProducts(ctx context.Context, app application.Application) error {
 	positionRepository := persistence.NewPositionRepository()
 	productRepository := persistence.NewProductRepository()
 

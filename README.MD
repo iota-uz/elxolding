@@ -70,7 +70,7 @@ templ generate -watch
 Run tailwindcss in watch mode
 
 ```shell
-tailwindcss -c tailwind.config.js -i internal/presentation/assets/css/main.css -o internal/presentation/assets/css/main.min.css --minify --watch
+tailwindcss -c tailwind.config.js -i internal/assets/css/main.css -o internal/assets/css/main.min.css --minify --watch
 ```
 
 Now open postman and explore the GraphQL schema at http://localhost:3200/query
@@ -114,13 +114,13 @@ go generate ./...
 Running migrations
 
 ```shell
-sql-migrate up
+go run cmd/migrate/main.go up
 ```
 
 Rolling back migrations
 
 ```shell
-sql-migrate down
+go run cmd/migrate/main.go down
 ```
 
 Redoing migrations (useful for development)
