@@ -9,18 +9,19 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/iota-agency/iota-erp/internal/viewmodels"
+	"github.com/iota-agency/iota-sdk/components"
 	"github.com/iota-agency/iota-sdk/components/base"
 	"github.com/iota-agency/iota-sdk/components/base/button"
 	"github.com/iota-agency/iota-sdk/components/base/input"
 	usercomponents "github.com/iota-agency/iota-sdk/components/user"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/templates/layouts"
+	sdkviewmodels "github.com/iota-agency/iota-sdk/pkg/presentation/viewmodels"
 	"github.com/iota-agency/iota-sdk/pkg/types"
 )
 
 type ProfilePageProps struct {
 	*types.PageContext
-	UserData *viewmodels.User
+	User     *sdkviewmodels.User
 	Errors   map[string]string
 	PostPath string
 }
@@ -53,7 +54,7 @@ func ProfileForm(props *ProfilePageProps) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(props.PostPath)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/account/index.templ`, Line: 23, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/account/index.templ`, Line: 24, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -64,9 +65,9 @@ func ProfileForm(props *ProfilePageProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
-		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(props.UserData.FirstName)
+		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(props.User.FirstName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/account/index.templ`, Line: 27, Col: 29}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/account/index.templ`, Line: 28, Col: 25}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -77,9 +78,9 @@ func ProfileForm(props *ProfilePageProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var4 string
-		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(props.UserData.LastName)
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(props.User.LastName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/account/index.templ`, Line: 27, Col: 57}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/account/index.templ`, Line: 28, Col: 49}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -101,13 +102,11 @@ func ProfileForm(props *ProfilePageProps) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = input.Text(&input.Props{
-				Placeholder: props.T("Account.FirstName"),
-				Attrs: templ.Attributes{
-					"name":  "FirstName",
-					"value": props.UserData.FirstName,
-				},
-				Error: props.Errors["FirstName"],
+			templ_7745c5c3_Err = components.UploadInput(&components.UploadInputProps{
+				Label:   props.T("Account.BrowseFilesystem"),
+				Name:    "AvatarID",
+				Class:   "col-span-3",
+				Uploads: []*sdkviewmodels.Upload{props.User.Avatar},
 			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -117,12 +116,12 @@ func ProfileForm(props *ProfilePageProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			templ_7745c5c3_Err = input.Text(&input.Props{
-				Placeholder: props.T("Account.LastName"),
+				Placeholder: props.T("Account.FirstName"),
 				Attrs: templ.Attributes{
-					"name":  "LastName",
-					"value": props.UserData.LastName,
+					"name":  "FirstName",
+					"value": props.User.FirstName,
 				},
-				Error: props.Errors["LastName"],
+				Error: props.Errors["FirstName"],
 			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -132,12 +131,12 @@ func ProfileForm(props *ProfilePageProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			templ_7745c5c3_Err = input.Text(&input.Props{
-				Placeholder: props.T("Account.MiddleName"),
+				Placeholder: props.T("Account.LastName"),
 				Attrs: templ.Attributes{
-					"name":  "MiddleName",
-					"value": props.UserData.MiddleName,
+					"name":  "LastName",
+					"value": props.User.LastName,
 				},
-				Error: props.Errors["MiddleName"],
+				Error: props.Errors["LastName"],
 			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -146,10 +145,25 @@ func ProfileForm(props *ProfilePageProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
+			templ_7745c5c3_Err = input.Text(&input.Props{
+				Placeholder: props.T("Account.MiddleName"),
+				Attrs: templ.Attributes{
+					"name":  "MiddleName",
+					"value": props.User.MiddleName,
+				},
+				Error: props.Errors["MiddleName"],
+			}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 8)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 			templ_7745c5c3_Err = usercomponents.LanguageSelect(&usercomponents.LanguageSelectProps{
 				Label:       props.T("Users.Single.Language"),
 				Placeholder: props.T("Users.Single.SelectLanguage"),
-				Value:       string(props.UserData.UILanguage),
+				Value:       string(props.User.UILanguage),
 				Attrs:       templ.Attributes{"name": "UILanguage"},
 				Error:       props.Errors["UILanguage"],
 			}).Render(ctx, templ_7745c5c3_Buffer)
@@ -162,7 +176,7 @@ func ProfileForm(props *ProfilePageProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 8)
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 9)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -181,7 +195,7 @@ func ProfileForm(props *ProfilePageProps) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(props.T("Account.Save"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/account/index.templ`, Line: 70, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/templates/pages/account/index.templ`, Line: 77, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -199,7 +213,7 @@ func ProfileForm(props *ProfilePageProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 9)
+		templ_7745c5c3_Err = templ.WriteWatchModeString(templ_7745c5c3_Buffer, 10)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

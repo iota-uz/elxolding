@@ -2,10 +2,10 @@ package controllers
 
 import (
 	"github.com/a-h/templ"
-	"github.com/iota-agency/iota-erp/internal/mappers"
 	"github.com/iota-agency/iota-erp/internal/templates/pages/account"
 	"github.com/iota-agency/iota-sdk/pkg/application"
 	"github.com/iota-agency/iota-sdk/pkg/composables"
+	"github.com/iota-agency/iota-sdk/pkg/presentation/mappers"
 	"github.com/iota-agency/iota-sdk/pkg/services"
 	"github.com/iota-agency/iota-sdk/pkg/shared"
 	"github.com/iota-agency/iota-sdk/pkg/shared/middleware"
@@ -55,7 +55,7 @@ func (c *AccountController) defaultProps(r *http.Request, errors map[string]stri
 	props := &account.ProfilePageProps{
 		PageContext: pageCtx,
 		PostPath:    c.basePath,
-		UserData:    mappers.UserToViewModel(u),
+		User:        mappers.UserToViewModel(u),
 		Errors:      nonNilErrors,
 	}
 	return props, nil
@@ -116,7 +116,7 @@ func (c *AccountController) Post(w http.ResponseWriter, r *http.Request) {
 	}
 	templ.Handler(account.ProfileForm(&account.ProfilePageProps{
 		PageContext: props.PageContext,
-		UserData:    mappers.UserToViewModel(entity),
+		User:        mappers.UserToViewModel(entity),
 		Errors:      map[string]string{},
 	})).ServeHTTP(w, r)
 }
