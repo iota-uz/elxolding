@@ -33,6 +33,9 @@ func (m *Module) Register(app application.Application) error {
 	app.RegisterService(dashboardService)
 	app.RegisterControllers(
 		controllers.NewDashboardController(app),
+		controllers.NewAccountController(app),
+		controllers.NewLoginController(app),
+		controllers.NewUsersController(app),
 	)
 	app.RegisterLocaleFiles(&localeFiles)
 	return nil
