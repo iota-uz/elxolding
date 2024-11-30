@@ -1,23 +1,24 @@
-name: Build and Deploy
+name: Deployment
 
 on:
   push:
-    branches: [ main, staging ]
+    branches: [ staging ]
 
 env:
-  DEPLOYMENT_ENV: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
+  DEPLOYMENT_ENV: staging
 
 jobs:
-  build:
-    runs-on: ${{ github.ref == 'refs/heads/main' && 'self-hosted' || 'gcidp' }}
+  deploy:
+    runs-on: gcidp
+    environment: staging
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Build
+      - name: Build and Deploy
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-        run: docker compose -f docker-compose.${{ env.DEPLOYMENT_ENV }}.yml up -d --build
-
-      - name: Cleanup
-        run: docker system prune -f
+          DEPLOYMENT_ENV: staging
+          BRANCH_NAME: ${{ github.ref_name }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: docker compose -f docker-compose.staging.yml up -d --build
