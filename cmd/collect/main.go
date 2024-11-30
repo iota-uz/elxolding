@@ -2,7 +2,7 @@ package main
 
 import (
 	"embed"
-	"github.com/iota-agency/iota-erp/internal"
+	"github.com/iota-agency/elxolding-erp/internal"
 	"github.com/iota-agency/iota-sdk/components"
 	"github.com/iota-agency/iota-sdk/modules"
 	"github.com/iota-agency/iota-sdk/pkg/application/dbutils"

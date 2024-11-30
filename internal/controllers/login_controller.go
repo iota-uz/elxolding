@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"github.com/iota-agency/iota-erp/internal/templates/pages/login"
+	"github.com/iota-agency/elxolding-erp/internal/templates/pages/login"
 	"github.com/iota-agency/iota-sdk/pkg/application"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/mappers"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/viewmodels"

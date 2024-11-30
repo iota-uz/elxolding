@@ -9,7 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/iota-agency/iota-erp/internal/assets"
+	"github.com/iota-agency/elxolding-erp/internal/assets"
 	"github.com/iota-agency/iota-sdk/pkg/types"
 )
 

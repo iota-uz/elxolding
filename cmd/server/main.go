@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/benbjohnson/hashfs"
-	"github.com/iota-agency/iota-erp/internal"
-	internalassets "github.com/iota-agency/iota-erp/internal/assets"
-	"github.com/iota-agency/iota-erp/internal/templates/layouts"
+	"github.com/iota-agency/elxolding-erp/internal"
+	internalassets "github.com/iota-agency/elxolding-erp/internal/assets"
+	"github.com/iota-agency/elxolding-erp/internal/templates/layouts"
 	"github.com/iota-agency/iota-sdk/modules"
 	"github.com/iota-agency/iota-sdk/pkg/application/dbutils"
 	"github.com/iota-agency/iota-sdk/pkg/configuration"

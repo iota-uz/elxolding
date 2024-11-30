@@ -3,9 +3,9 @@ package internal
 import (
 	"context"
 	"embed"
-	"github.com/iota-agency/iota-erp/internal/controllers"
-	"github.com/iota-agency/iota-erp/internal/seed"
-	"github.com/iota-agency/iota-erp/internal/services"
+	"github.com/iota-agency/elxolding-erp/internal/controllers"
+	"github.com/iota-agency/elxolding-erp/internal/seed"
+	"github.com/iota-agency/elxolding-erp/internal/services"
 	"github.com/iota-agency/iota-sdk/modules/warehouse/persistence"
 	"github.com/iota-agency/iota-sdk/pkg/application"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/templates/icons"

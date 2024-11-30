@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"github.com/a-h/templ"
-	"github.com/iota-agency/iota-erp/internal/templates/pages/account"
+	"github.com/iota-agency/elxolding-erp/internal/templates/pages/account"
 	"github.com/iota-agency/iota-sdk/pkg/application"
 	"github.com/iota-agency/iota-sdk/pkg/composables"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/mappers"

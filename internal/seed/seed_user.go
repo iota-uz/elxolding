@@ -2,7 +2,7 @@ package seed
 
 import (
 	"context"
-	"github.com/iota-agency/iota-erp/internal/constants"
+	"github.com/iota-agency/elxolding-erp/internal/constants"
 	"github.com/iota-agency/iota-sdk/pkg/application"
 	"github.com/iota-agency/iota-sdk/pkg/domain/aggregates/role"
 	"github.com/iota-agency/iota-sdk/pkg/domain/aggregates/user"

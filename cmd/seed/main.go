@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/iota-agency/iota-erp/internal"
+	"github.com/iota-agency/elxolding-erp/internal"
 	"github.com/iota-agency/iota-sdk/modules"
 	"github.com/iota-agency/iota-sdk/pkg/application"
 	"github.com/iota-agency/iota-sdk/pkg/composables"

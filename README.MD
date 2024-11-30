@@ -32,7 +32,7 @@ git clone https://github.com/iota-agency/iota-erp.git
 Install dependencies
 
 ```shell
-go get -u -d ./...
+go get -u ./...
 ```
 
 Install tailwindcss globally
