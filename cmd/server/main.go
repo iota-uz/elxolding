@@ -28,9 +28,6 @@ func ElxoldingServer(options *server.DefaultOptions) (*server.HttpServer, error)
 	db := options.Db
 	app := options.Application
 
-	if err := dbutils.CheckModels(db, server.RegisteredModels); err != nil {
-		return nil, err
-	}
 	authService := app.Service(services.AuthService{}).(*services.AuthService)
 	bundle, err := app.Bundle()
 	if err != nil {

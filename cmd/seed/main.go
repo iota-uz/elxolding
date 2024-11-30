@@ -7,8 +7,7 @@ import (
 	"github.com/iota-agency/iota-sdk/pkg/application"
 	"github.com/iota-agency/iota-sdk/pkg/composables"
 	"github.com/iota-agency/iota-sdk/pkg/configuration"
-	"github.com/iota-agency/iota-sdk/pkg/event"
-	"github.com/iota-agency/iota-sdk/pkg/shared"
+	"github.com/iota-agency/iota-sdk/pkg/server"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -20,15 +19,16 @@ func main() {
 		panic(err)
 	}
 
-	var seedFuncs []shared.SeedFunc
-	registry := modules.Load()
-	// TODO: proper solution
-	registry.RegisterModules(internal.NewModule())
-	for _, module := range registry.Modules() {
+	var seedFuncs []application.SeedFunc
+
+	loadedModules := modules.Load(internal.NewModule())
+	app := server.ConstructApp(db)
+	for _, module := range loadedModules {
+		if err := module.Register(app); err != nil {
+			panic(err)
+		}
 		seedFuncs = append(seedFuncs, module.Seed)
 	}
-
-	app := application.New(db, event.NewEventPublisher())
 	if err := db.Transaction(func(tx *gorm.DB) error {
 		ctx := composables.WithTx(context.Background(), tx)
 		for _, seedFunc := range seedFuncs {

@@ -27,5 +27,6 @@ go.work.sum
 .env
 tmp/
 
+postgres-data/
 static/
 
