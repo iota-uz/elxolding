@@ -168,4 +168,5 @@ templ fmt .
 ## Stage for testing
 
 [URL](https://elxolding-erp.ci.iota.uz/warehouse/products)
+
 Password: TestPass123!
