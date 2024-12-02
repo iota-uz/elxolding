@@ -17,6 +17,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 RUN templ generate && go vet ./...
+RUN go run cmd/collect/main.go
 RUN tailwindcss -c tailwind.config.js -i internal/assets/css/main.css -o internal/assets/css/main.min.css --minify
 
 FROM install-stage AS production
