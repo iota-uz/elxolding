@@ -5,14 +5,12 @@ import (
 	"github.com/iota-agency/elxolding-erp/internal"
 	"github.com/iota-agency/iota-sdk/components"
 	"github.com/iota-agency/iota-sdk/modules"
-	"github.com/iota-agency/iota-sdk/pkg/application/dbutils"
 	"github.com/iota-agency/iota-sdk/pkg/commands"
-	"github.com/iota-agency/iota-sdk/pkg/configuration"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/assets"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/templates"
 	"github.com/iota-agency/iota-sdk/pkg/server"
 	"github.com/iota-agency/iota-sdk/pkg/utils/random"
-	"gorm.io/gorm/logger"
+	"gorm.io/gorm"
 	"log"
 	"os"
 	"path/filepath"
@@ -29,13 +27,8 @@ func main() {
 		panic(err)
 	}
 
-	conf := configuration.Use()
-	db, err := dbutils.ConnectDB(conf.DBOpts, logger.Error)
-	if err != nil {
-		log.Fatalf("failed to connect to db: %v", err)
-	}
 	loadedModules := modules.Load(internal.NewModule())
-	app := server.ConstructApp(db)
+	app := server.ConstructApp(&gorm.DB{})
 	for _, module := range loadedModules {
 		if err := module.Register(app); err != nil {
 			log.Fatalf("failed to register \"%s\" module: %v", module.Name(), err)
