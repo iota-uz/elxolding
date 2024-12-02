@@ -169,4 +169,6 @@ templ fmt .
 
 [URL](https://elxolding-erp.ci.iota.uz/warehouse/products)
 
+```
 Password: TestPass123!
+```
