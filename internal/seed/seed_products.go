@@ -18,7 +18,7 @@ func SeedProducts(ctx context.Context, app application.Application) error {
 		return err
 	}
 
-	for i := range 20000 {
+	for i := 1; i <= 20000; i++ {
 		if err := productRepository.CreateOrUpdate(ctx, &product.Product{
 			ID:         uint(i),
 			PositionID: positions[i%len(positions)].ID,

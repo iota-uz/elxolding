@@ -22,7 +22,7 @@ func SeedPositions(ctx context.Context, app application.Application) error {
 		return err
 	}
 
-	for i := range 20000 {
+	for i := 1; i <= 20_000; i++ {
 		if err := positionRepository.CreateOrUpdate(ctx, &position.Position{
 			ID:        uint(i),
 			Title:     fmt.Sprintf("Position %d", i),
