@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/iota-agency/elxolding-erp/internal"
 	"github.com/iota-agency/iota-sdk/modules"
-	"github.com/iota-agency/iota-sdk/pkg/application"
 	"github.com/iota-agency/iota-sdk/pkg/composables"
 	"github.com/iota-agency/iota-sdk/pkg/configuration"
 	"github.com/iota-agency/iota-sdk/pkg/server"
@@ -19,22 +18,14 @@ func main() {
 		panic(err)
 	}
 
-	var seedFuncs []application.SeedFunc
-
-	loadedModules := modules.Load(internal.NewModule())
 	app := server.ConstructApp(db)
-	for _, module := range loadedModules {
-		if err := module.Register(app); err != nil {
-			panic(err)
-		}
-		seedFuncs = append(seedFuncs, module.Seed)
+	if err := modules.Load(app, internal.Modules...); err != nil {
+		panic(err)
 	}
 	if err := db.Transaction(func(tx *gorm.DB) error {
 		ctx := composables.WithTx(context.Background(), tx)
-		for _, seedFunc := range seedFuncs {
-			if err := seedFunc(ctx, app); err != nil {
-				return err
-			}
+		if err := app.Seed(ctx); err != nil {
+			return err
 		}
 		return nil
 	}); err != nil {

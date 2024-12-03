@@ -2,7 +2,6 @@ package internal
 
 import (
 	"context"
-	"embed"
 	"github.com/iota-agency/elxolding-erp/internal/controllers"
 	"github.com/iota-agency/elxolding-erp/internal/seed"
 	"github.com/iota-agency/elxolding-erp/internal/services"
@@ -12,9 +11,6 @@ import (
 	"github.com/iota-agency/iota-sdk/pkg/types"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
-
-//go:embed locales/*.json
-var localeFiles embed.FS
 
 func NewModule() application.Module {
 	return &Module{}
@@ -37,6 +33,7 @@ func (m *Module) Register(app application.Application) error {
 		controllers.NewUsersController(app),
 	)
 	app.RegisterLocaleFiles(&localeFiles)
+	app.RegisterModule(m)
 	return nil
 }
 
@@ -60,6 +57,12 @@ func (m *Module) Name() string {
 
 func (m *Module) NavigationItems(localizer *i18n.Localizer) []types.NavigationItem {
 	return []types.NavigationItem{
+		{
+			Name:     localizer.MustLocalize(&i18n.LocalizeConfig{MessageID: "NavigationLinks.Dashboard"}),
+			Children: nil,
+			Icon:     icons.CirclesThreePlus(icons.Props{Size: "20"}),
+			Href:     "/",
+		},
 		{
 			Name:     localizer.MustLocalize(&i18n.LocalizeConfig{MessageID: "NavigationLinks.Users"}),
 			Children: nil,

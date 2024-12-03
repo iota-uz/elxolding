@@ -60,16 +60,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to connect to db: %v", err)
 	}
-	loadedModules := modules.Load(internal.NewModule())
+
 	app := server.ConstructApp(db)
-	assetsFs := append([]*hashfs.FS{internalassets.HashFS, assets.HashFS}, app.HashFsAssets()...)
-	for _, module := range loadedModules {
-		if err := module.Register(app); err != nil {
-			log.Fatalf("failed to register \"%s\" module: %v", module.Name(), err)
-		} else {
-			log.Printf("\"%s\" module registered", module.Name())
-		}
+	if err := modules.Load(app, internal.Modules...); err != nil {
+		panic(err)
 	}
+	assetsFs := append([]*hashfs.FS{internalassets.HashFS, assets.HashFS}, app.HashFsAssets()...)
 	app.RegisterControllers(
 		controllers.NewGraphQLController(app),
 		controllers.NewLogoutController(app),
@@ -80,7 +76,6 @@ func main() {
 		Configuration: conf,
 		Db:            db,
 		Application:   app,
-		LoadedModules: loadedModules,
 	}
 	serverInstance, err := ElxoldingServer(options)
 	if err != nil {

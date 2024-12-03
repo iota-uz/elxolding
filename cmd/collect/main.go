@@ -27,14 +27,9 @@ func main() {
 		panic(err)
 	}
 
-	loadedModules := modules.Load(internal.NewModule())
 	app := server.ConstructApp(&gorm.DB{})
-	for _, module := range loadedModules {
-		if err := module.Register(app); err != nil {
-			log.Fatalf("failed to register \"%s\" module: %v", module.Name(), err)
-		} else {
-			log.Printf("\"%s\" module registered", module.Name())
-		}
+	if err := modules.Load(app, internal.Modules...); err != nil {
+		log.Fatalf("failed to load modules: %v", err)
 	}
 	collected := []item{
 		{

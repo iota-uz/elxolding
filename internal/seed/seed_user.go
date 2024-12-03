@@ -8,8 +8,20 @@ import (
 	"github.com/iota-agency/iota-sdk/pkg/domain/aggregates/user"
 	"github.com/iota-agency/iota-sdk/pkg/domain/entities/tab"
 	"github.com/iota-agency/iota-sdk/pkg/infrastructure/persistence"
+	"github.com/iota-agency/iota-sdk/pkg/types"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
+
+func navItems2Tabs(navItems []types.NavigationItem) []*tab.Tab {
+	tabs := make([]*tab.Tab, len(navItems))
+	for i, navItem := range navItems {
+		tabs[i] = &tab.Tab{
+			Href: navItem.Href,
+		}
+		tabs = append(tabs, navItems2Tabs(navItem.Children)...)
+	}
+	return tabs
+}
 
 func SeedUser(ctx context.Context, app application.Application) error {
 	userRepository := persistence.NewUserRepository()
@@ -44,13 +56,12 @@ func SeedUser(ctx context.Context, app application.Application) error {
 		return err
 	}
 	localizer := i18n.NewLocalizer(bundle, "ru")
-	for i, navItem := range app.NavigationItems(localizer) {
-		if err := tabsRepository.CreateOrUpdate(ctx, &tab.Tab{
-			ID:       uint(i),
-			Href:     navItem.Href,
-			UserID:   usr.ID,
-			Position: uint(i),
-		}); err != nil {
+	tabs := navItems2Tabs(app.NavigationItems(localizer))
+	for i, t := range tabs {
+		t.ID = uint(i + 1)
+		t.UserID = usr.ID
+		t.Position = uint(i + 1)
+		if err := tabsRepository.CreateOrUpdate(ctx, t); err != nil {
 			return err
 		}
 	}

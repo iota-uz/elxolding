@@ -5,6 +5,7 @@ import (
 	"github.com/iota-agency/elxolding-erp/internal/domain/entities/dashboard"
 	"github.com/iota-agency/iota-sdk/modules/warehouse/domain/aggregates/position"
 	"github.com/iota-agency/iota-sdk/modules/warehouse/domain/aggregates/product"
+	"github.com/iota-agency/iota-sdk/pkg/composables"
 	"github.com/iota-agency/iota-sdk/pkg/domain/aggregates/order"
 	"sync"
 )
@@ -31,13 +32,17 @@ func (s *DashboardService) GetStats(ctx context.Context) (*dashboard.Stats, erro
 	var wg sync.WaitGroup
 	var mu sync.Mutex
 	var positionsCount, productsCount, ordersCount int64
+	db, e := composables.UseDB(ctx)
+	if e != nil {
+		return nil, e
+	}
 	var err error
 
 	wg.Add(3)
 
 	go func() {
 		defer wg.Done()
-		count, e := s.positionRepo.Count(ctx)
+		count, e := s.positionRepo.Count(composables.WithTx(ctx, db))
 		mu.Lock()
 		defer mu.Unlock()
 		if e != nil {
@@ -49,7 +54,7 @@ func (s *DashboardService) GetStats(ctx context.Context) (*dashboard.Stats, erro
 
 	go func() {
 		defer wg.Done()
-		count, e := s.productRepo.Count(ctx)
+		count, e := s.productRepo.Count(composables.WithTx(ctx, db))
 		mu.Lock()
 		defer mu.Unlock()
 		if e != nil {
@@ -61,7 +66,7 @@ func (s *DashboardService) GetStats(ctx context.Context) (*dashboard.Stats, erro
 
 	go func() {
 		defer wg.Done()
-		count, e := s.orderRepo.Count(ctx)
+		count, e := s.orderRepo.Count(composables.WithTx(ctx, db))
 		mu.Lock()
 		defer mu.Unlock()
 		if e != nil {

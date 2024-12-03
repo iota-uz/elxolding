@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/iota-agency/elxolding-erp/internal"
 	"os"
 
 	"github.com/iota-agency/iota-sdk/modules"
@@ -21,11 +22,8 @@ func main() {
 		panic(err)
 	}
 	app := server.ConstructApp(db)
-	loadedModules := modules.Load()
-	for _, module := range loadedModules {
-		if err := module.Register(app); err != nil {
-			panic(err)
-		}
+	if err := modules.Load(app, internal.Modules...); err != nil {
+		panic(err)
 	}
 	switch migration {
 	case "up":
