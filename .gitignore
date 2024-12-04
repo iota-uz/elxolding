@@ -32,3 +32,4 @@ static/
 
 *_templ.go
 *_templ.txt
+internal/assets/css/main.min.css
