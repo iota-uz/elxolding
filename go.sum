@@ -94,6 +94,10 @@ github.com/googleapis/gax-go/v2 v2.14.0 h1:f+jMrjBPl+DL9nI4IQzLUxMq7XrAqFYB7hBPq
 github.com/googleapis/gax-go/v2 v2.14.0/go.mod h1:lhBCnjdLrWRaPvLWhmc8IS24m9mr07qSYnHncrgo+zk=
 github.com/gorilla/mux v1.8.1 h1:TuBL49tXwgrFYWhqrNgrUNEY92u81SPhu7sTdzQEiWY=
 github.com/gorilla/mux v1.8.1/go.mod h1:AKf9I4AEqPTmMytcMc0KkNouC66V3BtZ4qD5fmWSiMQ=
+github.com/iota-agency/iota-sdk v0.0.0-20241204110600-555bb60be48d h1:EMdERJuPD+yAI1XURFahbE8yS4LkHunfCYptsJtFpWw=
+github.com/iota-agency/iota-sdk v0.0.0-20241204110600-555bb60be48d/go.mod h1:tEEPCvuR1kwOwWb0QA/P1amRCGzo6sXB0WsmnRYc5b0=
+github.com/iota-agency/iota-sdk v0.0.0-20241204110926-ed3853229fb5 h1:r35k1fu/wRSAzBpVx5Zgs+PyDYqbjm6LIPcbbwKEizM=
+github.com/iota-agency/iota-sdk v0.0.0-20241204110926-ed3853229fb5/go.mod h1:tEEPCvuR1kwOwWb0QA/P1amRCGzo6sXB0WsmnRYc5b0=
 github.com/iota-agency/iota-sdk v0.1.0 h1:ysahjacXaUjk0irO2vIbGSziMD8nvcrJW/t7NS0Pgio=
 github.com/iota-agency/iota-sdk v0.1.0/go.mod h1:tEEPCvuR1kwOwWb0QA/P1amRCGzo6sXB0WsmnRYc5b0=
 github.com/iota-agency/iota-sdk v0.1.1 h1:7uhwQcU21mrBqb2v5YURQQnjXhO03hCZKCxk5TSidyI=

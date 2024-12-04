@@ -1,6 +1,8 @@
 package main
 
-import "github.com/iota-agency/iota-sdk/pkg/commands"
+import (
+	"github.com/iota-agency/iota-sdk/pkg/commands"
+)
 
 func main() {
 	err := commands.Migrate()
