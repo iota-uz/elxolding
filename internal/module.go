@@ -39,9 +39,9 @@ func (m *Module) Register(app application.Application) error {
 
 func (m *Module) Seed(ctx context.Context, app application.Application) error {
 	seedFuncs := []application.SeedFunc{
-		seed.SeedUser,
-		seed.SeedPositions,
-		seed.SeedProducts,
+		seed.CreateUser,
+		seed.CreatePositions,
+		seed.CreateProducts,
 	}
 	for _, seedFunc := range seedFuncs {
 		if err := seedFunc(ctx, app); err != nil {

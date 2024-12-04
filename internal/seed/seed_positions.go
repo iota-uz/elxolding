@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func SeedPositions(ctx context.Context, app application.Application) error {
+func CreatePositions(ctx context.Context, app application.Application) error {
 	unitRepository := persistence.NewUnitRepository()
 	positionRepository := persistence.NewPositionRepository()
 

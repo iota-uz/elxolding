@@ -1,6 +1,6 @@
 ## About
 
-IOTA ERP - is a set of building blocks for ERP development, which will later turn into a complete SDK
+ELXOLDING ERP - ERP system for tracking inventory using RFID technology.
 
 ## Overview
 

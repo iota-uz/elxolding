@@ -23,7 +23,7 @@ func navItems2Tabs(navItems []types.NavigationItem) []*tab.Tab {
 	return tabs
 }
 
-func SeedUser(ctx context.Context, app application.Application) error {
+func CreateUser(ctx context.Context, app application.Application) error {
 	userRepository := persistence.NewUserRepository()
 	roleRepository := persistence.NewRoleRepository()
 	tabsRepository := persistence.NewTabRepository()
