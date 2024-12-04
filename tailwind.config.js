@@ -1,9 +1,14 @@
+import path from "path";
+import {execSync} from "child_process";
+const goPath = execSync("go env GOPATH").toString().trim();
+const sdkPath = path.join(goPath, "/pkg/mod/github.com/iota-agency/**/*.{html,js,templ}")
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-      "./internal/assets/**/*.{html,js,css}",
-      "./internal/templates/**/*.{html,js,templ}",
-      "./static/**/*.{html,js,templ}",
+    "./internal/assets/**/*.{html,js,css}",
+    "./internal/templates/**/*.{html,js,templ}",
+    "./static/**/*.{html,js,templ}",
+    sdkPath
   ],
   theme: {
     extend: {
