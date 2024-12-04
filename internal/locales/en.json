@@ -3,7 +3,14 @@
     "Meta": {
       "Title": "Dashboard"
     },
-    "Welcome": "Welcome to the dashboard"
+    "Welcome": "Welcome to the dashboard",
+    "Stats": {
+      "Title": "Statistics",
+      "PositionsCount": "Total positions",
+      "ProductsCount": "Total products",
+      "Depth": "Warehouse depth",
+      "Orders": "Orders"
+    }
   },
   "Login": {
     "User": "User",

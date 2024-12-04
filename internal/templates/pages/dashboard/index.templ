@@ -1,7 +1,11 @@
 package dashboard
 
 import (
+	"context"
 	"github.com/iota-agency/iota-sdk/components/base"
+	"github.com/iota-agency/iota-sdk/pkg/composables"
+	"github.com/iota-agency/iota-sdk/pkg/presentation/mappers"
+	"github.com/iota-agency/iota-sdk/pkg/presentation/templates/icons"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/templates/layouts"
 	"github.com/iota-agency/iota-sdk/pkg/types"
 )
@@ -14,46 +18,115 @@ type IndexPageProps struct {
 	OrdersCount    string
 }
 
+func initials(ctx context.Context) string {
+	u, err := composables.UseUser(ctx)
+	if err != nil {
+		return ""
+	}
+	return mappers.UserToViewModel(u).Initials()
+}
+
 templ avatar(pageCtx *types.PageContext) {
-	<summary class="w-9 h-9 rounded-full font-medium flex items-center justify-center cursor-pointer bg-avatar text-avatar">
-		FA
+	<summary class="w-16 h-16 rounded-full font-medium flex items-center justify-center cursor-pointer bg-avatar text-avatar text-2xl">
+		{ initials(ctx) }
 	</summary>
 }
 
+templ iconLink(href string) {
+	<a
+		href={ templ.URL(href) }
+		class="flex items-center gap-2 rounded-md px-5 py-10 bg-slate-100/80 dark:bg-slate-700 hover:bg-slate-200/80 dark:hover:bg-slate-600 transition-colors duration-200 ease-in-out"
+	>
+		{ children... }
+	</a>
+}
+
 templ Stats(props *IndexPageProps) {
-	@base.Card("grid grid-cols-3 gap-4 m-6") {
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-			<div>
-				{ props.PositionsCount }
-			</div>
-			<div>
-				{ props.ProductsCount }
-			</div>
-			<div>
-				{ props.Depth }
-			</div>
-			<div>
-				{ props.OrdersCount }
-			</div>
+	@base.Card("m-6") {
+		<p class="text-2xl font-semibold col-span-2">
+			{ props.T("Dashboard.Stats.Title") }
+		</p>
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+			@iconLink("/warehouse/positions") {
+				<div>
+					<div class="bg-brand-200/20 p-3 rounded-full">
+						@icons.Notepad(icons.Props{Size: "20", Class: "text-brand-500", Filled: true})
+					</div>
+				</div>
+				<div>
+					<p>
+						{ props.T("Dashboard.Stats.PositionsCount") }
+					</p>
+					<p>
+						{ props.PositionsCount }
+					</p>
+				</div>
+			}
+			@iconLink("/warehouse/products") {
+				<div>
+					<div class="bg-green-200/20 p-3 rounded-full">
+						@icons.Package(icons.Props{Size: "20", Class: "text-green-500", Filled: true})
+					</div>
+				</div>
+				<div>
+					<p>
+						{ props.T("Dashboard.Stats.ProductsCount") }
+					</p>
+					<p>
+						{ props.ProductsCount }
+					</p>
+				</div>
+			}
+			@iconLink("#") {
+				<div>
+					<div class="bg-orange-200/20 p-3 rounded-full">
+						@icons.DotsSix(icons.Props{Size: "20", Class: "text-orange-500"})
+					</div>
+				</div>
+				<div>
+					<p>
+						{ props.T("Dashboard.Stats.Depth") }
+					</p>
+					<p>
+						{ props.Depth }
+					</p>
+				</div>
+			}
+			@iconLink("/warehouse/orders") {
+				<div>
+					<div class="bg-blue-200/20 p-3 rounded-full">
+						@icons.TrayArrayDown(icons.Props{Size: "20", Class: "text-blue-500", Filled: true})
+					</div>
+				</div>
+				<div>
+					<p>
+						{ props.T("Dashboard.Stats.Orders") }
+					</p>
+					<p>
+						{ props.OrdersCount }
+					</p>
+				</div>
+			}
 		</div>
 	}
 }
 
 templ DashboardContent(props *IndexPageProps) {
+	{{ u, _ := composables.UseUser(ctx) }}
 	<div>
 		<div class="m-6">
 			<div class="flex items-center gap-4">
 				@avatar(props.PageContext)
 				<div>
 					<p class="text-xl">
-						Добро пожаловать,
+						Добро пожаловать, { u.FirstName }
 					</p>
-					<div class="text-muted-600">
+					<div class="text-slate-600">
 						Панель управления
 					</div>
 				</div>
 			</div>
-			<div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+			<div>
 				@Stats(props)
 			</div>
 		</div>
