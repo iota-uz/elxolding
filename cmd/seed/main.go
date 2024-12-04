@@ -24,10 +24,7 @@ func main() {
 	}
 	if err := db.Transaction(func(tx *gorm.DB) error {
 		ctx := composables.WithTx(context.Background(), tx)
-		if err := app.Seed(ctx); err != nil {
-			return err
-		}
-		return nil
+		return app.Seed(ctx)
 	}); err != nil {
 		panic(err)
 	}
