@@ -74,15 +74,15 @@ func CreateUser(ctx context.Context, app application.Application) error {
 	if err != nil {
 		return err
 	}
-	_, err = db.Exec("SELECT setval('users_pkey', (SELECT MAX(id) FROM users));")
+	_, err = db.Exec("SELECT setval('public.users_id_seq', (SELECT MAX(id) FROM users));")
 	if err != nil {
 		return err
 	}
-	_, err = db.Exec("SELECT setval('roles_pkey', (SELECT MAX(id) FROM roles));")
+	_, err = db.Exec("SELECT setval('public.roles_id_seq', (SELECT MAX(id) FROM roles));")
 	if err != nil {
 		return err
 	}
-	_, err = db.Exec("SELECT setval('tabs_pkey', (SELECT MAX(id) FROM tabs));")
+	_, err = db.Exec("SELECT setval('public.tabs_id_seq', (SELECT MAX(id) FROM tabs));")
 	if err != nil {
 		return err
 	}

@@ -39,7 +39,7 @@ func CreateProducts(ctx context.Context, app application.Application) error {
 	if err != nil {
 		return err
 	}
-	_, err = db.Exec("SELECT setval('warehouse_products_pkey', (SELECT MAX(id) FROM warehouse_products));")
+	_, err = db.Exec("SELECT setval('public.warehouse_products_id_seq', (SELECT MAX(id) FROM warehouse_products));")
 	if err != nil {
 		return err
 	}
