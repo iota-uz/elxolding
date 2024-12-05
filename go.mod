@@ -8,7 +8,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.23.0
 	github.com/gorilla/mux v1.8.1
-	github.com/iota-agency/iota-sdk v0.0.0-20241205094930-96b85fdb1054
+	github.com/iota-agency/iota-sdk v0.0.0-20241205104958-744ff566f326
 	github.com/lib/pq v1.10.9
 	github.com/nicksnyder/go-i18n/v2 v2.4.1
 	gorm.io/driver/postgres v1.5.11

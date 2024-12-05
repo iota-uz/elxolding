@@ -102,6 +102,8 @@ github.com/iota-agency/iota-sdk v0.0.0-20241205093758-7042b2413d36 h1:un2l8oinlz
 github.com/iota-agency/iota-sdk v0.0.0-20241205093758-7042b2413d36/go.mod h1:tEEPCvuR1kwOwWb0QA/P1amRCGzo6sXB0WsmnRYc5b0=
 github.com/iota-agency/iota-sdk v0.0.0-20241205094930-96b85fdb1054 h1:Rc88zmpvAMCwB/W4s0NfyvtgVWkWSUPUXfzHVod4uPM=
 github.com/iota-agency/iota-sdk v0.0.0-20241205094930-96b85fdb1054/go.mod h1:tEEPCvuR1kwOwWb0QA/P1amRCGzo6sXB0WsmnRYc5b0=
+github.com/iota-agency/iota-sdk v0.0.0-20241205104958-744ff566f326 h1:qFvyUEzskjBPrcYR7KSLiR9Ek69lAUcm75o4WidYaqw=
+github.com/iota-agency/iota-sdk v0.0.0-20241205104958-744ff566f326/go.mod h1:tEEPCvuR1kwOwWb0QA/P1amRCGzo6sXB0WsmnRYc5b0=
 github.com/iota-agency/iota-sdk v0.1.0 h1:ysahjacXaUjk0irO2vIbGSziMD8nvcrJW/t7NS0Pgio=
 github.com/iota-agency/iota-sdk v0.1.0/go.mod h1:tEEPCvuR1kwOwWb0QA/P1amRCGzo6sXB0WsmnRYc5b0=
 github.com/iota-agency/iota-sdk v0.1.1 h1:7uhwQcU21mrBqb2v5YURQQnjXhO03hCZKCxk5TSidyI=
