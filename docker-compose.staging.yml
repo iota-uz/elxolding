@@ -38,6 +38,8 @@ services:
       POSTGRES_DB: elxolding_db
     volumes:
       - ~/volumes/elxolding_erp/postgres/data:/var/lib/postgresql/data
+    ports:
+      - "17899:5432"
     networks:
       - app
 

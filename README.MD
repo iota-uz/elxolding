@@ -165,10 +165,23 @@ templ fmt .
 * [Naming](CONVENTIONS.MD#naming)
 * [Code style](CONVENTIONS.MD#code-style)
 
-## Stage for testing
+## Dev stand (staging) 
 
-[URL](https://elxolding-erp.ci.iota.uz/warehouse/products)
+[URL](https://elxolding-erp.ci.iota.uz/login)
 
+User: **Admin User**
+
+Password
+```text
+TestPass123!
 ```
-Password: TestPass123!
+
+To connect to staging db:
+
+```text
+Hostname: staging-inan.ci.iota.uz
+Port: 17899
+Database: elxolding_erp_db
+Username: postgres
+Password: EU4n3y8XeK8hia0L
 ```
