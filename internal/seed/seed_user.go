@@ -70,21 +70,11 @@ func CreateUser(ctx context.Context, app application.Application) error {
 	if !ok {
 		return composables.ErrNoTx
 	}
-	db, err := tx.DB()
-	if err != nil {
+	if err := tx.Exec("SELECT setval('public.users_id_seq', (SELECT MAX(id) FROM users));").Error; err != nil {
 		return err
 	}
-	_, err = db.Exec("SELECT setval('public.users_id_seq', (SELECT MAX(id) FROM users));")
-	if err != nil {
+	if err := tx.Exec("SELECT setval('public.roles_id_seq', (SELECT MAX(id) FROM roles));").Error; err != nil {
 		return err
 	}
-	_, err = db.Exec("SELECT setval('public.roles_id_seq', (SELECT MAX(id) FROM roles));")
-	if err != nil {
-		return err
-	}
-	_, err = db.Exec("SELECT setval('public.tabs_id_seq', (SELECT MAX(id) FROM tabs));")
-	if err != nil {
-		return err
-	}
-	return nil
+	return tx.Exec("SELECT setval('public.tabs_id_seq', (SELECT MAX(id) FROM tabs));").Error
 }
