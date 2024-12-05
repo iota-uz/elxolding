@@ -179,9 +179,9 @@ TestPass123!
 To connect to staging db:
 
 ```text
-Hostname: staging-inan.ci.iota.uz
+Hostname: elxolding-erp.ci.iota.uz
 Port: 17899
-Database: elxolding_erp_db
+Database: elxolding_db
 Username: postgres
 Password: EU4n3y8XeK8hia0L
 ```
