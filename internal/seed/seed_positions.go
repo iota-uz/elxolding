@@ -7,6 +7,7 @@ import (
 	"github.com/iota-agency/iota-sdk/modules/warehouse/domain/entities/unit"
 	"github.com/iota-agency/iota-sdk/modules/warehouse/persistence"
 	"github.com/iota-agency/iota-sdk/pkg/application"
+	"github.com/iota-agency/iota-sdk/pkg/composables"
 	"time"
 )
 
@@ -33,6 +34,18 @@ func CreatePositions(ctx context.Context, app application.Application) error {
 		}); err != nil {
 			return err
 		}
+	}
+	tx, ok := composables.UseTx(ctx)
+	if !ok {
+		return composables.ErrNoTx
+	}
+	db, err := tx.DB()
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec("SELECT setval('warehouse_positions_pkey', (SELECT MAX(id) FROM warehouse_positions));")
+	if err != nil {
+		return err
 	}
 	return nil
 }

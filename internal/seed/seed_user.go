@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/iota-agency/elxolding-erp/internal/constants"
 	"github.com/iota-agency/iota-sdk/pkg/application"
+	"github.com/iota-agency/iota-sdk/pkg/composables"
 	"github.com/iota-agency/iota-sdk/pkg/domain/aggregates/role"
 	"github.com/iota-agency/iota-sdk/pkg/domain/aggregates/user"
 	"github.com/iota-agency/iota-sdk/pkg/domain/entities/tab"
@@ -64,6 +65,26 @@ func CreateUser(ctx context.Context, app application.Application) error {
 		if err := tabsRepository.CreateOrUpdate(ctx, t); err != nil {
 			return err
 		}
+	}
+	tx, ok := composables.UseTx(ctx)
+	if !ok {
+		return composables.ErrNoTx
+	}
+	db, err := tx.DB()
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec("SELECT setval('users_pkey', (SELECT MAX(id) FROM users));")
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec("SELECT setval('roles_pkey', (SELECT MAX(id) FROM roles));")
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec("SELECT setval('tabs_pkey', (SELECT MAX(id) FROM tabs));")
+	if err != nil {
+		return err
 	}
 	return nil
 }

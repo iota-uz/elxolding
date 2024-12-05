@@ -3,10 +3,10 @@ package services
 import (
 	"context"
 	"github.com/iota-agency/elxolding-erp/internal/domain/entities/dashboard"
+	"github.com/iota-agency/iota-sdk/modules/warehouse/domain/aggregates/order"
 	"github.com/iota-agency/iota-sdk/modules/warehouse/domain/aggregates/position"
 	"github.com/iota-agency/iota-sdk/modules/warehouse/domain/aggregates/product"
 	"github.com/iota-agency/iota-sdk/pkg/composables"
-	"github.com/iota-agency/iota-sdk/pkg/domain/aggregates/order"
 	"sync"
 )
 

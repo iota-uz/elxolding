@@ -58,12 +58,6 @@ func (m *Module) Name() string {
 func (m *Module) NavigationItems(localizer *i18n.Localizer) []types.NavigationItem {
 	return []types.NavigationItem{
 		{
-			Name:     localizer.MustLocalize(&i18n.LocalizeConfig{MessageID: "NavigationLinks.Dashboard"}),
-			Children: nil,
-			Icon:     icons.CirclesThreePlus(icons.Props{Size: "20"}),
-			Href:     "/",
-		},
-		{
 			Name:     localizer.MustLocalize(&i18n.LocalizeConfig{MessageID: "NavigationLinks.Users"}),
 			Children: nil,
 			Icon:     icons.Users(icons.Props{Size: "20"}),
