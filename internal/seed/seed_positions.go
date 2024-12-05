@@ -35,13 +35,5 @@ func CreatePositions(ctx context.Context, app application.Application) error {
 	if !ok {
 		return composables.ErrNoTx
 	}
-	db, err := tx.DB()
-	if err != nil {
-		return err
-	}
-	_, err = db.Exec("SELECT setval('public.warehouse_positions_id_seq', (SELECT MAX(id) FROM warehouse_positions));")
-	if err != nil {
-		return err
-	}
-	return nil
+	return tx.Exec("SELECT setval('public.warehouse_positions_id_seq', (SELECT MAX(id) FROM warehouse_positions));").Error
 }
