@@ -39,6 +39,7 @@ func (m *Module) Register(app application.Application) error {
 
 func (m *Module) Seed(ctx context.Context, app application.Application) error {
 	seedFuncs := []application.SeedFunc{
+		seed.CreateUnits,
 		seed.CreateUser,
 		seed.CreatePositions,
 		seed.CreateProducts,
