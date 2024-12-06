@@ -9,6 +9,7 @@ import (
 	"github.com/iota-agency/iota-sdk/pkg/application/dbutils"
 	"github.com/iota-agency/iota-sdk/pkg/configuration"
 	"github.com/iota-agency/iota-sdk/pkg/constants"
+	"github.com/iota-agency/iota-sdk/pkg/logging"
 	"github.com/iota-agency/iota-sdk/pkg/middleware"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/assets"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/controllers"
@@ -16,7 +17,7 @@ import (
 	"github.com/iota-agency/iota-sdk/pkg/services"
 	"github.com/iota-agency/iota-sdk/pkg/types"
 	_ "github.com/lib/pq"
-	"gorm.io/gorm/logger"
+	gormlogger "gorm.io/gorm/logger"
 	"log"
 )
 
@@ -39,7 +40,7 @@ func ElxoldingServer(options *server.DefaultOptions) (*server.HttpServer, error)
 		middleware.Provide(constants.LogoKey, layouts.Logo()),
 		middleware.Cors([]string{"http://localhost:3000", "ws://localhost:3000"}),
 		middleware.RequestParams(middleware.DefaultParamsConstructor),
-		middleware.WithLogger(log.Default()),
+		middleware.WithLogger(options.Logger),
 		middleware.LogRequests(),
 		middleware.Transactions(db),
 		middleware.Authorization(authService),
@@ -56,7 +57,25 @@ func ElxoldingServer(options *server.DefaultOptions) (*server.HttpServer, error)
 
 func main() {
 	conf := configuration.Use()
-	db, err := dbutils.ConnectDB(conf.DBOpts, logger.Error)
+	logFile, logger, err := logging.FileLogger(conf.LogrusLogLevel())
+	if err != nil {
+		log.Fatalf("failed to create logger: %v", err)
+	}
+	defer logFile.Close()
+
+	db, err := dbutils.ConnectDB(
+		conf.DBOpts,
+		gormlogger.New(
+			logger,
+			gormlogger.Config{
+				SlowThreshold:             0,
+				LogLevel:                  conf.GormLogLevel(),
+				IgnoreRecordNotFoundError: false,
+				Colorful:                  true,
+				ParameterizedQueries:      true,
+			},
+		),
+	)
 	if err != nil {
 		log.Fatalf("failed to connect to db: %v", err)
 	}
@@ -67,15 +86,13 @@ func main() {
 	}
 	assetsFs := append([]*hashfs.FS{internalassets.HashFS, assets.HashFS}, app.HashFsAssets()...)
 	app.RegisterControllers(
-		controllers.NewGraphQLController(app),
-		controllers.NewLogoutController(app),
 		controllers.NewStaticFilesController(assetsFs),
-		controllers.NewUploadController(app),
 	)
 	options := &server.DefaultOptions{
 		Configuration: conf,
 		Db:            db,
 		Application:   app,
+		Logger:        logger,
 	}
 	serverInstance, err := ElxoldingServer(options)
 	if err != nil {

@@ -7,7 +7,7 @@ import (
 )
 
 var Modules = []application.Module{
-	core.NewModule(),
 	NewModule(),
+	core.NewModule(),
 	warehouse.NewModule(),
 }
