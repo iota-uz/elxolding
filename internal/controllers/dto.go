@@ -12,6 +12,7 @@ type SaveAccountDTO struct {
 	LastName   string `validate:"required"`
 	MiddleName string
 	UILanguage string `validate:"required"`
+	AvatarID   uint
 }
 
 func (u *SaveAccountDTO) Ok(l ut.Translator) (map[string]string, bool) {
@@ -37,5 +38,6 @@ func (u *SaveAccountDTO) ToEntity(id uint) (*user.User, error) {
 		LastName:   u.LastName,
 		MiddleName: u.MiddleName,
 		UILanguage: lang,
+		AvatarID:   &u.AvatarID,
 	}, nil
 }
