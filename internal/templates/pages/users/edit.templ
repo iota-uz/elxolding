@@ -2,13 +2,13 @@ package users
 
 import (
 	"fmt"
-	"github.com/iota-agency/iota-sdk/pkg/domain/aggregates/role"
-	"github.com/iota-agency/iota-sdk/pkg/domain/aggregates/user"
 	"github.com/iota-agency/iota-sdk/components/base"
 	"github.com/iota-agency/iota-sdk/components/base/button"
 	"github.com/iota-agency/iota-sdk/components/base/dialog"
 	"github.com/iota-agency/iota-sdk/components/base/input"
 	usercomponents "github.com/iota-agency/iota-sdk/components/user"
+	"github.com/iota-agency/iota-sdk/pkg/domain/aggregates/role"
+	"github.com/iota-agency/iota-sdk/pkg/domain/aggregates/user"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/templates/icons"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/templates/layouts"
 	"github.com/iota-agency/iota-sdk/pkg/types"
@@ -117,11 +117,10 @@ templ Edit(props *EditFormProps) {
 	@layouts.Authenticated(props.PageContext) {
 		@EditForm(props)
 		@dialog.Confirmation(&dialog.Props{
-			Heading:   "Users.Single.DeleteUser",
-			Text:      "Users.Single.DeleteUserConfirmation",
-			Localizer: props.PageContext.Localizer,
-			Icon:      icons.Trash(icons.Props{Size: "20"}),
-			Action:    "open-delete-user-confirmation",
+			Heading: props.T("Users.Single.DeleteUser"),
+			Text:    props.T("Users.Single.DeleteUserConfirmation"),
+			Icon:    icons.Trash(icons.Props{Size: "20"}),
+			Action:  "open-delete-user-confirmation",
 			Attrs: templ.Attributes{
 				"@closing": `({target}) => {
 					if (target.returnValue === "confirm") {

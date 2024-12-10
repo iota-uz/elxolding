@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"context"
 	"github.com/iota-agency/elxolding-erp/internal/controllers"
 	"github.com/iota-agency/elxolding-erp/internal/seed"
 	"github.com/iota-agency/elxolding-erp/internal/services"
@@ -32,23 +31,14 @@ func (m *Module) Register(app application.Application) error {
 		controllers.NewLoginController(app),
 		controllers.NewUsersController(app),
 	)
-	app.RegisterLocaleFiles(&localeFiles)
-	app.RegisterModule(m)
-	return nil
-}
-
-func (m *Module) Seed(ctx context.Context, app application.Application) error {
-	seedFuncs := []application.SeedFunc{
+	app.RegisterSeedFuncs(
 		seed.CreateUnits,
 		seed.CreateUser,
 		seed.CreatePositions,
 		seed.CreateProducts,
-	}
-	for _, seedFunc := range seedFuncs {
-		if err := seedFunc(ctx, app); err != nil {
-			return err
-		}
-	}
+	)
+	app.RegisterLocaleFiles(&localeFiles)
+	app.RegisterModule(m)
 	return nil
 }
 

@@ -7,9 +7,9 @@ import (
 	"github.com/iota-agency/iota-sdk/pkg/application"
 	"github.com/iota-agency/iota-sdk/pkg/composables"
 	"github.com/iota-agency/iota-sdk/pkg/domain/aggregates/user"
+	"github.com/iota-agency/iota-sdk/pkg/middleware"
 	"github.com/iota-agency/iota-sdk/pkg/services"
 	"github.com/iota-agency/iota-sdk/pkg/shared"
-	"github.com/iota-agency/iota-sdk/pkg/shared/middleware"
 	"github.com/iota-agency/iota-sdk/pkg/types"
 	"net/http"
 )
@@ -32,7 +32,15 @@ func NewUsersController(app application.Application) application.Controller {
 
 func (c *UsersController) Register(r *mux.Router) {
 	router := r.PathPrefix(c.basePath).Subrouter()
-	router.Use(middleware.RequireAuthorization())
+	router.Use(
+		middleware.WithTransaction(),
+		middleware.Authorize(),
+		middleware.RequireAuthorization(),
+		middleware.ProvideUser(),
+		middleware.Tabs(),
+		middleware.WithLocalizer(c.app.Bundle()),
+		middleware.NavItems(c.app),
+	)
 	router.HandleFunc("", c.Users).Methods(http.MethodGet)
 	router.HandleFunc("", c.CreateUser).Methods(http.MethodPost)
 	router.HandleFunc("/new", c.GetNew).Methods(http.MethodGet)

@@ -14,39 +14,25 @@ import (
 	"github.com/iota-agency/iota-sdk/pkg/presentation/assets"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/controllers"
 	"github.com/iota-agency/iota-sdk/pkg/server"
-	"github.com/iota-agency/iota-sdk/pkg/services"
-	"github.com/iota-agency/iota-sdk/pkg/types"
 	_ "github.com/lib/pq"
 	gormlogger "gorm.io/gorm/logger"
 	"log"
 )
 
-func head() types.HeadComponent {
-	return layouts.Head
-}
-
 func ElxoldingServer(options *server.DefaultOptions) (*server.HttpServer, error) {
-	db := options.Db
 	app := options.Application
+	db := options.Db
 
-	authService := app.Service(services.AuthService{}).(*services.AuthService)
-	tabService := app.Service(services.TabService{}).(*services.TabService)
-	bundle, err := app.Bundle()
-	if err != nil {
-		return nil, err
-	}
 	app.RegisterMiddleware(
-		middleware.Provide(constants.HeadKey, head()),
-		middleware.Provide(constants.LogoKey, layouts.Logo()),
-		middleware.Cors([]string{"http://localhost:3000", "ws://localhost:3000"}),
-		middleware.RequestParams(middleware.DefaultParamsConstructor),
 		middleware.WithLogger(options.Logger),
+		middleware.Provide(constants.AppKey, app),
+		middleware.Provide(constants.HeadKey, layouts.Head()),
+		middleware.Provide(constants.LogoKey, layouts.Logo()),
+		middleware.Provide(constants.DBKey, db),
+		middleware.Provide(constants.TxKey, db),
+		middleware.Cors("http://localhost:3000", "ws://localhost:3000"),
+		middleware.RequestParams(),
 		middleware.LogRequests(),
-		middleware.Transactions(db),
-		middleware.Authorization(authService),
-		middleware.WithLocalizer(bundle),
-		middleware.Tabs(tabService),
-		middleware.NavItems(app),
 	)
 	serverInstance := &server.HttpServer{
 		Middlewares: app.Middleware(),

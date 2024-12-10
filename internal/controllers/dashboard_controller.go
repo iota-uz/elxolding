@@ -4,7 +4,7 @@ import (
 	"github.com/iota-agency/elxolding-erp/internal/services"
 	"github.com/iota-agency/elxolding-erp/internal/templates/pages/dashboard"
 	"github.com/iota-agency/iota-sdk/pkg/application"
-	"github.com/iota-agency/iota-sdk/pkg/shared/middleware"
+	"github.com/iota-agency/iota-sdk/pkg/middleware"
 	"github.com/iota-agency/iota-sdk/pkg/types"
 	"net/http"
 	"strconv"
@@ -27,7 +27,15 @@ type DashboardController struct {
 
 func (c *DashboardController) Register(r *mux.Router) {
 	router := r.Methods(http.MethodGet).Subrouter()
-	router.Use(middleware.RequireAuthorization())
+	router.Use(
+		middleware.WithTransaction(),
+		middleware.Authorize(),
+		middleware.RequireAuthorization(),
+		middleware.ProvideUser(),
+		middleware.Tabs(),
+		middleware.WithLocalizer(c.app.Bundle()),
+		middleware.NavItems(c.app),
+	)
 	router.HandleFunc("/", c.Get)
 }
 

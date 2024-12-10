@@ -7,11 +7,11 @@ import (
 	"github.com/iota-agency/iota-sdk/pkg/composables"
 	"github.com/iota-agency/iota-sdk/pkg/domain/entities/tab"
 	"github.com/iota-agency/iota-sdk/pkg/mapping"
+	"github.com/iota-agency/iota-sdk/pkg/middleware"
 	"github.com/iota-agency/iota-sdk/pkg/presentation/mappers"
 	sdkaccount "github.com/iota-agency/iota-sdk/pkg/presentation/templates/pages/account"
 	"github.com/iota-agency/iota-sdk/pkg/services"
 	"github.com/iota-agency/iota-sdk/pkg/shared"
-	"github.com/iota-agency/iota-sdk/pkg/shared/middleware"
 	"github.com/iota-agency/iota-sdk/pkg/types"
 	"net/http"
 
@@ -36,7 +36,15 @@ func NewAccountController(app application.Application) application.Controller {
 
 func (c *AccountController) Register(r *mux.Router) {
 	router := r.PathPrefix(c.basePath).Subrouter()
-	router.Use(middleware.RequireAuthorization())
+	router.Use(
+		middleware.WithTransaction(),
+		middleware.Authorize(),
+		middleware.RequireAuthorization(),
+		middleware.ProvideUser(),
+		middleware.Tabs(),
+		middleware.WithLocalizer(c.app.Bundle()),
+		middleware.NavItems(c.app),
+	)
 	router.HandleFunc("", c.Get).Methods(http.MethodGet)
 	router.HandleFunc("/settings", c.GetSettings).Methods(http.MethodGet)
 	router.HandleFunc("/settings", c.PostSettings).Methods(http.MethodPost)
@@ -87,9 +95,9 @@ func (c *AccountController) Post(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	uniTranslator, ok := composables.UseUniLocalizer(r.Context())
-	if !ok {
-		http.Error(w, composables.ErrNoLocalizer.Error(), http.StatusInternalServerError)
+	uniTranslator, err := composables.UseUniLocalizer(r.Context())
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	errors, ok := dto.Ok(uniTranslator)
 	if !ok {
