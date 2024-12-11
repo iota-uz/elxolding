@@ -98,6 +98,8 @@ github.com/iota-agency/iota-sdk v0.0.0-20241210055722-8e0f92a14e54 h1:o1/GVYR1xc
 github.com/iota-agency/iota-sdk v0.0.0-20241210055722-8e0f92a14e54/go.mod h1:DNLF2HXwef3zSU+bDqHSkkIsB01kX3itK+LYdkUjf14=
 github.com/iota-agency/iota-sdk v0.0.0-20241210221136-bc69ca55070d h1:OD3rHc46v8/3RSRSF+LxOilUWEzlntscXz5/lBg5LbY=
 github.com/iota-agency/iota-sdk v0.0.0-20241210221136-bc69ca55070d/go.mod h1:DNLF2HXwef3zSU+bDqHSkkIsB01kX3itK+LYdkUjf14=
+github.com/iota-agency/iota-sdk v0.0.0-20241211094541-80b1b76624cc h1:+WFIimjFjmn5ks5tKwe7jkh+M7XgIvbUv5jTWAZFb8U=
+github.com/iota-agency/iota-sdk v0.0.0-20241211094541-80b1b76624cc/go.mod h1:DNLF2HXwef3zSU+bDqHSkkIsB01kX3itK+LYdkUjf14=
 github.com/jackc/pgpassfile v1.0.0 h1:/6Hmqy13Ss2zCq62VdNG8tM1wchn8zjSGOBJ6icpsIM=
 github.com/jackc/pgpassfile v1.0.0/go.mod h1:CEx0iS5ambNFdcRtxPj5JhEz+xB6uRky5eyVu/W2HEg=
 github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 h1:iCEnooe7UlwOQYpKFhBabPMi4aNAfoODPEFNiAnClxo=
