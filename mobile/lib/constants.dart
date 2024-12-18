@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:mobile/feathers/services/authentication.dart';
 import 'package:mobile/feathers/services/orders.dart';
 
@@ -19,11 +19,20 @@ AuthenticationService authenticationService = AuthenticationService();
 UsersService usersService = UsersService();
 
 void init(String baseUrl) {
-  Dio client = Dio(BaseOptions(baseUrl: baseUrl));
-  authenticationService.setClient(client);
+  final HttpLink httpLink = HttpLink("$baseUrl/graphql");
+  final AuthLink authLink = AuthLink(
+    getToken: () async => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
+  );
+  final Link link = authLink.concat(httpLink);
+
+  GraphQLClient client = GraphQLClient(
+    link: link,
+    cache: GraphQLCache(store: HiveStore()),
+  );
+  // authenticationService.setClient(client);
   ordersService.setClient(client);
   productsService.setClient(client);
   positionsService.setClient(client);
-  rpcService.setClient(client);
+  // rpcService.setClient(client);
   usersService.setClient(client);
 }

@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'exceptions.dart';
 
@@ -56,11 +58,11 @@ String queryToString(Map<String, dynamic> query) {
 class Service {
   String path;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
-  late Dio _client;
+  late ValueNotifier<GraphQLClient> _client;
 
   Service(this.path);
 
-  void setClient(Dio client) {
+  void setClient(ValueNotifier<GraphQLClient> client) {
     _client = client;
   }
 

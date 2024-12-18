@@ -1,3 +1,4 @@
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:mobile/feathers/services/base.dart';
 import 'package:mobile/feathers/types.dart';
 
@@ -18,44 +19,40 @@ enum ProductStatus implements Comparable<ProductStatus> {
   int compareTo(ProductStatus other) => status.compareTo(other.status);
 }
 
-class ProductsService extends Service {
-  ProductsService() : super("products");
+String findProducts = """
+query Products(\$offset: Int, \$limit: Int, \$sortBy: String) {
+    products(offset: \$offset, limit: \$limit, sortBy: \$sortBy) {
+        total
+        data {
+            id
+            rfid
+            status
+            createdAt
+            updatedAt
+        }
+    }
+}
+""";
 
-  @override
+class ProductsService {
+  late GraphQLClient _client;
+
+  void setClient(GraphQLClient client) {
+    _client = client;
+  }
+
   Future<PaginateResponse<Product>> find(Map<String, dynamic> params) async {
-    return super.find(params).then((response) {
-      return PaginateResponse<Product>.fromJson(
-        response,
-        (json) => Product.fromJson(json),
-      );
-    });
-  }
-
-  @override
-  Future<Product> get(int id, [Map? params]) async {
-    return super.get(id).then((response) {
-      return Product.fromJson(response);
-    });
-  }
-
-  @override
-  Future<Product> create(Map data) async {
-    return super.create(data).then((response) {
-      return Product.fromJson(response);
-    });
-  }
-
-  @override
-  Future<Product> patch(int id, Map data) async {
-    return super.patch(id, data).then((response) {
-      return Product.fromJson(response);
-    });
-  }
-
-  @override
-  Future<Product> remove(int id) async {
-    return super.remove(id).then((response) {
-      return Product.fromJson(response);
-    });
+    final WatchQueryOptions options = WatchQueryOptions(
+      document: gql(findProducts),
+      variables: params,
+    );
+    final response = await _client.query(options);
+    if (response.hasException) {
+      throw Exception(response.exception.toString());
+    }
+    return PaginateResponse<Product>.fromJson(
+      response.data?["products"],
+      (json) => Product.fromJson(json),
+    );
   }
 }

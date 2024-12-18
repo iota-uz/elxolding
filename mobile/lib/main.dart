@@ -17,8 +17,10 @@ import 'layouts/navigation.dart';
 import 'pages/home.dart';
 import 'pages/invetory/index.dart';
 import 'package:dart_ping_ios/dart_ping_ios.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
-void main() {
+void main() async {
+  await initHiveForFlutter();
   DartPingIOS.register();
   runApp(const MyApp());
 }

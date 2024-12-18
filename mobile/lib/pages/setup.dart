@@ -8,6 +8,7 @@ import 'package:mobile/constants.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:lan_scanner/lan_scanner.dart';
 import 'package:dart_ping/dart_ping.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class SetupPage extends StatefulWidget {
   const SetupPage({Key? key}) : super(key: key);
@@ -117,6 +118,7 @@ class _SetupPageState extends State<SetupPage> {
               return;
             }
             _storage.write(key: "server-uri", value: uri);
+
             init(uri);
             context.goNamed("login");
           },

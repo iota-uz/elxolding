@@ -1,47 +1,42 @@
-import 'package:dio/dio.dart';
-import 'package:mobile/feathers/services/base.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:mobile/feathers/types.dart';
 
 import 'package:mobile/feathers/models/position.dart';
 
-class PositionsService extends Service {
-  PositionsService() : super("positions");
+String findPositions = """
+query WarehousePositions(\$offset: Int, \$limit: Int, \$sortBy: String) {
+    warehousePositions(offset: \$offset, limit: \$limit, sortBy: \$sortBy) {
+        total
+        data {
+            id
+            title
+            barcode
+            createdAt
+            updatedAt
+        }
+    }
+}
+""";
 
-  @override
+class PositionsService {
+  late GraphQLClient _client;
+
+  void setClient(GraphQLClient client) {
+    _client = client;
+  }
+
   Future<PaginateResponse<Position>> find(Map<String, dynamic> params) async {
-    return super.find(params).then((response) {
-      return PaginateResponse<Position>.fromJson(
-        response,
-        (json) => Position.fromJson(json),
-      );
-    });
-  }
-
-  @override
-  Future<Position> get(int id, [Map? params]) async {
-    return super.get(id).then((response) {
-      return Position.fromJson(response);
-    });
-  }
-
-  @override
-  Future<Position> create(Map data) async {
-    return super.create(data).then((response) {
-      return Position.fromJson(response);
-    });
-  }
-
-  @override
-  Future<Position> patch(int id, Map data) async {
-    return super.patch(id, data).then((response) {
-      return Position.fromJson(response);
-    });
-  }
-
-  @override
-  Future<Position> remove(int id) async {
-    return super.remove(id).then((response) {
-      return Position.fromJson(response);
-    });
+    final WatchQueryOptions options = WatchQueryOptions(
+      document: gql(findPositions),
+      variables: params,
+    );
+    final response = await _client.query(options);
+    if (response.hasException) {
+      throw Exception(response.exception.toString());
+    }
+    return PaginateResponse<Position>.fromJson(
+      response.data?["warehousePositions"],
+      (json) => Position.fromJson(json),
+    );
   }
 }

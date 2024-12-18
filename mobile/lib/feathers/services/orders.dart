@@ -1,46 +1,58 @@
-import 'package:mobile/feathers/services/base.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:mobile/feathers/types.dart';
 
 import 'package:mobile/feathers/models/order.dart';
 
-class OrdersService extends Service {
-  OrdersService() : super("orders");
+String findOrders = """
+query Orders(\$offset: Int, \$limit: Int, \$sortBy: String) {
+    orders(offset: \$offset, limit: \$limit, sortBy: \$sortBy) {
+        total
+        data {
+            id
+            type
+            status
+            createdAt
+            items {
+                quantity
+                position {
+                    id
+                    title
+                    barcode
+                    createdAt
+                    updatedAt
+                }
+                products {
+                    id
+                    rfid
+                    status
+                    createdAt
+                    updatedAt
+                }
+            }
+        }
+    }
+}
+""";
 
-  @override
+class OrdersService {
+  late GraphQLClient _client;
+
+  void setClient(GraphQLClient client) {
+    _client = client;
+  }
+
   Future<PaginateResponse<Order>> find(Map<String, dynamic> params) async {
-    return super.find(params).then((response) {
-      return PaginateResponse<Order>.fromJson(
-        response,
-        (json) => Order.fromJson(json),
-      );
-    });
-  }
-
-  @override
-  Future<Order> get(int id, [Map? params]) async {
-    return super.get(id).then((response) {
-      return Order.fromJson(response);
-    });
-  }
-
-  @override
-  Future<Order> create(Map data) async {
-    return super.create(data).then((response) {
-      return Order.fromJson(response);
-    });
-  }
-
-  @override
-  Future<Order> patch(int id, Map data) async {
-    return super.patch(id, data).then((response) {
-      return Order.fromJson(response);
-    });
-  }
-
-  @override
-  Future<Order> remove(int id) async {
-    return super.remove(id).then((response) {
-      return Order.fromJson(response);
-    });
+    final WatchQueryOptions options = WatchQueryOptions(
+      document: gql(findOrders),
+      variables: params,
+    );
+    final response = await _client.query(options);
+    if (response.hasException) {
+      throw Exception(response.exception.toString());
+    }
+    return PaginateResponse<Order>.fromJson(
+      response.data?["orders"],
+      (json) => Order.fromJson(json),
+    );
   }
 }
