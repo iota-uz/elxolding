@@ -1,7 +1,7 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:mobile/feathers/types.dart';
+import 'package:mobile/services/types.dart';
 
-import 'package:mobile/feathers/models/position.dart';
+import 'package:mobile/models/position.dart';
 
 String findPositions = """
 query WarehousePositions(\$offset: Int, \$limit: Int, \$sortBy: String) {

@@ -6,9 +6,6 @@ import (
 	"github.com/iota-agency/elxolding-erp/internal/services"
 	"github.com/iota-agency/iota-sdk/modules/warehouse/persistence"
 	"github.com/iota-agency/iota-sdk/pkg/application"
-	"github.com/iota-agency/iota-sdk/pkg/presentation/templates/icons"
-	"github.com/iota-agency/iota-sdk/pkg/types"
-	"github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
 func NewModule() application.Module {
@@ -24,7 +21,7 @@ func (m *Module) Register(app application.Application) error {
 		persistence.NewProductRepository(),
 		persistence.NewOrderRepository(),
 	)
-	app.RegisterService(dashboardService)
+	app.RegisterServices(dashboardService)
 	app.RegisterControllers(
 		controllers.NewDashboardController(app),
 		controllers.NewAccountController(app),
@@ -38,21 +35,9 @@ func (m *Module) Register(app application.Application) error {
 		seed.CreateProducts,
 	)
 	app.RegisterLocaleFiles(&localeFiles)
-	app.RegisterModule(m)
 	return nil
 }
 
 func (m *Module) Name() string {
 	return "elxolding"
-}
-
-func (m *Module) NavigationItems(localizer *i18n.Localizer) []types.NavigationItem {
-	return []types.NavigationItem{
-		{
-			Name:     localizer.MustLocalize(&i18n.LocalizeConfig{MessageID: "NavigationLinks.Users"}),
-			Children: nil,
-			Icon:     icons.Users(icons.Props{Size: "20"}),
-			Href:     "/users",
-		},
-	}
 }

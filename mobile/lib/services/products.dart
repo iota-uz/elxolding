@@ -1,8 +1,6 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:mobile/feathers/services/base.dart';
-import 'package:mobile/feathers/types.dart';
-
-import 'package:mobile/feathers/models/product.dart';
+import 'package:mobile/models/product.dart';
+import 'package:mobile/services/types.dart';
 
 enum ProductStatus implements Comparable<ProductStatus> {
   inStock(status: "in_stock"),
@@ -34,6 +32,22 @@ query Products(\$offset: Int, \$limit: Int, \$sortBy: String) {
 }
 """;
 
+String validateProducts = """
+mutation ValidateProducts(\$tags: [String!]!) {
+    validateProducts(tags: \$tags) {
+      id
+    }
+}
+""";
+
+String createProductsFromTags = """
+mutation CreateProductsFromTags(\$positionId: Int!, \$tags: [String!]!) {
+    createProductsFromTags(positionId: \$positionId, tags: \$tags) {
+        id
+    }
+}
+""";
+
 class ProductsService {
   late GraphQLClient _client;
 
@@ -54,5 +68,29 @@ class ProductsService {
       response.data?["products"],
       (json) => Product.fromJson(json),
     );
+  }
+
+  Future<Product> validate(List<String> tags) async {
+    final MutationOptions options = MutationOptions(
+      document: gql(validateProducts),
+      variables: {"tags": tags},
+    );
+    final response = await _client.mutate(options);
+    if (response.hasException) {
+      throw Exception(response.exception.toString());
+    }
+    return Product.fromJson(response.data?["validateProducts"]);
+  }
+
+  Future<Product> createFromTags(int positionId, List<String> tags) async {
+    final MutationOptions options = MutationOptions(
+      document: gql(createProductsFromTags),
+      variables: {"positionId": positionId, "tags": tags},
+    );
+    final response = await _client.mutate(options);
+    if (response.hasException) {
+      throw Exception(response.exception.toString());
+    }
+    return Product.fromJson(response.data?["createProductsFromTags"]);
   }
 }

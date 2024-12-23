@@ -9,7 +9,8 @@ class User {
   User(this.id, this.firstName, this.lastName, this.role);
 
   static fromJson(Map<String, dynamic> json) {
-    return User(json["id"], json["firstName"], json["lastName"], json["role"]);
+    // TODO: Implement this
+    return User(json["id"], json["firstName"], json["lastName"], "admin");
   }
 
   String toJson() {

@@ -5,7 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mobile/constants.dart';
 
-import 'package:mobile/feathers/models/user.dart';
+import 'package:mobile/services/users/model.dart';
+import 'package:mobile/services/users/service.dart';
 
 class ErrorWidget extends StatelessWidget {
   final String message;
@@ -42,6 +43,11 @@ class ErrorWidget extends StatelessWidget {
           ),
           child: Text(
             FlutterI18n.translate(context, "login.buttons.retry"),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         )
       ],
@@ -82,7 +88,12 @@ class LoginPageState extends State<LoginPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           FutureBuilder(
-            future: usersService.find({}).then((res) => res.data),
+            future: usersService
+                .find(FindParams(
+                  limit: 50,
+                  offset: 0,
+                ))
+                .then((res) => res.data),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();

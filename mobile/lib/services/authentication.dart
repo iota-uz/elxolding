@@ -1,7 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:mobile/feathers/models/product.dart';
-import 'package:mobile/feathers/types.dart';
+import 'package:mobile/models/product.dart';
+import 'package:mobile/services/types.dart';
 
 String authenticateQ = """
 mutation Authenticate(\$userId: Int!, \$password: String!) {

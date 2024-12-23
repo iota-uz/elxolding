@@ -1,16 +1,9 @@
-import 'package:mobile/feathers/services/base.dart';
+import 'package:mobile/models/inventory.dart';
+import 'package:mobile/services/types.dart';
 
-import 'package:mobile/feathers/models/inventory.dart';
-import 'package:mobile/feathers/types.dart';
-
-class RPCService extends Service {
-  RPCService() : super("rpc");
-
+class RPCService {
   Future<RpcResponse> rpc(String method, Map<String, dynamic> params) async {
-    var response = await create({
-      "method": method,
-      "params": params,
-    });
+    var response = <String, dynamic>{};
     return RpcResponse.fromJson(response);
   }
 

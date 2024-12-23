@@ -3,7 +3,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:mobile/constants.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:mobile/feathers/models/order.dart';
+import 'package:mobile/models/order.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

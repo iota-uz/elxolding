@@ -11,7 +11,7 @@ exclude_dir = [
     "internal/assets/images", "tmp", "vendor", "testdata", "postgres-data", "static", "mobile"
 ]
 exclude_file = []
-exclude_regex = ["_test.go"]
+exclude_regex = ["_test.go", "_templ.go"]
 exclude_unchanged = false
 follow_symlink = false
 full_bin = ""
@@ -23,7 +23,10 @@ log = "build-errors.log"
 poll = false
 poll_interval = 0
 post_cmd = []
-pre_cmd = []
+pre_cmd = [
+    "templ generate",
+    "tailwindcss -c tailwind.config.js -i internal/assets/css/main.css -o internal/assets/css/main.min.css --minify"
+]
 rerun = false
 rerun_delay = 500
 send_interrupt = false
@@ -35,6 +38,11 @@ build = "yellow"
 main = "magenta"
 runner = "green"
 watcher = "cyan"
+
+[proxy]
+enabled = true
+proxy_port = 8080
+app_port = 3200
 
 [log]
 main_only = false

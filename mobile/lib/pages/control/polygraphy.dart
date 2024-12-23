@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:mobile/components/footer_button.dart';
 import 'package:mobile/constants.dart';
-import 'package:mobile/feathers/types.dart';
-import 'package:mobile/feathers/models/position.dart';
+import 'package:mobile/services/types.dart';
+import 'package:mobile/models/position.dart';
 import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
