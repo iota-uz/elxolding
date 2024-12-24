@@ -5,7 +5,7 @@ import 'package:mobile/services/types.dart';
 
 String authenticateQ = """
 mutation Authenticate(\$userId: Int!, \$password: String!) {
-    authenticate(userId: \$userId, password: \$password) {
+    authenticateWithUserID(userID: \$userId, password: \$password) {
         token
         userId
         ip
@@ -50,7 +50,7 @@ class AuthenticationService {
     }
     await _storage.write(
       key: "jwt",
-      value: response.data?["authenticate"]["token"],
+      value: response.data?["authenticateWithUserID"]["token"],
     );
     return;
   }

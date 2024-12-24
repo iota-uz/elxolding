@@ -29,6 +29,10 @@ type LoginController struct {
 	authService *services.AuthService
 }
 
+func (c *LoginController) Key() string {
+	return "/login"
+}
+
 func (c *LoginController) Register(r *mux.Router) {
 	router := r.PathPrefix("/login").Subrouter()
 	router.Use(

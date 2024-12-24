@@ -2,11 +2,14 @@ package internal
 
 import (
 	"github.com/iota-agency/elxolding-erp/internal/controllers"
+	"github.com/iota-agency/elxolding-erp/internal/interfaces/graph"
 	"github.com/iota-agency/elxolding-erp/internal/seed"
 	"github.com/iota-agency/elxolding-erp/internal/services"
 	"github.com/iota-agency/iota-sdk/modules/warehouse/persistence"
 	"github.com/iota-agency/iota-sdk/pkg/application"
 )
+
+//go:generate go run github.com/99designs/gqlgen generate
 
 func NewModule() application.Module {
 	return &Module{}
@@ -35,6 +38,12 @@ func (m *Module) Register(app application.Application) error {
 		seed.CreateProducts,
 	)
 	app.RegisterLocaleFiles(&localeFiles)
+	app.RegisterGraphSchema(application.GraphSchema{
+		Value: graph.NewExecutableSchema(graph.Config{
+			Resolvers: graph.NewResolver(app),
+		}),
+		BasePath: "/elxolding",
+	})
 	return nil
 }
 

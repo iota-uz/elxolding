@@ -30,6 +30,10 @@ func NewUsersController(app application.Application) application.Controller {
 	}
 }
 
+func (c *UsersController) Key() string {
+	return c.basePath
+}
+
 func (c *UsersController) Register(r *mux.Router) {
 	commonMiddleware := []mux.MiddlewareFunc{
 		middleware.Authorize(),

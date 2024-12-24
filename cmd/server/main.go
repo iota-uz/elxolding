@@ -45,7 +45,7 @@ func ElxoldingServer(options *DefaultOptions) (*server.HttpServer, error) {
 		middleware.LogRequests(),
 	)
 	serverInstance := server.NewHttpServer(
-		app.Controllers(), app.Middleware(),
+		app,
 		controllers.NotFound(options.Application), controllers.MethodNotAllowed(),
 	)
 	return serverInstance, nil
@@ -85,9 +85,7 @@ func main() {
 	app.RegisterNavItems(warehouse.NavItems...)
 
 	app.RegisterHashFsAssets(assets.HashFS)
-	app.RegisterControllers(
-		controllers.NewStaticFilesController(app.HashFsAssets()),
-	)
+	app.RegisterControllers(controllers.NewStaticFilesController(app.HashFsAssets()))
 
 	options := &DefaultOptions{
 		Logger:        logger,

@@ -18,38 +18,25 @@ RPCService rpcService = RPCService();
 AuthenticationService authenticationService = AuthenticationService();
 UsersService usersService = UsersService();
 
-GraphQLClient coreGraphQLClient(String uri) {
-  final HttpLink httpLink = HttpLink("$uri/graphql/core");
+GraphQLClient graphQLClient(String uri) {
+  final HttpLink httpLink = HttpLink("$uri/query");
   final AuthLink authLink = AuthLink(
     getToken: () async => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
   );
   final Link link = authLink.concat(httpLink);
   return GraphQLClient(
     link: link,
-    cache: GraphQLCache(store: HiveStore()),
-  );
-}
-
-GraphQLClient warehouseGraphQLClient(String uri) {
-  final HttpLink httpLink = HttpLink("$uri/graphql/warehouse");
-  final AuthLink authLink = AuthLink(
-    getToken: () async => 'Bearer',
-  );
-  final Link link = authLink.concat(httpLink);
-  return GraphQLClient(
-    link: link,
-    cache: GraphQLCache(store: HiveStore()),
+    cache: GraphQLCache(),
   );
 }
 
 void init(String baseUrl) {
-  var coreClient = coreGraphQLClient(baseUrl);
-  var warehouseClient = warehouseGraphQLClient(baseUrl);
+  var client = graphQLClient(baseUrl);
 
-  // authenticationService.setClient(client);
-  ordersService.setClient(warehouseClient);
-  productsService.setClient(warehouseClient);
-  positionsService.setClient(warehouseClient);
+  authenticationService.setClient(client);
+  ordersService.setClient(client);
+  productsService.setClient(client);
+  positionsService.setClient(client);
   // rpcService.setClient(client);
-  usersService.setClient(coreClient);
+  usersService.setClient(client);
 }

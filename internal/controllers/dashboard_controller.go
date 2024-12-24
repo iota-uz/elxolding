@@ -25,6 +25,10 @@ type DashboardController struct {
 	dashboardService *services.DashboardService
 }
 
+func (c *DashboardController) Key() string {
+	return "/"
+}
+
 func (c *DashboardController) Register(r *mux.Router) {
 	router := r.Methods(http.MethodGet).Subrouter()
 	router.Use(

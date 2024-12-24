@@ -295,6 +295,7 @@ class _EnterPasswordState extends State<EnterPassword> {
                         .then((res) {
                       GoRouter.of(context).goNamed("home");
                     }).catchError((e) {
+                      print(e.toString());
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(

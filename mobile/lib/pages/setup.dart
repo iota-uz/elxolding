@@ -57,7 +57,7 @@ class _SetupPageState extends State<SetupPage> {
     if (ip == null) {
       return ("", false);
     }
-    final ping = Ping('google.com', count: 1);
+    final ping = Ping(ip, count: 1);
     final result = await ping.stream.first;
     return (ip, result.error == null);
   }
