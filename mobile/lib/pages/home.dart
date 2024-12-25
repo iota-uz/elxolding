@@ -4,7 +4,6 @@ import 'package:mobile/constants.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mobile/services/orders/orders.model.dart';
-import 'package:mobile/services/orders/orders.service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

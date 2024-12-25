@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:mobile/models/product.dart';
+import 'package:mobile/services/products/products.model.dart';
 
 class OrderItem {
   final int id;
@@ -70,5 +70,31 @@ class Order {
         .toSet()
         .toList();
     return Order(json["id"], json["type"], products, items);
+  }
+}
+
+class FindParams {
+  FindParams({
+    this.offset = 0,
+    this.limit = 50,
+    this.sortBy = const ["id asc"],
+    this.type,
+  });
+
+  int offset;
+  int limit;
+  List<String> sortBy;
+  String? type;
+
+  toJSON() {
+    Map<String, dynamic> json = {
+      "offset": offset,
+      "limit": limit,
+      "sortBy": sortBy.join(","),
+    };
+    if (type != null) {
+      json["type"] = type;
+    }
+    return json;
   }
 }

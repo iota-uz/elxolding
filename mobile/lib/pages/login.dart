@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mobile/constants.dart';
 
 import 'package:mobile/services/users/users.model.dart';
-import 'package:mobile/services/users/users.service.dart';
 
 class ErrorWidget extends StatelessWidget {
   final String message;

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:mobile/components/footer_button.dart';
 import 'package:mobile/constants.dart';
-import 'package:mobile/models/product.dart';
+import 'package:mobile/services/products/products.model.dart';
 import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
-import 'package:mobile/services/products.dart';
+import 'package:mobile/services/products/products.service.dart';
 
 class TCIScanPage extends StatefulWidget {
   final String pk;

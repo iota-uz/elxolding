@@ -13,7 +13,7 @@
 //         },
 
 
-import 'package:mobile/models/product.dart';
+import 'package:mobile/services/products/products.model.dart';
 
 class Position {
   final int id;

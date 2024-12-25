@@ -4,32 +4,6 @@ import 'package:mobile/services/types.dart';
 import 'orders.model.dart';
 import 'orders.queries.dart';
 
-class FindParams {
-  FindParams({
-    this.offset = 0,
-    this.limit = 50,
-    this.sortBy = const ["id asc"],
-    this.type,
-  });
-
-  int offset;
-  int limit;
-  List<String> sortBy;
-  String? type;
-
-  toJSON() {
-    Map<String, dynamic> json = {
-      "offset": offset,
-      "limit": limit,
-      "sortBy": sortBy.join(","),
-    };
-    if (type != null) {
-      json["type"] = type;
-    }
-    return json;
-  }
-}
-
 class OrdersService {
   late GraphQLClient _client;
 

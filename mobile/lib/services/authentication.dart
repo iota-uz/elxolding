@@ -1,6 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:mobile/models/product.dart';
+import 'package:mobile/services/products/products.model.dart';
 import 'package:mobile/services/types.dart';
 
 String authenticateQ = """

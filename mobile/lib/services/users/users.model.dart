@@ -22,3 +22,23 @@ class User {
     });
   }
 }
+
+class FindParams {
+  FindParams({
+    this.offset = 0,
+    this.limit = 50,
+    this.sortBy = const ["id asc"],
+  });
+
+  int offset;
+  int limit;
+  List<String> sortBy;
+
+  toJSON() {
+    return {
+      "offset": offset,
+      "limit": limit,
+      "sortBy": sortBy,
+    };
+  }
+}
