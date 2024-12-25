@@ -1,4 +1,4 @@
-import 'package:mobile/models/inventory.dart';
+import 'package:mobile/services/inventory/inventory.model.dart';
 import 'package:mobile/services/types.dart';
 
 class RPCService {

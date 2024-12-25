@@ -7,7 +7,7 @@ import 'package:mobile/constants.dart';
 
 import 'package:mobile/models/product.dart';
 
-import 'package:mobile/models/inventory.dart';
+import 'package:mobile/services/inventory/inventory.model.dart';
 
 import 'package:mobile/components/footer_button.dart';
 

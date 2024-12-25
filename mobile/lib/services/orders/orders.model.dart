@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:mobile/models/product.dart';
 
-class OrderPosition {
+class OrderItem {
   final int id;
   final String title;
   final String barcode;
@@ -10,18 +10,27 @@ class OrderPosition {
   final String? photo;
   final List<Product> products;
 
-  OrderPosition(this.id, this.title, this.barcode, this.unit, this.photo, this.products);
+  OrderItem(
+    this.id,
+    this.title,
+    this.barcode,
+    this.unit,
+    this.photo,
+    this.products,
+  );
 
   static fromJson(Map<String, dynamic> json) {
     Map<String, dynamic> positionJson = json["position"];
     List<dynamic> productsJson = json["products"];
     var products =
         productsJson.map<Product>((e) => Product.fromJson(e)).toList();
-    return OrderPosition(
+    return OrderItem(
       positionJson["id"],
       positionJson["title"],
       positionJson["barcode"],
-      positionJson["unit"],
+      // TODO: implement
+      "unit",
+      // positionJson["unit"],
       positionJson["photo"],
       products,
     );
@@ -32,7 +41,7 @@ class Order {
   final int id;
   final String type; // delivery, pickup
   final List<Product> products;
-  final List<OrderPosition> positions;
+  final List<OrderItem> positions;
 
   Order(this.id, this.type, this.products, this.positions);
 
@@ -53,13 +62,13 @@ class Order {
   }
 
   static fromJson(Map<String, dynamic> json) {
-    List<dynamic> productsJson = json["products"];
-    List<dynamic> positionsJson = json["positions"];
-    var products =
-        productsJson.map<Product>((e) => Product.fromJson(e)).toList();
-    var positions = positionsJson
-        .map<OrderPosition>((e) => OrderPosition.fromJson(e))
+    List<dynamic> itemsJson = json["items"];
+    var items = itemsJson.map<OrderItem>((e) => OrderItem.fromJson(e)).toList();
+    var products = items
+        .map((e) => e.products)
+        .expand((element) => element)
+        .toSet()
         .toList();
-    return Order(json["id"], json["type"], products, positions);
+    return Order(json["id"], json["type"], products, items);
   }
 }

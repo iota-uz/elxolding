@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/iota-agency/elxolding-erp/internal"
 	"github.com/iota-agency/iota-sdk/modules"
 	"github.com/iota-agency/iota-sdk/pkg/application"
 	"github.com/iota-agency/iota-sdk/pkg/composables"
@@ -19,7 +20,7 @@ func main() {
 	}
 
 	app := application.New(db, event.NewEventPublisher())
-	if err := modules.Load(app, modules.BuiltInModules...); err != nil {
+	if err := modules.Load(app, internal.Modules...); err != nil {
 		panic(err)
 	}
 	if err := db.Transaction(func(tx *gorm.DB) error {

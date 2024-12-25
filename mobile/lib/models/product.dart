@@ -8,7 +8,7 @@ class Product {
 
   Product.fromJson(Map<String, dynamic> json)
       : id = json["id"],
-        positionId = json["positionId"],
+        positionId = json["positionID"],
         status = json["status"],
         rfid = json["rfid"];
 }

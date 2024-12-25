@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile/constants.dart';
-import 'package:mobile/models/inventory.dart';
+import 'package:mobile/services/inventory/inventory.model.dart';
 
 class TCIPage extends StatefulWidget {
   const TCIPage({Key? key}) : super(key: key);
