@@ -53,13 +53,14 @@ class _SetupPageState extends State<SetupPage> {
   }
 
   Future<(String, bool)> checkIpAddress() async {
-    var ip = await _storage.read(key: "server-uri");
-    if (ip == null) {
+    var uri = await _storage.read(key: "server-uri");
+    if (uri == null) {
       return ("", false);
     }
-    final ping = Ping(ip, count: 1);
+    final host = Uri.parse(uri).host;
+    final ping = Ping(host, count: 1);
     final result = await ping.stream.first;
-    return (ip, result.error == null);
+    return (uri, result.error == null);
   }
 
   @override

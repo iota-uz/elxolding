@@ -11,6 +11,7 @@ import (
 	"github.com/iota-agency/iota-sdk/pkg/domain/entities/tab"
 	"github.com/iota-agency/iota-sdk/pkg/types"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
+	"time"
 )
 
 func navItems2Tabs(navItems []types.NavigationItem) []*tab.Tab {
@@ -44,6 +45,8 @@ func CreateUser(ctx context.Context, app application.Application) error {
 		Roles: []*role.Role{
 			&constants.CEO,
 		},
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 	if err := usr.SetPassword("TestPass123!"); err != nil {
 		return err

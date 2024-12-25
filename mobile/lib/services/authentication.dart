@@ -49,7 +49,7 @@ class AuthenticationService {
       throw Exception(response.exception.toString());
     }
     await _storage.write(
-      key: "jwt",
+      key: "sid",
       value: response.data?["authenticateWithUserID"]["token"],
     );
     return;

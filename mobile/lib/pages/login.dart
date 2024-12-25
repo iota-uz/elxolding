@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mobile/constants.dart';
 
-import 'package:mobile/services/users/model.dart';
-import 'package:mobile/services/users/service.dart';
+import 'package:mobile/services/users/users.model.dart';
+import 'package:mobile/services/users/users.service.dart';
 
 class ErrorWidget extends StatelessWidget {
   final String message;
@@ -67,8 +67,9 @@ class LoginPage extends StatefulWidget {
 class LoginPageState extends State<LoginPage> {
   Future<bool> isAuthenticated(BuildContext context) async {
     const storage = FlutterSecureStorage();
-    var token = await storage.read(key: "jwt");
-    return token != null && !JwtDecoder.isExpired(token);
+    var token = await storage.read(key: "sid");
+    // TODO: Implement this
+    return token != null;
   }
 
   @override

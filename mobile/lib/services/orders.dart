@@ -76,6 +76,7 @@ class OrdersService {
     );
     final response = await _client.query(options);
     if (response.hasException) {
+      print(response.source.toString());
       throw Exception(response.exception.toString());
     }
     return PaginateResponse<Order>.fromJson(

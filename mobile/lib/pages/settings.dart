@@ -82,7 +82,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 trailing: const Icon(Icons.arrow_forward_ios),
                 onTap: () {
                   const storage = FlutterSecureStorage();
-                  storage.delete(key: "jwt");
+                  storage.delete(key: "sid");
                   constants.isLoggedIn = false;
                   context.pushNamed("login");
                 },

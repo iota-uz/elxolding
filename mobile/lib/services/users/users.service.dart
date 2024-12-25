@@ -1,8 +1,8 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:mobile/services/types.dart';
 
-import 'package:mobile/services/users/model.dart';
-import 'package:mobile/services/users/queries.dart';
+import 'package:mobile/services/users/users.model.dart';
+import 'package:mobile/services/users/users.queries.dart';
 
 class FindParams {
   FindParams({

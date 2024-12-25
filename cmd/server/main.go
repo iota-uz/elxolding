@@ -85,7 +85,10 @@ func main() {
 	app.RegisterNavItems(warehouse.NavItems...)
 
 	app.RegisterHashFsAssets(assets.HashFS)
-	app.RegisterControllers(controllers.NewStaticFilesController(app.HashFsAssets()))
+	app.RegisterControllers(
+		controllers.NewStaticFilesController(app.HashFsAssets()),
+		controllers.NewGraphQLController(app),
+	)
 
 	options := &DefaultOptions{
 		Logger:        logger,
