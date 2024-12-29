@@ -1,21 +1,21 @@
 package main
 
 import (
-	"github.com/iota-agency/elxolding-erp/internal"
-	"github.com/iota-agency/elxolding-erp/internal/assets"
-	"github.com/iota-agency/elxolding-erp/internal/templates/layouts"
-	"github.com/iota-agency/iota-sdk/modules"
-	"github.com/iota-agency/iota-sdk/modules/core"
-	"github.com/iota-agency/iota-sdk/modules/core/presentation/controllers"
-	"github.com/iota-agency/iota-sdk/modules/warehouse"
-	"github.com/iota-agency/iota-sdk/pkg/application"
-	"github.com/iota-agency/iota-sdk/pkg/application/dbutils"
-	"github.com/iota-agency/iota-sdk/pkg/configuration"
-	"github.com/iota-agency/iota-sdk/pkg/constants"
-	"github.com/iota-agency/iota-sdk/pkg/event"
-	"github.com/iota-agency/iota-sdk/pkg/logging"
-	"github.com/iota-agency/iota-sdk/pkg/middleware"
-	"github.com/iota-agency/iota-sdk/pkg/server"
+	"github.com/iota-uz/elxolding-erp/internal"
+	"github.com/iota-uz/elxolding-erp/internal/assets"
+	"github.com/iota-uz/elxolding-erp/internal/templates/layouts"
+	"github.com/iota-uz/iota-sdk/modules"
+	"github.com/iota-uz/iota-sdk/modules/core"
+	"github.com/iota-uz/iota-sdk/modules/core/presentation/controllers"
+	"github.com/iota-uz/iota-sdk/modules/warehouse"
+	"github.com/iota-uz/iota-sdk/pkg/application"
+	"github.com/iota-uz/iota-sdk/pkg/application/dbutils"
+	"github.com/iota-uz/iota-sdk/pkg/configuration"
+	"github.com/iota-uz/iota-sdk/pkg/constants"
+	"github.com/iota-uz/iota-sdk/pkg/event"
+	"github.com/iota-uz/iota-sdk/pkg/logging"
+	"github.com/iota-uz/iota-sdk/pkg/middleware"
+	"github.com/iota-uz/iota-sdk/pkg/server"
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
@@ -80,7 +80,7 @@ func main() {
 	if err := modules.Load(app, internal.Modules...); err != nil {
 		log.Fatalf("failed to load modules: %v", err)
 	}
-	app.RegisterNavItems(core.NavItems...)
+	app.RegisterNavItems(core.DashboardLink)
 	app.RegisterNavItems(internal.NavItems...)
 	app.RegisterNavItems(warehouse.NavItems...)
 

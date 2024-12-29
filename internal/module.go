@@ -1,12 +1,12 @@
 package internal
 
 import (
-	"github.com/iota-agency/elxolding-erp/internal/controllers"
-	"github.com/iota-agency/elxolding-erp/internal/interfaces/graph"
-	"github.com/iota-agency/elxolding-erp/internal/seed"
-	"github.com/iota-agency/elxolding-erp/internal/services"
-	"github.com/iota-agency/iota-sdk/modules/warehouse/persistence"
-	"github.com/iota-agency/iota-sdk/pkg/application"
+	"github.com/iota-uz/elxolding-erp/internal/controllers"
+	"github.com/iota-uz/elxolding-erp/internal/interfaces/graph"
+	"github.com/iota-uz/elxolding-erp/internal/seed"
+	"github.com/iota-uz/elxolding-erp/internal/services"
+	"github.com/iota-uz/iota-sdk/modules/warehouse/persistence"
+	"github.com/iota-uz/iota-sdk/pkg/application"
 )
 
 //go:generate go run github.com/99designs/gqlgen generate

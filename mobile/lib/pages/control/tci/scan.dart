@@ -6,8 +6,6 @@ import 'package:mobile/services/products/products.model.dart';
 import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
-import 'package:mobile/services/products/products.service.dart';
-
 class TCIScanPage extends StatefulWidget {
   final String pk;
 
@@ -90,24 +88,17 @@ class _TCIScanPageState extends State<TCIScanPage> {
           content: Text(FlutterI18n.translate(context, "tci.errors.tagsEmpty")),
         ),
       );
+      return;
     }
-    rpcService.validateProducts(_data.map((e) => e.epc).toList()).then((value) {
-      if (value.hasError()) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(value.error["message"]),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(FlutterI18n.translate(context, "tci.success")),
-          ),
-        );
-        setState(() {
-          _data.clear();
-        });
-      }
+    productsService.validate(_data.map((e) => e.epc).toList()).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(FlutterI18n.translate(context, "tci.success")),
+        ),
+      );
+      setState(() {
+        _data.clear();
+      });
     }).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

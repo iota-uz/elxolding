@@ -20,20 +20,6 @@ class RPCService {
         .toList();
   }
 
-  Future<RpcResponse> createProductsFromTags(
-      int positionId, List<String> tags) {
-    return rpc("CreateProductsFromTags", {
-      "positionId": positionId,
-      "tags": tags,
-    });
-  }
-
-  Future<RpcResponse> validateProducts(List<String> tags) {
-    return rpc("ValidateProducts", {
-      "tags": tags,
-    });
-  }
-
   Future<RpcResponse> completeInventoryCheck(List<Map<String, int>> positions) {
     return rpc("CompleteInventoryCheck", {
       "positions": positions,

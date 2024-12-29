@@ -4,7 +4,7 @@ import 'package:mobile/services/authentication.dart';
 import 'package:mobile/services/orders/orders.service.dart';
 
 import 'package:mobile/services/products/products.service.dart';
-import 'package:mobile/services/positions.dart';
+import 'package:mobile/services/positions/positions.service.dart';
 import 'package:mobile/services/rpc.dart';
 import 'package:mobile/services/users/users.service.dart';
 

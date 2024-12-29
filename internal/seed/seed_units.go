@@ -2,10 +2,10 @@ package seed
 
 import (
 	"context"
-	"github.com/iota-agency/iota-sdk/modules/warehouse/domain/entities/unit"
-	"github.com/iota-agency/iota-sdk/modules/warehouse/persistence"
-	"github.com/iota-agency/iota-sdk/pkg/application"
-	"github.com/iota-agency/iota-sdk/pkg/composables"
+	"github.com/iota-uz/iota-sdk/modules/warehouse/domain/entities/unit"
+	"github.com/iota-uz/iota-sdk/modules/warehouse/persistence"
+	"github.com/iota-uz/iota-sdk/pkg/application"
+	"github.com/iota-uz/iota-sdk/pkg/composables"
 )
 
 func CreateUnits(ctx context.Context, app application.Application) error {

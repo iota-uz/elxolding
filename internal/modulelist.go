@@ -1,9 +1,9 @@
 package internal
 
 import (
-	"github.com/iota-agency/iota-sdk/modules/core"
-	"github.com/iota-agency/iota-sdk/modules/warehouse"
-	"github.com/iota-agency/iota-sdk/pkg/application"
+	"github.com/iota-uz/iota-sdk/modules/core"
+	"github.com/iota-uz/iota-sdk/modules/warehouse"
+	"github.com/iota-uz/iota-sdk/pkg/application"
 )
 
 var Modules = []application.Module{

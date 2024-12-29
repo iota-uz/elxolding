@@ -1,9 +1,9 @@
 package constants
 
 import (
-	"github.com/iota-agency/iota-sdk/modules/warehouse/permissions"
-	"github.com/iota-agency/iota-sdk/pkg/domain/aggregates/role"
-	"github.com/iota-agency/iota-sdk/pkg/domain/entities/permission"
+	"github.com/iota-uz/iota-sdk/modules/core/domain/aggregates/role"
+	"github.com/iota-uz/iota-sdk/modules/core/domain/entities/permission"
+	"github.com/iota-uz/iota-sdk/modules/warehouse/permissions"
 	"time"
 )
 

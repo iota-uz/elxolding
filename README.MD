@@ -26,7 +26,7 @@ ELXOLDING ERP - ERP system for tracking inventory using RFID technology.
 Clone the repository
 
 ```shell
-git clone https://github.com/iota-agency/iota-erp.git
+git clone https://github.com/iota-uz/iota-erp.git
 ```
 
 Install dependencies

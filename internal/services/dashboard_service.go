@@ -2,10 +2,10 @@ package services
 
 import (
 	"context"
-	"github.com/iota-agency/elxolding-erp/internal/domain/entities/dashboard"
-	"github.com/iota-agency/iota-sdk/modules/warehouse/domain/aggregates/order"
-	"github.com/iota-agency/iota-sdk/modules/warehouse/domain/aggregates/position"
-	"github.com/iota-agency/iota-sdk/modules/warehouse/domain/aggregates/product"
+	"github.com/iota-uz/elxolding-erp/internal/domain/entities/dashboard"
+	"github.com/iota-uz/iota-sdk/modules/warehouse/domain/aggregates/order"
+	"github.com/iota-uz/iota-sdk/modules/warehouse/domain/aggregates/position"
+	"github.com/iota-uz/iota-sdk/modules/warehouse/domain/aggregates/product"
 	"sync"
 )
 
@@ -49,7 +49,7 @@ func (s *DashboardService) GetStats(ctx context.Context) (*dashboard.Stats, erro
 
 	go func() {
 		defer wg.Done()
-		count, e := s.productRepo.Count(ctx)
+		count, e := s.productRepo.Count(ctx, nil)
 		mu.Lock()
 		defer mu.Unlock()
 		if e != nil {

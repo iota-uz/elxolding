@@ -1,4 +1,4 @@
-module github.com/iota-agency/elxolding-erp
+module github.com/iota-uz/elxolding-erp
 
 go 1.23.2
 
@@ -8,7 +8,6 @@ require (
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.23.0
 	github.com/gorilla/mux v1.8.1
-	github.com/iota-agency/iota-sdk v0.0.0-20241217070421-17102e40255f
 	github.com/lib/pq v1.10.9
 	github.com/nicksnyder/go-i18n/v2 v2.4.1
 	gorm.io/driver/postgres v1.5.11
@@ -37,6 +36,7 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.4 // indirect
 	github.com/googleapis/gax-go/v2 v2.14.0 // indirect
+	github.com/iota-uz/iota-sdk v0.0.0-20241229155631-56ecdbc27d24 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/pgx/v5 v5.7.1 // indirect

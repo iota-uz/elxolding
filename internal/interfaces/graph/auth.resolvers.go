@@ -9,10 +9,10 @@ import (
 	"fmt"
 	"net/http"
 
-	model1 "github.com/iota-agency/iota-sdk/modules/core/interfaces/graph/gqlmodels"
-	"github.com/iota-agency/iota-sdk/modules/core/interfaces/graph/mappers"
-	"github.com/iota-agency/iota-sdk/pkg/composables"
-	"github.com/iota-agency/iota-sdk/pkg/configuration"
+	model1 "github.com/iota-uz/iota-sdk/modules/core/interfaces/graph/gqlmodels"
+	"github.com/iota-uz/iota-sdk/modules/core/interfaces/graph/mappers"
+	"github.com/iota-uz/iota-sdk/pkg/composables"
+	"github.com/iota-uz/iota-sdk/pkg/configuration"
 )
 
 // AuthenticateWithUserID is the resolver for the authenticateWithUserID field.

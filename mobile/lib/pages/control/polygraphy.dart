@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:mobile/components/footer_button.dart';
 import 'package:mobile/constants.dart';
-import 'package:mobile/models/position.dart';
+import 'package:mobile/services/positions/positions.model.dart';
 import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
@@ -84,7 +84,7 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
   }
 
   Future<List<Position>> fetchPositions() async {
-    var res = await positionsService.find({});
+    var res = await positionsService.find(FindParams());
     return res.data;
   }
 

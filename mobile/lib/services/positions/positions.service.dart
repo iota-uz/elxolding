@@ -1,22 +1,7 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:mobile/services/positions/positions.model.dart';
+import 'package:mobile/services/positions/positions.queries.dart';
 import 'package:mobile/services/types.dart';
-
-import 'package:mobile/models/position.dart';
-
-String findPositions = """
-query WarehousePositions(\$offset: Int, \$limit: Int, \$sortBy: String) {
-    warehousePositions(offset: \$offset, limit: \$limit, sortBy: \$sortBy) {
-        total
-        data {
-            id
-            title
-            barcode
-            createdAt
-            updatedAt
-        }
-    }
-}
-""";
 
 class PositionsService {
   late GraphQLClient _client;
@@ -25,10 +10,10 @@ class PositionsService {
     _client = client;
   }
 
-  Future<PaginateResponse<Position>> find(Map<String, dynamic> params) async {
+  Future<PaginateResponse<Position>> find(FindParams params) async {
     final WatchQueryOptions options = WatchQueryOptions(
       document: gql(findPositions),
-      variables: params,
+      variables: params.toJSON(),
     );
     final response = await _client.query(options);
     if (response.hasException) {
