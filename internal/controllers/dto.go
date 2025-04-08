@@ -27,17 +27,22 @@ func (u *SaveAccountDTO) Ok(l ut.Translator) (map[string]string, bool) {
 	return errors, len(errors) == 0
 }
 
-func (u *SaveAccountDTO) ToEntity(id uint) (*user.User, error) {
+func (u *SaveAccountDTO) ToEntity(id uint) (user.User, error) {
 	lang, err := user.NewUILanguage(u.UILanguage)
 	if err != nil {
 		return nil, err
 	}
-	return &user.User{
-		ID:         id,
-		FirstName:  u.FirstName,
-		LastName:   u.LastName,
-		MiddleName: u.MiddleName,
-		UILanguage: lang,
-		AvatarID:   &u.AvatarID,
-	}, nil
+	
+	// Create a user object using functional options pattern
+	userEntity := user.New(
+		u.FirstName,
+		u.LastName,
+		nil, // Email is required but not provided in DTO
+		lang,
+		user.WithID(id),
+		user.WithMiddleName(u.MiddleName),
+		user.WithAvatarID(u.AvatarID),
+	)
+	
+	return userEntity, nil
 }

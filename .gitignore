@@ -33,3 +33,4 @@ static/
 *_templ.txt
 internal/assets/css/main.min.css
 logs/
+.DS_Store

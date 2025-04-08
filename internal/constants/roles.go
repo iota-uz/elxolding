@@ -8,12 +8,11 @@ import (
 )
 
 var (
-	CEO = role.Role{
-		ID:          1,
-		Name:        "Руко́водитель",
-		Description: "Руко́водитель",
-		Permissions: append(
-			permission.Permissions,
+	CEO = role.New("Руко́водитель",
+		role.WithID(1),
+		role.WithDescription("Руко́водитель"),
+		role.WithPermissions(append(
+			[]*permission.Permission{},  // Changed from permission.Permissions
 			permissions.PositionCreate,
 			permissions.PositionRead,
 			permissions.PositionUpdate,
@@ -30,16 +29,16 @@ var (
 			permissions.UnitRead,
 			permissions.UnitUpdate,
 			permissions.UnitDelete,
-		),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	}
-	Admin = role.Role{
-		ID:          2,
-		Name:        "Администратор",
-		Description: "Администратор",
-		Permissions: append(
-			permission.Permissions,
+		)),
+		role.WithCreatedAt(time.Now()),
+		role.WithUpdatedAt(time.Now()),
+	)
+	
+	Admin = role.New("Администратор",
+		role.WithID(2),
+		role.WithDescription("Администратор"),
+		role.WithPermissions(append(
+			[]*permission.Permission{},  // Changed from permission.Permissions
 			permissions.PositionCreate,
 			permissions.PositionRead,
 			permissions.PositionUpdate,
@@ -56,16 +55,16 @@ var (
 			permissions.UnitRead,
 			permissions.UnitUpdate,
 			permissions.UnitDelete,
-		),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	}
-	Printing = role.Role{
-		ID:          3,
-		Name:        "Полиграфия",
-		Description: "Полиграфия",
-		Permissions: append(
-			permission.Permissions,
+		)),
+		role.WithCreatedAt(time.Now()),
+		role.WithUpdatedAt(time.Now()),
+	)
+	
+	Printing = role.New("Полиграфия",
+		role.WithID(3),
+		role.WithDescription("Полиграфия"),
+		role.WithPermissions(append(
+			[]*permission.Permission{},  // Changed from permission.Permissions
 			permissions.PositionCreate,
 			permissions.PositionRead,
 			permissions.PositionUpdate,
@@ -82,26 +81,26 @@ var (
 			permissions.UnitRead,
 			permissions.UnitUpdate,
 			permissions.UnitDelete,
-		),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	}
-	QualityAssurance = role.Role{
-		ID:          4,
-		Name:        "ОТК",
-		Description: "Отдел технического контроля",
-		Permissions: permission.Permissions,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
-	}
-	WarehouseEmployee = role.Role{
-		ID:          5,
-		Name:        "Склад",
-		Description: "Склад",
-		Permissions: permission.Permissions,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
-	}
+		)),
+		role.WithCreatedAt(time.Now()),
+		role.WithUpdatedAt(time.Now()),
+	)
+	
+	QualityAssurance = role.New("ОТК",
+		role.WithID(4),
+		role.WithDescription("Отдел технического контроля"),
+		role.WithPermissions([]*permission.Permission{}),  // Changed from permission.Permissions
+		role.WithCreatedAt(time.Now()),
+		role.WithUpdatedAt(time.Now()),
+	)
+	
+	WarehouseEmployee = role.New("Склад",
+		role.WithID(5),
+		role.WithDescription("Склад"),
+		role.WithPermissions([]*permission.Permission{}),  // Changed from permission.Permissions
+		role.WithCreatedAt(time.Now()),
+		role.WithUpdatedAt(time.Now()),
+	)
 )
 
 var (

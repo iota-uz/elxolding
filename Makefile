@@ -4,7 +4,7 @@ TAILWIND_OUTPUT := internal/assets/css/main.min.css
 
 # Install dependencies
 deps:
-	go get -u ./...
+	go get ./...
 
 # Seed database
 seed:
@@ -13,35 +13,19 @@ seed:
 generate:
 	go generate ./... && templ generate
 
-# Run tests
-test:
-	go test -v ./... -coverprofile=./coverage/coverage.out
+# Upgrade iota-sdk version && push
+release:
+	make upgrade-sdk && git add . && git commit -m "chore: upgrade sdk to the lastest version" && git push
 
-# Run tests with file watching
-test-watch:
-	gow test -v ./...
-
-# Run tests inside docker
-test-docker:
-	docker compose -f docker-compose.testing.yml up --build erp_local
-
-coverage-score:
-	go tool cover -func ./coverage/coverage.out | grep "total:" | awk '{print ((int($$3) > 80) != 1) }'
-
-report:
-	go tool cover -html=coverage.out -o ./coverage/cover.html
+migrate:
+	go run cmd/migrate/main.go $(filter-out $@,$(MAKECMDGOALS))
 
 # Run PostgreSQL
 localdb:
-	docker compose -f docker-compose.dev.yml up
+	docker compose -f compose.dev.yml up db
 
-# Apply database migrations (up)
-migrate-up:
-	go run cmd/migrate/main.go up
-
-# Downgrade database migrations (down)
-migrate-down:
-	go run cmd/migrate/main.go down
+clear-localdb:
+	rm -rf volumes/postgres-data/
 
 # Compile TailwindCSS (with watch)
 css-watch:
@@ -59,7 +43,15 @@ lint:
 clean:
 	rm -rf $(TAILWIND_OUTPUT)
 
-# Full setup
-setup: deps localdb migrate-up css lint
+# Upgrade iota-sdk version
+upgrade-sdk:
+	chmod +x upgrade.sh && ./upgrade.sh
 
-.PHONY: default deps test test-watch localdb migrate-up migrate-down dev css-watch css lint clean setup
+# Full setup
+setup: deps migrate-up css lint
+
+# Prevents make from treating the argument as an undefined target
+%:
+	@:
+
+.PHONY: deps localdb migrate-up migrate-down dev css-watch css lint clean setup

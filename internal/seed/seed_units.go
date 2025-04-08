@@ -3,7 +3,7 @@ package seed
 import (
 	"context"
 	"github.com/iota-uz/iota-sdk/modules/warehouse/domain/entities/unit"
-	"github.com/iota-uz/iota-sdk/modules/warehouse/persistence"
+	"github.com/iota-uz/iota-sdk/modules/warehouse/infrastructure/persistence"
 	"github.com/iota-uz/iota-sdk/pkg/application"
 	"github.com/iota-uz/iota-sdk/pkg/composables"
 )
@@ -45,9 +45,10 @@ func CreateUnits(ctx context.Context, app application.Application) error {
 		}
 	}
 
-	tx, ok := composables.UseTx(ctx)
-	if !ok {
-		return composables.ErrNoTx
+	tx, err := composables.UseTx(ctx)
+	if err != nil {
+		return err
 	}
-	return tx.Exec("SELECT setval('public.warehouse_units_id_seq', (SELECT MAX(id) FROM warehouse_units));").Error
+	_, err = tx.Exec(context.Background(), "SELECT setval('public.warehouse_units_id_seq', (SELECT MAX(id) FROM warehouse_units));")
+	return err
 }

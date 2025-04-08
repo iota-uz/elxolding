@@ -21,7 +21,7 @@ func (r *mutationResolver) AuthenticateWithUserID(ctx context.Context, userID in
 	if !ok {
 		return nil, fmt.Errorf("request params not found")
 	}
-	_, session, err := r.authService.AuthenticateWithUserId(ctx, uint(userID), password)
+	_, session, err := r.authService.AuthenticateWithUserID(ctx, uint(userID), password)
 	if err != nil {
 		return nil, err
 	}

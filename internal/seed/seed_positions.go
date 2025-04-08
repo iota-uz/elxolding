@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/iota-uz/iota-sdk/modules/warehouse/domain/aggregates/position"
-	"github.com/iota-uz/iota-sdk/modules/warehouse/persistence"
+	"github.com/iota-uz/iota-sdk/modules/warehouse/infrastructure/persistence"
 	"github.com/iota-uz/iota-sdk/pkg/application"
 	"github.com/iota-uz/iota-sdk/pkg/composables"
 	"time"
@@ -31,9 +31,10 @@ func CreatePositions(ctx context.Context, app application.Application) error {
 			return err
 		}
 	}
-	tx, ok := composables.UseTx(ctx)
-	if !ok {
-		return composables.ErrNoTx
+	tx, err := composables.UseTx(ctx)
+	if err != nil {
+		return err
 	}
-	return tx.Exec("SELECT setval('public.warehouse_positions_id_seq', (SELECT MAX(id) FROM warehouse_positions));").Error
+	_, err = tx.Exec(context.Background(), "SELECT setval('public.warehouse_positions_id_seq', (SELECT MAX(id) FROM warehouse_positions));")
+	return err
 }

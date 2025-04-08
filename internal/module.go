@@ -3,9 +3,8 @@ package internal
 import (
 	"github.com/iota-uz/elxolding-erp/internal/controllers"
 	"github.com/iota-uz/elxolding-erp/internal/interfaces/graph"
-	"github.com/iota-uz/elxolding-erp/internal/seed"
 	"github.com/iota-uz/elxolding-erp/internal/services"
-	"github.com/iota-uz/iota-sdk/modules/warehouse/persistence"
+	"github.com/iota-uz/iota-sdk/modules/warehouse/infrastructure/persistence"
 	"github.com/iota-uz/iota-sdk/pkg/application"
 )
 
@@ -19,23 +18,17 @@ type Module struct {
 }
 
 func (m *Module) Register(app application.Application) error {
+	positionRepo := persistence.NewPositionRepository()
+	productRepo := persistence.NewProductRepository()
 	dashboardService := services.NewDashboardService(
-		persistence.NewPositionRepository(),
-		persistence.NewProductRepository(),
-		persistence.NewOrderRepository(),
+		positionRepo,
+		productRepo,
+		persistence.NewOrderRepository(productRepo),
 	)
 	app.RegisterServices(dashboardService)
 	app.RegisterControllers(
 		controllers.NewDashboardController(app),
-		controllers.NewAccountController(app),
 		controllers.NewLoginController(app),
-		controllers.NewUsersController(app),
-	)
-	app.RegisterSeedFuncs(
-		seed.CreateUnits,
-		seed.CreateUser,
-		seed.CreatePositions,
-		seed.CreateProducts,
 	)
 	app.RegisterLocaleFiles(&localeFiles)
 	app.RegisterGraphSchema(application.GraphSchema{

@@ -6,6 +6,7 @@ import (
 	"github.com/iota-uz/iota-sdk/modules/core/domain/aggregates/role"
 	"github.com/iota-uz/iota-sdk/modules/core/domain/aggregates/user"
 	"github.com/iota-uz/iota-sdk/modules/core/domain/entities/tab"
+	"github.com/iota-uz/iota-sdk/modules/core/domain/value_objects/internet"
 	"github.com/iota-uz/iota-sdk/modules/core/infrastructure/persistence"
 	"github.com/iota-uz/iota-sdk/pkg/application"
 	"github.com/iota-uz/iota-sdk/pkg/composables"
@@ -26,31 +27,41 @@ func navItems2Tabs(navItems []types.NavigationItem) []*tab.Tab {
 }
 
 func CreateUser(ctx context.Context, app application.Application) error {
-	userRepository := persistence.NewUserRepository()
+	uploadRepository := persistence.NewUploadRepository()
+	userRepository := persistence.NewUserRepository(uploadRepository)
 	roleRepository := persistence.NewRoleRepository()
 	tabsRepository := persistence.NewTabRepository()
 
 	for _, r := range constants.Roles {
-		if err := roleRepository.CreateOrUpdate(ctx, &r); err != nil {
+		if err := roleRepository.CreateOrUpdate(ctx, r); err != nil {
 			return err
 		}
 	}
-	usr := &user.User{
-		//nolint:exhaustruct
-		ID:         1,
-		FirstName:  "Admin",
-		LastName:   "User",
-		Email:      "test@gmail.com",
-		UILanguage: user.UILanguageRU,
-		Roles: []*role.Role{
-			&constants.CEO,
-		},
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
-	}
-	if err := usr.SetPassword("TestPass123!"); err != nil {
+	
+	// Parse the email
+	email, err := internet.NewEmail("test@gmail.com")
+	if err != nil {
 		return err
 	}
+	
+	// Create user using the functional options pattern
+	usr := user.New(
+		"Admin",
+		"User",
+		email,
+		user.UILanguageRU,
+		user.WithID(1),
+		user.WithRoles([]role.Role{constants.CEO}),
+		user.WithCreatedAt(time.Now()),
+		user.WithUpdatedAt(time.Now()),
+	)
+	
+	// Set password
+	usr, err = usr.SetPassword("TestPass123!")
+	if err != nil {
+		return err
+	}
+	
 	if err := userRepository.CreateOrUpdate(ctx, usr); err != nil {
 		return err
 	}
@@ -65,15 +76,18 @@ func CreateUser(ctx context.Context, app application.Application) error {
 			return err
 		}
 	}
-	tx, ok := composables.UseTx(ctx)
-	if !ok {
-		return composables.ErrNoTx
-	}
-	if err := tx.Exec("SELECT setval('public.users_id_seq', (SELECT MAX(id) FROM users));").Error; err != nil {
+	tx, err := composables.UseTx(ctx)
+	if err != nil {
 		return err
 	}
-	if err := tx.Exec("SELECT setval('public.roles_id_seq', (SELECT MAX(id) FROM roles));").Error; err != nil {
+	if _, err := tx.Exec(context.Background(), "SELECT setval('public.users_id_seq', (SELECT MAX(id) FROM users));"); err != nil {
 		return err
 	}
-	return tx.Exec("SELECT setval('public.tabs_id_seq', (SELECT MAX(id) FROM tabs));").Error
+	if _, err := tx.Exec(context.Background(), "SELECT setval('public.roles_id_seq', (SELECT MAX(id) FROM roles));"); err != nil {
+		return err
+	}
+	if _, err := tx.Exec(context.Background(), "SELECT setval('public.tabs_id_seq', (SELECT MAX(id) FROM tabs));"); err != nil {
+		return err
+	}
+	return nil
 }

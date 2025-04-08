@@ -1,16 +1,15 @@
 package controllers
 
 import (
-	"github.com/iota-uz/elxolding-erp/internal/services"
-	"github.com/iota-uz/elxolding-erp/internal/templates/pages/dashboard"
-	"github.com/iota-uz/iota-sdk/pkg/application"
-	"github.com/iota-uz/iota-sdk/pkg/middleware"
-	"github.com/iota-uz/iota-sdk/pkg/types"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/iota-uz/iota-sdk/pkg/composables"
+	"github.com/iota-uz/iota-sdk/pkg/application"
+	"github.com/iota-uz/iota-sdk/pkg/middleware"
+
+	"github.com/iota-uz/elxolding-erp/internal/services"
+	"github.com/iota-uz/elxolding-erp/internal/templates/pages/dashboard"
 )
 
 func NewDashboardController(app application.Application) application.Controller {
@@ -43,18 +42,12 @@ func (c *DashboardController) Register(r *mux.Router) {
 }
 
 func (c *DashboardController) Get(w http.ResponseWriter, r *http.Request) {
-	pageCtx, err := composables.UsePageCtx(r, types.NewPageData("Dashboard.Meta.Title", ""))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
 	stats, err := c.dashboardService.GetStats(r.Context())
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	props := &dashboard.IndexPageProps{
-		PageContext:    pageCtx,
 		PositionsCount: strconv.FormatInt(stats.PositionsCount, 10),
 		ProductsCount:  strconv.FormatInt(stats.ProductsCount, 10),
 		Depth:          strconv.FormatFloat(stats.Depth, 'f', 2, 64),

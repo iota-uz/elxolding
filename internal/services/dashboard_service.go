@@ -49,7 +49,7 @@ func (s *DashboardService) GetStats(ctx context.Context) (*dashboard.Stats, erro
 
 	go func() {
 		defer wg.Done()
-		count, e := s.productRepo.Count(ctx, nil)
+		count, e := s.productRepo.Count(ctx, &product.CountParams{})
 		mu.Lock()
 		defer mu.Unlock()
 		if e != nil {
