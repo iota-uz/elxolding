@@ -87,7 +87,7 @@ func main() {
 		panic(err)
 	}
 	app := application.New(pool, eventbus.NewEventPublisher(logger))
-	if err := modules.Load(app, modules.BuiltInModules...); err != nil {
+	if err := modules.Load(app, internal.Modules...); err != nil {
 		log.Fatalf("failed to load modules: %v", err)
 	}
 	app.RegisterNavItems(modules.NavLinks...)

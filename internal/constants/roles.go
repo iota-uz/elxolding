@@ -1,18 +1,19 @@
 package constants
 
 import (
+	"time"
+
 	"github.com/iota-uz/iota-sdk/modules/core/domain/aggregates/role"
 	"github.com/iota-uz/iota-sdk/modules/core/domain/entities/permission"
 	"github.com/iota-uz/iota-sdk/modules/warehouse/permissions"
-	"time"
 )
 
 var (
-	CEO = role.New("Руко́водитель",
+	CEO = role.New(
+		"Руко́водитель",
 		role.WithID(1),
 		role.WithDescription("Руко́водитель"),
-		role.WithPermissions(append(
-			[]*permission.Permission{},  // Changed from permission.Permissions
+		role.WithPermissions([]*permission.Permission{
 			permissions.PositionCreate,
 			permissions.PositionRead,
 			permissions.PositionUpdate,
@@ -29,16 +30,16 @@ var (
 			permissions.UnitRead,
 			permissions.UnitUpdate,
 			permissions.UnitDelete,
-		)),
+		}),
 		role.WithCreatedAt(time.Now()),
 		role.WithUpdatedAt(time.Now()),
 	)
-	
+
 	Admin = role.New("Администратор",
 		role.WithID(2),
 		role.WithDescription("Администратор"),
 		role.WithPermissions(append(
-			[]*permission.Permission{},  // Changed from permission.Permissions
+			[]*permission.Permission{}, // Changed from permission.Permissions
 			permissions.PositionCreate,
 			permissions.PositionRead,
 			permissions.PositionUpdate,
@@ -59,12 +60,13 @@ var (
 		role.WithCreatedAt(time.Now()),
 		role.WithUpdatedAt(time.Now()),
 	)
-	
-	Printing = role.New("Полиграфия",
+
+	Printing = role.New(
+		"Полиграфия",
 		role.WithID(3),
 		role.WithDescription("Полиграфия"),
 		role.WithPermissions(append(
-			[]*permission.Permission{},  // Changed from permission.Permissions
+			[]*permission.Permission{}, // Changed from permission.Permissions
 			permissions.PositionCreate,
 			permissions.PositionRead,
 			permissions.PositionUpdate,
@@ -85,19 +87,19 @@ var (
 		role.WithCreatedAt(time.Now()),
 		role.WithUpdatedAt(time.Now()),
 	)
-	
+
 	QualityAssurance = role.New("ОТК",
 		role.WithID(4),
 		role.WithDescription("Отдел технического контроля"),
-		role.WithPermissions([]*permission.Permission{}),  // Changed from permission.Permissions
+		role.WithPermissions([]*permission.Permission{}), // Changed from permission.Permissions
 		role.WithCreatedAt(time.Now()),
 		role.WithUpdatedAt(time.Now()),
 	)
-	
+
 	WarehouseEmployee = role.New("Склад",
 		role.WithID(5),
 		role.WithDescription("Склад"),
-		role.WithPermissions([]*permission.Permission{}),  // Changed from permission.Permissions
+		role.WithPermissions([]*permission.Permission{}), // Changed from permission.Permissions
 		role.WithCreatedAt(time.Now()),
 		role.WithUpdatedAt(time.Now()),
 	)

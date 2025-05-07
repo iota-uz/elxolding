@@ -32,7 +32,7 @@ func (u *SaveAccountDTO) ToEntity(id uint) (user.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	// Create a user object using functional options pattern
 	userEntity := user.New(
 		u.FirstName,
@@ -43,6 +43,6 @@ func (u *SaveAccountDTO) ToEntity(id uint) (user.User, error) {
 		user.WithMiddleName(u.MiddleName),
 		user.WithAvatarID(u.AvatarID),
 	)
-	
+
 	return userEntity, nil
 }

@@ -54,7 +54,7 @@ func main() {
 	if err := modules.Load(app, internal.Modules...); err != nil {
 		panicWithStack(err)
 	}
-	app.RegisterNavItems(modules.NavLinks...)
+	app.RegisterNavItems(internal.NavItems...)
 	tx, err := pool.Begin(ctx)
 	if err != nil {
 		panicWithStack(err)
@@ -73,7 +73,6 @@ func main() {
 		coreseed.CreatePermissions,
 		coreseed.UserSeedFunc(usr),
 		seed.CreateUnits,
-		seed.CreateUser,
 		seed.CreatePositions,
 		seed.CreateProducts,
 	)

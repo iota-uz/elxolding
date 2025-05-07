@@ -33,10 +33,11 @@ func (c *LoginController) Register(r *mux.Router) {
 	router := r.PathPrefix("/login").Subrouter()
 	router.Use(
 		middleware.WithTransaction(),
-		middleware.WithLocalizer(c.app.Bundle()),
+		middleware.ProvideLocalizer(c.app.Bundle()),
+		middleware.WithPageContext(),
 	)
-	router.HandleFunc("", di.NewHandler(c.Get).Handler()).Methods(http.MethodGet)
-	router.HandleFunc("", di.NewHandler(c.Post).Handler()).Methods(http.MethodPost)
+	router.HandleFunc("", di.H(c.Get)).Methods(http.MethodGet)
+	router.HandleFunc("", di.H(c.Post)).Methods(http.MethodPost)
 }
 
 func (c *LoginController) Get(

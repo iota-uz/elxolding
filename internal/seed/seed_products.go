@@ -3,11 +3,11 @@ package seed
 import (
 	"context"
 	"fmt"
+
 	"github.com/iota-uz/iota-sdk/modules/warehouse/domain/aggregates/product"
 	"github.com/iota-uz/iota-sdk/modules/warehouse/infrastructure/persistence"
 	"github.com/iota-uz/iota-sdk/pkg/application"
 	"github.com/iota-uz/iota-sdk/pkg/composables"
-	"time"
 )
 
 func CreateProducts(ctx context.Context, app application.Application) error {
@@ -21,15 +21,14 @@ func CreateProducts(ctx context.Context, app application.Application) error {
 
 	for i := 1; i <= 20000; i++ {
 		// Create product using constructor pattern instead of direct struct initialization
+		position := positions[i%len(positions)]
 		prod := product.New(
-			positions[i%len(positions)].ID,
 			fmt.Sprintf("EPS:%d", i),
+			uint(i), // ID
 			product.InStock,
-			product.WithID(uint(i)),
-			product.WithCreatedAt(time.Now()),
-			product.WithUpdatedAt(time.Now()),
+			position,
 		)
-		
+
 		if err := productRepository.CreateOrUpdate(ctx, prod); err != nil {
 			return err
 		}

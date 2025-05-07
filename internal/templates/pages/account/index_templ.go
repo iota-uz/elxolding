@@ -163,7 +163,7 @@ func ProfileForm(props *ProfilePageProps) templ.Component {
 			templ_7745c5c3_Err = usercomponents.LanguageSelect(&usercomponents.LanguageSelectProps{
 				Label:       props.T("Users.Single.Language"),
 				Placeholder: props.T("Users.Single.SelectLanguage"),
-				Value:       string(props.User.UILanguage),
+				Value:       string(props.User.Language),
 				Attrs:       templ.Attributes{"name": "UILanguage"},
 				Error:       props.Errors["UILanguage"],
 			}).Render(ctx, templ_7745c5c3_Buffer)
