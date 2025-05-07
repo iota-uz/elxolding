@@ -69,7 +69,7 @@ func (s *userSeeder) getOrCreateRole(ctx context.Context, app application.Applic
 		adminRoleName,
 		role.WithDescription(adminRoleDesc),
 		role.WithPermissions(app.RBAC().Permissions()),
-		role.WithType(role.TypeSystem))
+		role.WithType(role.TypeUser))
 	logger.Infof("Creating role %s", adminRoleName)
 	return roleRepository.Create(ctx, newRole)
 }

@@ -12,7 +12,7 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/iota-uz/go-i18n/v2 v2.6.1
 	github.com/iota-uz/icons v0.0.2
-	github.com/iota-uz/iota-sdk v0.0.0-20250423085607-36aa002da011
+	github.com/iota-uz/iota-sdk v0.0.0-20250507114804-027fa06e6290
 	github.com/jackc/pgx/v5 v5.7.1
 	github.com/lib/pq v1.10.9
 	github.com/sirupsen/logrus v1.9.3
