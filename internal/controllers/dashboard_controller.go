@@ -37,6 +37,7 @@ func (c *DashboardController) Register(r *mux.Router) {
 		middleware.Tabs(),
 		middleware.ProvideLocalizer(c.app.Bundle()),
 		middleware.NavItems(),
+		middleware.WithPageContext(),
 	)
 	router.HandleFunc("/", c.Get)
 }

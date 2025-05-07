@@ -11,9 +11,7 @@ import (
 	"github.com/iota-uz/elxolding-erp/internal/assets"
 	"github.com/iota-uz/elxolding-erp/internal/templates/layouts"
 	"github.com/iota-uz/iota-sdk/modules"
-	"github.com/iota-uz/iota-sdk/modules/core"
 	"github.com/iota-uz/iota-sdk/modules/core/presentation/controllers"
-	"github.com/iota-uz/iota-sdk/modules/warehouse"
 	"github.com/iota-uz/iota-sdk/pkg/application"
 	"github.com/iota-uz/iota-sdk/pkg/configuration"
 	"github.com/iota-uz/iota-sdk/pkg/constants"
@@ -90,16 +88,7 @@ func main() {
 	if err := modules.Load(app, internal.Modules...); err != nil {
 		log.Fatalf("failed to load modules: %v", err)
 	}
-	app.RegisterNavItems(modules.NavLinks...)
-	app.RegisterHashFsAssets(assets.HashFS)
-	app.RegisterControllers(
-		controllers.NewStaticFilesController(app.HashFsAssets()),
-		controllers.NewGraphQLController(app),
-	)
-	app.RegisterNavItems(core.DashboardLink)
 	app.RegisterNavItems(internal.NavItems...)
-	app.RegisterNavItems(warehouse.NavItems...)
-
 	app.RegisterHashFsAssets(assets.HashFS)
 	app.RegisterControllers(
 		controllers.NewStaticFilesController(app.HashFsAssets()),

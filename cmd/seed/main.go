@@ -74,7 +74,7 @@ func main() {
 		coreseed.UserSeedFunc(usr),
 		seed.CreateUnits,
 		seed.CreatePositions,
-		seed.CreateProducts,
+		//		seed.CreateProducts,
 	)
 	if err := seeder.Seed(composables.WithTx(ctx, tx), app); err != nil {
 		panicWithStack(err)

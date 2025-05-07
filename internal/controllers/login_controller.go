@@ -32,7 +32,6 @@ func (c *LoginController) Key() string {
 func (c *LoginController) Register(r *mux.Router) {
 	router := r.PathPrefix("/login").Subrouter()
 	router.Use(
-		middleware.WithTransaction(),
 		middleware.ProvideLocalizer(c.app.Bundle()),
 		middleware.WithPageContext(),
 	)

@@ -1,10 +1,19 @@
 package layouts
 
-import "github.com/iota-uz/elxolding-erp/internal/assets"
+import (
+	"github.com/iota-uz/elxolding-erp/internal/assets"
+	sdkassets "github.com/iota-uz/iota-sdk/modules/core/presentation/assets"
+)
 
 var (
-	favicon = "/assets/" + assets.HashFS.HashName("images/favicon.ico")
-	mainCss = "/assets/" + assets.HashFS.HashName("css/main.min.css")
+	favicon     = "/assets/" + assets.HashFS.HashName("images/favicon.ico")
+	mainCss     = "/assets/" + assets.HashFS.HashName("css/main.min.css")
+	apexCss     = "/assets/" + sdkassets.HashFS.HashName("css/apexcharts.css")
+	alpine      = "/assets/" + sdkassets.HashFS.HashName("js/alpine.js")
+	htmx        = "/assets/" + sdkassets.HashFS.HashName("js/lib/htmx.min.js")
+	htmxPreload = "/assets/" + sdkassets.HashFS.HashName("js/lib/htmx.preload.js")
+	apexJs      = "/assets/" + sdkassets.HashFS.HashName("js/lib/apexcharts.min.js")
+	htmxWS      = "/assets/" + sdkassets.HashFS.HashName("js/lib/htmx.ws.js")
 )
 
 templ Logo() {
@@ -30,12 +39,15 @@ templ Logo() {
 }
 
 templ Head() {
-	<meta charset="UTF-8"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<link rel="icon" type="image/x-icon" href={ favicon }/>
 	<link rel="stylesheet" href={ mainCss }/>
-	// <link rel="manifest" href="/assets/app.webmanifest"/>
+	<link rel="stylesheet" href={ apexCss }/>
 	<link rel="preload" href="/assets/fonts/Gilroy/Gilroy-Regular.woff2" as="font" type="font/woff2" crossorigin/>
 	<link rel="preload" href="/assets/fonts/Gilroy/Gilroy-Medium.woff2" as="font" type="font/woff2" crossorigin/>
 	<link rel="preload" href="/assets/fonts/Gilroy/Gilroy-Semibold.woff2" as="font" type="font/woff2" crossorigin/>
+	<script defer type="module" src={ alpine }></script>
+	<script src={ htmx }></script>
+	<script src={ htmxPreload }></script>
+	<script src={ apexJs }></script>
+	<script src={ htmxWS }></script>
 }

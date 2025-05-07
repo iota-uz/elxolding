@@ -1,16 +1,21 @@
 package internal
 
 import (
-	icons "github.com/iota-uz/icons/phosphor"
+	"slices"
+
+	"github.com/iota-uz/iota-sdk/modules/core"
+	"github.com/iota-uz/iota-sdk/modules/warehouse"
 	"github.com/iota-uz/iota-sdk/pkg/types"
 )
 
 var (
-	UsersItem = types.NavigationItem{
-		Name:     "NavigationLinks.Users",
-		Children: nil,
-		Icon:     icons.Users(icons.Props{Size: "20"}),
-		Href:     "/users",
-	}
-	NavItems = []types.NavigationItem{UsersItem}
+	NavItems = slices.Concat(
+		[]types.NavigationItem{
+			core.DashboardLink,
+			core.UsersLink,
+			core.GroupsLink,
+			core.RolesLink,
+		},
+		warehouse.Item.Children,
+	)
 )
