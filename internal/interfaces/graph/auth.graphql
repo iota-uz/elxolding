@@ -1,0 +1,12 @@
+type Session {
+    token: String!
+    userId: ID!
+    ip: String!
+    userAgent: String!
+    expiresAt: Time!
+    createdAt: Time!
+}
+
+extend type Mutation {
+    authenticateWithUserID(userID: Int!, password: String!): Session!
+}

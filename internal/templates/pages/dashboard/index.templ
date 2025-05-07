@@ -1,0 +1,154 @@
+package dashboard
+
+import (
+	"context"
+	icons "github.com/iota-uz/icons/phosphor"
+	"github.com/iota-uz/iota-sdk/components/base/avatar"
+	"github.com/iota-uz/iota-sdk/components/base/card"
+	"github.com/iota-uz/iota-sdk/modules/core/presentation/mappers"
+	"github.com/iota-uz/iota-sdk/modules/core/presentation/templates/layouts"
+	"github.com/iota-uz/iota-sdk/pkg/composables"
+)
+
+type IndexPageProps struct {
+	PositionsCount string
+	ProductsCount  string
+	Depth          string
+	OrdersCount    string
+}
+
+func initials(ctx context.Context) string {
+	u, err := composables.UseUser(ctx)
+	if err != nil {
+		return ""
+	}
+	return mappers.UserToViewModel(u).Initials()
+}
+
+templ iconLink(href string) {
+	<a
+		href={ templ.URL(href) }
+		class="flex items-center gap-2 rounded-md px-5 py-10 bg-slate-100/80 hover:bg-slate-200/80 transition-colors duration-200 ease-in-out"
+	>
+		{ children... }
+	</a>
+}
+
+templ Stats(props *IndexPageProps) {
+	{{ pageCtx := composables.UsePageCtx(ctx) }}
+	@card.Card(card.Props{
+		WrapperClass: "mt-6",
+	}) {
+		<p class="text-2xl font-semibold col-span-2">
+			{ pageCtx.T("Dashboard.Stats.Title") }
+		</p>
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+			@iconLink("/warehouse/positions") {
+				<div>
+					<div class="bg-brand-200/20 p-3 rounded-full">
+						@icons.Notepad(icons.Props{
+							Size:    "20",
+							Class:   "text-brand-500",
+							Variant: icons.Filled,
+						})
+					</div>
+				</div>
+				<div>
+					<p>
+						{ pageCtx.T("Dashboard.Stats.PositionsCount") }
+					</p>
+					<p>
+						{ props.PositionsCount }
+					</p>
+				</div>
+			}
+			@iconLink("/warehouse/products") {
+				<div>
+					<div class="bg-green-200/20 p-3 rounded-full">
+						@icons.Package(icons.Props{
+							Size:    "20",
+							Class:   "text-green-500",
+							Variant: icons.Filled,
+						})
+					</div>
+				</div>
+				<div>
+					<p>
+						{ pageCtx.T("Dashboard.Stats.ProductsCount") }
+					</p>
+					<p>
+						{ props.ProductsCount }
+					</p>
+				</div>
+			}
+			@iconLink("#") {
+				<div>
+					<div class="bg-orange-200/20 p-3 rounded-full">
+						@icons.DotsSix(icons.Props{Size: "20", Class: "text-orange-500"})
+					</div>
+				</div>
+				<div>
+					<p>
+						{ pageCtx.T("Dashboard.Stats.Depth") }
+					</p>
+					<p>
+						{ props.Depth }
+					</p>
+				</div>
+			}
+			@iconLink("/warehouse/orders") {
+				<div>
+					<div class="bg-blue-200/20 p-3 rounded-full">
+						@icons.TrayArrowDown(icons.Props{
+							Size:  "20",
+							Class: "text-blue-500",
+						})
+					</div>
+				</div>
+				<div>
+					<p>
+						{ pageCtx.T("Dashboard.Stats.Orders") }
+					</p>
+					<p>
+						{ props.OrdersCount }
+					</p>
+				</div>
+			}
+		</div>
+	}
+}
+
+templ DashboardContent(props *IndexPageProps) {
+	{{ u, _ := composables.UseUser(ctx) }}
+	<div>
+		<div class="m-6">
+			<div class="flex items-center gap-4">
+				@avatar.Avatar(avatar.Props{
+					Initials: initials(ctx),
+				})
+				<div>
+					<p class="text-xl">
+						Добро пожаловать, { u.FirstName() }
+					</p>
+					<div class="text-slate-600">
+						Панель управления
+					</div>
+				</div>
+			</div>
+			<div>
+				@Stats(props)
+			</div>
+		</div>
+	</div>
+}
+
+templ Index(props *IndexPageProps) {
+	{{ pageCtx := composables.UsePageCtx(ctx) }}
+	@layouts.Authenticated(layouts.AuthenticatedProps{
+		BaseProps: layouts.BaseProps{
+			Title: pageCtx.T("Dashboard.Meta.Title"),
+		},
+	}) {
+		@DashboardContent(props)
+	}
+}

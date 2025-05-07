@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:mobile/constants.dart';
 
-import 'package:mobile/feathers/models/user.dart';
+import 'package:mobile/services/users/users.model.dart';
 
 class ErrorWidget extends StatelessWidget {
   final String message;
@@ -42,6 +41,11 @@ class ErrorWidget extends StatelessWidget {
           ),
           child: Text(
             FlutterI18n.translate(context, "login.buttons.retry"),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         )
       ],
@@ -61,8 +65,9 @@ class LoginPage extends StatefulWidget {
 class LoginPageState extends State<LoginPage> {
   Future<bool> isAuthenticated(BuildContext context) async {
     const storage = FlutterSecureStorage();
-    var token = await storage.read(key: "jwt");
-    return token != null && !JwtDecoder.isExpired(token);
+    var token = await storage.read(key: "sid");
+    // TODO: Implement this
+    return token != null;
   }
 
   @override
@@ -82,7 +87,12 @@ class LoginPageState extends State<LoginPage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           FutureBuilder(
-            future: usersService.find({}).then((res) => res.data),
+            future: usersService
+                .find(FindParams(
+                  limit: 50,
+                  offset: 0,
+                ))
+                .then((res) => res.data),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();
@@ -284,6 +294,7 @@ class _EnterPasswordState extends State<EnterPassword> {
                         .then((res) {
                       GoRouter.of(context).goNamed("home");
                     }).catchError((e) {
+                      print(e.toString());
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(

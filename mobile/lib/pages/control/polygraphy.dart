@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:mobile/components/footer_button.dart';
 import 'package:mobile/constants.dart';
-import 'package:mobile/feathers/types.dart';
-import 'package:mobile/feathers/models/position.dart';
+import 'package:mobile/services/positions/positions.model.dart';
 import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 
@@ -86,12 +84,12 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
   }
 
   Future<List<Position>> fetchPositions() async {
-    var res = await positionsService.find({});
+    var res = await positionsService.find(FindParams());
     return res.data;
   }
 
-  Future<RpcResponse> createProducts() {
-    return rpcService.createProductsFromTags(
+  Future<void> createProducts() {
+    return productsService.createFromTags(
       position!.id,
       _data.map((e) => e.epc).toList(),
     );
@@ -115,22 +113,14 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
       );
     }
     createProducts().then((value) {
-      if (value.hasError()) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(value.error["message"]),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(FlutterI18n.translate(context, "polygraphy.success")),
-          ),
-        );
-        setState(() {
-          _data.clear();
-        });
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(FlutterI18n.translate(context, "polygraphy.success")),
+        ),
+      );
+      setState(() {
+        _data.clear();
+      });
     }).catchError((e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -202,7 +192,8 @@ class _PolygraphyPageState extends State<PolygraphyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(FlutterI18n.translate(context, position == null ? "polygraphy.title1" : "polygraphy.title2")),
+        title: Text(FlutterI18n.translate(context,
+            position == null ? "polygraphy.title1" : "polygraphy.title2")),
       ),
       body: SingleChildScrollView(
         child: Center(

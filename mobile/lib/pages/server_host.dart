@@ -25,8 +25,6 @@ class _ServerHostPageState extends State<ServerHostPage> {
     final ip = uriParsed.host;
     final ping = Ping(ip, count: 1);
     final result = await ping.stream.first;
-    print(result);
-    print(ip);
     if (result.error != null) {
       return false;
     }

@@ -1,67 +1,49 @@
-version: '3.8'
-
 services:
-  front:
+  erp:
     restart: always
     build:
-      context: ./app
-      target: prod
+      context: .
+      target: staging
     environment:
-      - NUXT_APP_API_URL=https://api-elxolding.ci.iota.uz
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=app"
-      - "traefik.http.routers.${COMMIT_SHA}-front.rule=Host(`elxolding.ci.iota.uz`)"
-      - "traefik.http.routers.${COMMIT_SHA}-front.tls=true"
-      - "traefik.http.routers.${COMMIT_SHA}-front.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.${COMMIT_SHA}-front.tls.domains[0].main=iota.uz"
-      - "traefik.http.routers.${COMMIT_SHA}-front.tls.domains[0].sans=*.ci.iota.uz"
-    volumes:
-      - ~/volumes/elxolding/uploads:/www/media
-    ports:
-      - "80:80"
-    networks:
-      - app
+      GO_APP_ENV: production
+      DB_NAME: elxolding_db
+      DB_HOST: elxolding_erp_db
+      DB_PORT: 5432
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      DOMAIN: elxolding-erp.ci.iota.uz
+      SESSION_DURATION: 720h
+      GOOGLE_CLIENT_ID: 1234567890.apps.googleusercontent.com # TODO: Change this
+      GOOGLE_CLIENT_SECRET: 123456789
+      GOOGLE_REDIRECT_URL: https://elxolding-erp.ci.iota.uz/auth/google/callback
+      OPENAI_KEY: sk-1234567890 # TODO: Change this
 
-  back:
-    restart: always
-    build:
-      context: ./back
-      target: prod
-    environment:
-      NODE_ENV: staging
-    ports:
-      - "3030:3030"
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=app"
-      - "traefik.http.routers.${COMMIT_SHA}-back.rule=Host(`api-elxolding.ci.iota.uz`)"
-      - "traefik.http.routers.${COMMIT_SHA}-back.tls=true"
-      - "traefik.http.routers.${COMMIT_SHA}-back.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.${COMMIT_SHA}-back.tls.domains[0].main=iota.uz"
-      - "traefik.http.routers.${COMMIT_SHA}-back.tls.domains[0].sans=*.ci.iota.uz"
-    volumes:
-      - ~/volumes/elxolding/postgres:/app/uploads
+      - "traefik.http.routers.erp.rule=Host(`elxolding-erp.ci.iota.uz`)"
+      - "traefik.http.routers.erp.tls=true"
+      - "traefik.http.routers.erp.tls.certresolver=letsencrypt"
+      - "traefik.http.services.erp.loadbalancer.server.port=3200"
     depends_on:
-      - db
+      - erp_db
     networks:
       - app
 
-  db:
-    restart: always
+  erp_db:
     image: postgres:15.1
-    hostname: elxolding_db
+    restart: always
+    hostname: elxolding_erp_db
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: elxolding
-    ports:
-      - "5432:5432"
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: elxolding_db
     volumes:
-      - ~/volumes/elxolding/postgres:/var/lib/postgresql/data
+      - ~/volumes/elxolding_erp/postgres/data:/var/lib/postgresql/data
+    ports:
+      - "17899:5432"
     networks:
       - app
 
 networks:
   app:
+    name: app
     external: true

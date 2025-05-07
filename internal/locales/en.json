@@ -1,0 +1,19 @@
+{
+  "Dashboard": {
+    "Meta": {
+      "Title": "Dashboard"
+    },
+    "Welcome": "Welcome to the dashboard",
+    "Stats": {
+      "Title": "Statistics",
+      "PositionsCount": "Total positions",
+      "ProductsCount": "Total products",
+      "Depth": "Warehouse depth",
+      "Orders": "Orders"
+    }
+  },
+  "Login": {
+    "User": "User",
+    "SelectUser": "Select user"
+  }
+}

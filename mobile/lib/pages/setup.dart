@@ -8,6 +8,7 @@ import 'package:mobile/constants.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:lan_scanner/lan_scanner.dart';
 import 'package:dart_ping/dart_ping.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class SetupPage extends StatefulWidget {
   const SetupPage({Key? key}) : super(key: key);
@@ -52,13 +53,14 @@ class _SetupPageState extends State<SetupPage> {
   }
 
   Future<(String, bool)> checkIpAddress() async {
-    var ip = await _storage.read(key: "server-uri");
-    if (ip == null) {
+    var uri = await _storage.read(key: "server-uri");
+    if (uri == null) {
       return ("", false);
     }
-    final ping = Ping('google.com', count: 1);
+    final host = Uri.parse(uri).host;
+    final ping = Ping(host, count: 1);
     final result = await ping.stream.first;
-    return (ip, result.error == null);
+    return (uri, result.error == null);
   }
 
   @override
@@ -117,6 +119,7 @@ class _SetupPageState extends State<SetupPage> {
               return;
             }
             _storage.write(key: "server-uri", value: uri);
+
             init(uri);
             context.goNamed("login");
           },

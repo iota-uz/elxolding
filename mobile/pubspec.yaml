@@ -51,6 +51,7 @@ dependencies:
   sqflite: ^2.3.3
   network_info_plus: ^5.0.3
   dart_ping_ios: ^4.0.2
+  graphql_flutter: ^5.1.2
 
 flutter_native_splash:
   color: "#04a8ce"

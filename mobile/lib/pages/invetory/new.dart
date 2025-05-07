@@ -5,9 +5,9 @@ import 'package:mobile/utils/rfid.dart';
 import 'package:rfid_c72_plugin/tag_epc.dart';
 import 'package:mobile/constants.dart';
 
-import 'package:mobile/feathers/models/product.dart';
+import 'package:mobile/services/products/products.model.dart';
 
-import 'package:mobile/feathers/models/inventory.dart';
+import 'package:mobile/services/inventory/inventory.model.dart';
 
 import 'package:mobile/components/footer_button.dart';
 

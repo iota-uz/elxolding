@@ -3,7 +3,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:mobile/constants.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:mobile/feathers/models/order.dart';
+import 'package:mobile/services/orders/orders.model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -55,7 +55,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<List<Order>> fetchOrders(String t) async {
-    return ordersService.find({"type": t}).then((res) => res.data);
+    final params = FindParams(type: t);
+    return ordersService.find(params).then((res) => res.data);
   }
 
   Widget emptyWidget(BuildContext context) {
